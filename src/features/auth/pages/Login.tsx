@@ -1,27 +1,17 @@
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { authService } from '../../../services/auth';
+
+const DEMO_USERNAME = 'admin';
+const DEMO_PASSWORD = 'admin123';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState(DEMO_USERNAME);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleLogin = (e: FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
-    try {
-      await authService.login({ username, password });
-      onLogin();
-    } catch (err: any) {
-      console.error('Login error:', err);
-      setError('密码或账号错误，请重试');
-    } finally {
-      setIsLoading(false);
-    }
+    onLogin();
   };
 
   return (
@@ -41,10 +31,7 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
             <Input 
               type="text" 
               value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                setError('');
-              }}
+              onChange={(e) => setUsername(e.target.value)}
               className="h-[48px] rounded-[12px] bg-[#f8fafc]"
               placeholder="请输入账号"
               required
@@ -62,14 +49,11 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
             />
           </div>
 
-          {error && <p className="text-red-500 text-[13px] font-medium m-0">{error}</p>}
-
           <Button 
             type="submit"
-            disabled={isLoading}
             className="h-[48px] w-full bg-[#2563eb] text-white rounded-[12px] font-bold text-[15px] hover:bg-[#1d4ed8] active:bg-[#1e40af] transition-all shadow-[0_8px_20px_rgba(37,99,235,0.2)] mt-[10px]"
           >
-            {isLoading ? '登录中...' : '登录系统'}
+            登录系统
           </Button>
         </form>
       </div>

@@ -94,7 +94,7 @@ export default function App() {
             <Route path="/deep-mine/results" element={<DeepMinePhase2 onBack={() => navigate('/deep-mine')} onGenerateReport={navigateToReportConfigFromDeepMine} />} />
             <Route path="/direction-tuning" element={
               <DirectionTuning 
-                onBack={() => navigate('/deep-mine')} 
+                onBack={() => navigate(-1)} 
                 keywords={deepMineState.keywords}
                 onUpdateKeywords={(keywords) => updateDeepMineState({ keywords })}
               />

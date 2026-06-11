@@ -212,7 +212,8 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
 
   const visibleCompanies = useMemo(() => {
     return COMPANIES.filter((company) => {
-      const matchesRoute = route === "全部路线" || company.route.includes(route);
+      const matchesRoute =
+        route === "全部路线" || company.route.includes(route);
       const matchesType = type === "全部类型" || company.type.includes(type);
       const matchesSource = source === "全部来源" || company.source === source;
       const matchesKeyword =
@@ -228,7 +229,8 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
   const resultCount =
     quickFilter === "全部"
       ? visibleCompanies.length
-      : QUICK_FILTERS.find((filter) => filter.name === quickFilter)?.count ?? visibleCompanies.length;
+      : (QUICK_FILTERS.find((filter) => filter.name === quickFilter)?.count ??
+        visibleCompanies.length);
 
   return (
     <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
@@ -371,7 +373,8 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
 
             <div className="mt-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3 rounded-[16px] border border-[#e5eaf3] bg-[#f9fbff] px-4 py-3">
               <div className="text-[14px] text-[#334155]">
-                当前结果：<strong className="text-[#2563eb]">{resultCount}</strong> 家
+                当前结果：
+                <strong className="text-[#2563eb]">{resultCount}</strong> 家
               </div>
               <div className="flex flex-wrap gap-2 flex-1">
                 {!hasActiveFilters && (
@@ -380,37 +383,61 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
                   </span>
                 )}
                 {quickFilter !== "全部" && (
-                  <button type="button" onClick={() => setQuickFilter("全部")} className="inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-3 py-1.5 text-[12px] font-extrabold text-[#2563eb] hover:bg-[#dbeafe] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setQuickFilter("全部")}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-3 py-1.5 text-[12px] font-extrabold text-[#2563eb] hover:bg-[#dbeafe] transition-colors"
+                  >
                     {quickFilter}
                     <X className="w-3 h-3" />
                   </button>
                 )}
                 {route !== "全部路线" && (
-                  <button type="button" onClick={() => setRoute("全部路线")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setRoute("全部路线")}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
+                  >
                     {route}
                     <X className="w-3 h-3" />
                   </button>
                 )}
                 {type !== "全部类型" && (
-                  <button type="button" onClick={() => setType("全部类型")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setType("全部类型")}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
+                  >
                     {type}
                     <X className="w-3 h-3" />
                   </button>
                 )}
                 {source !== "全部来源" && (
-                  <button type="button" onClick={() => setSource("全部来源")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setSource("全部来源")}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
+                  >
                     {source}
                     <X className="w-3 h-3" />
                   </button>
                 )}
                 {keyword && (
-                  <button type="button" onClick={() => setKeyword("")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setKeyword("")}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
+                  >
                     关键词：{keyword}
                     <X className="w-3 h-3" />
                   </button>
                 )}
                 {sort !== "默认排序" && (
-                  <button type="button" onClick={() => setSort("默认排序")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setSort("默认排序")}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
+                  >
                     {sort}
                     <X className="w-3 h-3" />
                   </button>
@@ -433,14 +460,20 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
           <section className="grid gap-3">
             {visibleCompanies.length > 0 ? (
               visibleCompanies.map((company) => (
-                <article key={company.name} className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-center rounded-[18px] border border-[#e5eaf3] bg-white p-[18px] shadow-sm hover:border-[#bfdbfe] transition-colors">
+                <article
+                  key={company.name}
+                  className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-center rounded-[18px] border border-[#e5eaf3] bg-white p-[18px] shadow-sm hover:border-[#bfdbfe] transition-colors"
+                >
                   <div>
                     <h3 className="text-[18px] font-black text-[#172033] mb-3">
                       {company.name}
                     </h3>
                     <div className="flex flex-wrap gap-2 mb-3">
                       {company.tags.map((tag) => (
-                        <span key={`${company.name}-${tag.text}`} className={`rounded-full px-2.5 py-1.5 text-[12px] font-extrabold ${tagClasses[tag.tone ?? "blue"]}`}>
+                        <span
+                          key={`${company.name}-${tag.text}`}
+                          className={`rounded-full px-2.5 py-1.5 text-[12px] font-extrabold ${tagClasses[tag.tone ?? "blue"]}`}
+                        >
                           {tag.text}
                         </span>
                       ))}
@@ -450,18 +483,21 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {company.metrics.map((metric) => (
-                        <span key={metric} className="rounded-[10px] border border-[#edf1f7] bg-[#f6f8fc] px-2.5 py-1.5 text-[12px] text-[#66758d]">
+                        <span
+                          key={metric}
+                          className="rounded-[10px] border border-[#edf1f7] bg-[#f6f8fc] px-2.5 py-1.5 text-[12px] text-[#66758d]"
+                        >
                           {metric}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={() => setSelectedCompany(company)} className="h-[38px] rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]">
+                    <Button
+                      onClick={() => setSelectedCompany(company)}
+                      className="h-[38px] rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]"
+                    >
                       查看
-                    </Button>
-                    <Button variant="outline" className="h-[38px] w-[38px] rounded-[12px] px-0 text-[20px]">
-                      ...
                     </Button>
                   </div>
                 </article>
@@ -505,13 +541,19 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
                 </h2>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {selectedCompany.tags.slice(0, 3).map((tag) => (
-                    <span key={`${selectedCompany.name}-drawer-${tag.text}`} className={`rounded-full px-2.5 py-1.5 text-[12px] font-extrabold ${tagClasses[tag.tone ?? "blue"]}`}>
+                    <span
+                      key={`${selectedCompany.name}-drawer-${tag.text}`}
+                      className={`rounded-full px-2.5 py-1.5 text-[12px] font-extrabold ${tagClasses[tag.tone ?? "blue"]}`}
+                    >
                       {tag.text}
                     </span>
                   ))}
                 </div>
               </div>
-              <button onClick={() => setSelectedCompany(null)} className="w-9 h-9 rounded-[10px] bg-[#f1f4f9] inline-flex items-center justify-center">
+              <button
+                onClick={() => setSelectedCompany(null)}
+                className="w-9 h-9 rounded-[10px] bg-[#f1f4f9] inline-flex items-center justify-center"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -524,8 +566,13 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
                   ["相关专利数", selectedCompany.detail.patentCount],
                   ["近三年新增", selectedCompany.detail.recentCount],
                 ].map(([label, value]) => (
-                  <div key={label} className="rounded-[14px] border border-[#e5eaf3] bg-[#fbfcff] p-3">
-                    <div className="text-[12px] text-[#64748b] mb-1">{label}</div>
+                  <div
+                    key={label}
+                    className="rounded-[14px] border border-[#e5eaf3] bg-[#fbfcff] p-3"
+                  >
+                    <div className="text-[12px] text-[#64748b] mb-1">
+                      {label}
+                    </div>
                     <div className="font-black text-[#172033]">{value}</div>
                   </div>
                 ))}
@@ -533,9 +580,16 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
               <h3 className="text-[16px] font-black mb-3">线索信号</h3>
               <div className="grid gap-3">
                 {selectedCompany.detail.signals.map((signal, index) => (
-                  <div key={signal} className="rounded-[14px] border border-[#e5eaf3] bg-white p-3">
+                  <div
+                    key={signal}
+                    className="rounded-[14px] border border-[#e5eaf3] bg-white p-3"
+                  >
                     <strong className="block mb-1 text-[#172033]">
-                      {index === 0 ? "专利信号" : index === 1 ? "代表性证据" : "轻量判断"}
+                      {index === 0
+                        ? "专利信号"
+                        : index === 1
+                          ? "代表性证据"
+                          : "轻量判断"}
                     </strong>
                     <p className="m-0 text-[13px] leading-[1.6] text-[#64748b]">
                       {signal}
@@ -545,9 +599,21 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
               </div>
             </div>
             <div className="p-5 border-t border-[#e5eaf3] flex flex-wrap gap-2">
-              <Button className="rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]">关注</Button>
-              <Button variant="outline" className="rounded-[12px] font-extrabold">入池</Button>
-              <Button variant="outline" className="rounded-[12px] font-extrabold">初筛分析</Button>
+              <Button className="rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]">
+                关注
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-[12px] font-extrabold"
+              >
+                入池
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-[12px] font-extrabold"
+              >
+                初筛分析
+              </Button>
             </div>
           </aside>
         </>

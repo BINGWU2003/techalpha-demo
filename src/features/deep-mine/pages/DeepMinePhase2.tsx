@@ -306,27 +306,6 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
           </section>
 
           {/* Panel 3 */}
-          <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <h2 className="text-[17px] font-black m-0 mb-[12px]">标的跟进规则</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-[10px]">
-              <div className="border border-[#e5eaf3] bg-[#f8fafc] rounded-[15px] p-[13px]">
-                <strong className="text-[13px] block">推荐</strong>
-                <p className="text-[12px] mt-[5px] text-[#64748b] leading-[1.6] m-0">仍是本次任务结果，不自动进入企业库。</p>
-              </div>
-              <div className="border border-[#e5eaf3] bg-[#f8fafc] rounded-[15px] p-[13px]">
-                <strong className="text-[13px] block">关注</strong>
-                <p className="text-[12px] mt-[5px] text-[#64748b] leading-[1.6] m-0">进入企业库，保留轻量企业画像和历史任务来源。</p>
-              </div>
-              <div className="border border-[#e5eaf3] bg-[#f8fafc] rounded-[15px] p-[13px]">
-                <strong className="text-[13px] block">入池</strong>
-                <p className="text-[12px] mt-[5px] text-[#64748b] leading-[1.6] m-0">成为企业库中的重点跟进企业，可设置优先级和下一步。</p>
-              </div>
-              <div className="border border-[#e5eaf3] bg-[#f8fafc] rounded-[15px] p-[13px]">
-                <strong className="text-[13px] block">出报告</strong>
-                <p className="text-[12px] mt-[5px] text-[#64748b] leading-[1.6] m-0">报告进入报告库；若企业未关注，系统提示是否同步关注。</p>
-              </div>
-            </div>
-          </section>
         </main>
 
         {/* Right Aside */}

@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 interface HomeProps {
   onStartTask: (taskType: string, input: string) => void;
@@ -10,6 +10,7 @@ interface HomeProps {
 export default function Home({ onStartTask }: HomeProps) {
   const [inputValue, setInputValue] = useState('');
   const trimmedInputValue = inputValue.trim();
+  const examples = ['固态电解质材料', '机器人灵巧手', 'Chiplet先进封装', '低空经济传感器'];
 
   const handleStartTask = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,44 +23,49 @@ export default function Home({ onStartTask }: HomeProps) {
   };
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-96px)] max-w-[820px] items-center justify-center p-[42px_20px_72px]">
-      <section className="flex w-full flex-col items-center text-center">
-        <h1 className="m-0 text-[34px] font-bold leading-[1.22] tracking-[-0.035em] max-md:text-[28px]">
-          挖掘值得关注的企业
+    <div className="flex min-h-screen items-center justify-center px-5 py-12 md:px-7">
+      <section className="w-full max-w-[760px] -translate-y-8 text-center max-md:translate-y-0">
+        <h1 className="m-0 text-[42px] font-extrabold leading-[1.18] tracking-[-0.02em] text-[#091a38] max-md:text-[32px]">
+          开始发现值得关注的硬科技企业
         </h1>
-        <p className="mx-auto mt-3 max-w-[640px] text-[15px] leading-[1.7] text-muted-foreground">
-          输入赛道、技术方向或企业线索，系统将创建挖企业任务，并进入工作台生成候选企业。
+        <p className="mx-auto mt-3 max-w-[620px] text-[16px] leading-[1.75] text-[#5f6f89]">
+          输入赛道、技术方向或投资关注点，系统将拆解方向并生成企业线索。
         </p>
 
         <form
           onSubmit={handleStartTask}
-          className="mt-7 flex w-full max-w-[700px] flex-col gap-3 rounded-[18px] border border-border bg-background p-2 shadow-xs md:flex-row md:items-center"
+          className="relative mt-[30px] rounded-[24px] border border-[#dfe7f2] bg-white p-[18px] text-left shadow-[0_16px_36px_rgba(16,32,57,0.08)]"
         >
-          <div className="flex min-w-0 flex-1 items-center gap-2.5 px-2 text-muted-foreground">
-            <Search />
-            <Input
-              id="mainInput"
-              aria-label="挖企业研究方向"
-              value={inputValue}
-              onChange={(event) => setInputValue(event.target.value)}
-              placeholder="例如：钠电池正极材料、AI 芯片、固态电池电解质"
-              className="h-11 border-0 px-0 shadow-none focus-visible:ring-0"
-            />
-          </div>
+          <Textarea
+            id="mainInput"
+            aria-label="挖企业研究方向"
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+            placeholder="例如：钠电池正极材料方向，关注压实密度、循环寿命、低成本和储能场景"
+            className="min-h-[116px] resize-y border-0 bg-white px-1.5 py-1 pb-[54px] text-[17px] leading-[1.75] text-[#102039] shadow-none outline-none placeholder:text-[#9aa8bc] focus-visible:border-0 focus-visible:ring-0 max-md:pb-2"
+          />
           <Button
             type="submit"
-            size="lg"
             disabled={!trimmedInputValue}
-            className="h-11 w-full rounded-[13px] font-semibold md:w-[148px]"
+            className="absolute bottom-[18px] right-[18px] h-11 rounded-[14px] bg-[#2f6df6] px-[18px] text-[14px] font-extrabold text-white shadow-[0_8px_18px_rgba(47,109,246,0.26)] hover:bg-[#255fdf] max-md:static max-md:mt-2 max-md:ml-auto max-md:flex"
           >
-            开始挖企业
+            新建任务
             <ArrowRight data-icon="inline-end" />
           </Button>
         </form>
 
-        <p className="mt-3 text-[12px] leading-[1.6] text-muted-foreground">
-          进入工作台后可继续补充筛选条件，企业线索会沉淀到候选池。
-        </p>
+        <div className="mt-[18px] flex flex-wrap justify-center gap-2.5">
+          {examples.map((example) => (
+            <button
+              key={example}
+              type="button"
+              onClick={() => setInputValue(example)}
+              className="rounded-full border border-[#d7e4ff] bg-white px-3 py-2 text-[13px] font-bold text-[#2f6df6] transition-colors hover:bg-[#eef4ff]"
+            >
+              {example}
+            </button>
+          ))}
+        </div>
       </section>
     </div>
   );

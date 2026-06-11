@@ -234,12 +234,14 @@ const AWARDS_DATA = [
 
 type DeepMineAnalysisProps = {
   onNextStep: () => void;
+  onExplore?: () => void;
   onAdjustTarget: () => void;
   onBack?: () => void;
 };
 
 export default function DeepMineAnalysis({
   onNextStep,
+  onExplore,
   onAdjustTarget,
   onBack,
 }: DeepMineAnalysisProps) {
@@ -285,13 +287,21 @@ export default function DeepMineAnalysis({
                 Deep Mine · 阶段一
               </span>
             </div>
-            <div className="flex justify-between items-end mb-5">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 mb-5">
               <div>
                 <h2 className="text-[17px] font-black m-0">产业线索分析</h2>
                 <div className="text-[#64748b] text-[13px] leading-[1.65] mt-1">
                   这不是独立“看赛道”，而是为企业发现提供支撑：有没有足够的技术、专利和企业线索。
                 </div>
               </div>
+              {onExplore && (
+                <Button
+                  onClick={onExplore}
+                  className="h-[42px] rounded-[13px] bg-[#2563eb] px-4 text-white font-extrabold hover:bg-[#1d4ed8] shadow-[0_10px_18px_rgba(37,99,235,0.18)] shrink-0"
+                >
+                  进入企业探索
+                </Button>
+              )}
             </div>
 
             <div className="mb-5 rounded-[18px] border border-[#dbe8ff] bg-[#f8fbff] p-4">

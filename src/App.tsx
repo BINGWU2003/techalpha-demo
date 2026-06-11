@@ -9,6 +9,7 @@ import { Layout } from './layouts/Layout';
 import Home from './features/workbench/pages/Home';
 import DeepMinePhase1 from './features/deep-mine/pages/DeepMinePhase1';
 import DeepMineAnalysis from './features/deep-mine/pages/DeepMineAnalysis';
+import DeepMineExplore from './features/deep-mine/pages/DeepMineExplore';
 import DeepMinePhase2 from './features/deep-mine/pages/DeepMinePhase2';
 import DirectionTuning from './features/deep-mine/pages/DirectionTuning';
 import ReportConfirm from './features/auto-dd/pages/ReportConfirm';
@@ -95,10 +96,12 @@ export default function App() {
             <Route path="/deep-mine/analysis" element={
               <DeepMineAnalysis
                 onNextStep={() => navigate('/deep-mine/results')}
+                onExplore={() => navigate('/deep-mine/explore')}
                 onAdjustTarget={() => navigate('/direction-tuning')}
                 onBack={() => navigate('/deep-mine')}
               />
             } />
+            <Route path="/deep-mine/explore" element={<DeepMineExplore onBack={() => navigate('/deep-mine/analysis')} />} />
             <Route path="/deep-mine/results" element={<DeepMinePhase2 onBack={() => navigate('/deep-mine/analysis')} onGenerateReport={navigateToReportConfigFromDeepMine} />} />
             <Route path="/direction-tuning" element={
               <DirectionTuning 

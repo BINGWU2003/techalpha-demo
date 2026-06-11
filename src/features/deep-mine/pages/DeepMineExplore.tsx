@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowLeft, Download, X } from "lucide-react";
-import { Select as AntSelect } from "antd";
+import { Input as AntInput, Select as AntSelect } from "antd";
 import { Button } from "@/components/ui/button";
 
 type Company = {
@@ -329,11 +329,12 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
               </label>
               <label className="grid gap-1.5 text-[12px] text-[#64748b]">
                 关键词搜索
-                <input
+                <AntInput
                   value={keyword}
                   onChange={(event) => setKeyword(event.target.value)}
                   placeholder="企业名称 / 关键词"
-                  className="h-[42px] rounded-[12px] border border-[#dbe4f1] bg-[#fbfcff] px-3 text-[14px] text-[#172033]"
+                  size="large"
+                  className="w-full"
                 />
               </label>
             </div>

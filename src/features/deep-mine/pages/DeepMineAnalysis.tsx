@@ -264,44 +264,43 @@ export default function DeepMineAnalysis({
       <div className="flex items-center gap-[12px] mb-4">
         <div className="text-[13px] text-[#64748b]">
           工作台 / 挖企业 /{" "}
-          <b className="text-[#334155] font-bold">阶段一：产业线索分析</b>
+          <b className="text-[#334155] font-bold">产业线索分析</b>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
         <main>
           <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-start gap-3 mb-5">
               {onBack && (
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={onBack}
-                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all"
+                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all shrink-0"
                   title="返回"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
               )}
-              <span className="text-[12px] font-black text-[#2563eb] bg-[#eaf1ff] rounded-full px-[10px] py-[7px] inline-flex">
-                Deep Mine · 阶段一
-              </span>
-            </div>
-            <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 mb-5">
-              <div>
-                <h2 className="text-[17px] font-black m-0">产业线索分析</h2>
-                <div className="text-[#64748b] text-[13px] leading-[1.65] mt-1">
-                  这不是独立“看赛道”，而是为企业发现提供支撑：有没有足够的技术、专利和企业线索。
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3">
+                  <div>
+                    <h2 className="text-[17px] font-black m-0">产业线索分析</h2>
+                    <div className="text-[#64748b] text-[13px] leading-[1.65] mt-1">
+                      这不是独立“看赛道”，而是为企业发现提供支撑：有没有足够的技术、专利和企业线索。
+                    </div>
+                  </div>
+                  {onExplore && (
+                    <Button
+                      onClick={onExplore}
+                      className="h-[42px] rounded-[13px] bg-[#2563eb] px-4 text-white font-extrabold hover:bg-[#1d4ed8] shadow-[0_10px_18px_rgba(37,99,235,0.18)] shrink-0"
+                    >
+                      进入企业探索
+                    </Button>
+                  )}
                 </div>
               </div>
-              {onExplore && (
-                <Button
-                  onClick={onExplore}
-                  className="h-[42px] rounded-[13px] bg-[#2563eb] px-4 text-white font-extrabold hover:bg-[#1d4ed8] shadow-[0_10px_18px_rgba(37,99,235,0.18)] shrink-0"
-                >
-                  进入企业探索
-                </Button>
-              )}
             </div>
 
             <div className="mb-5 rounded-[18px] border border-[#dbe8ff] bg-[#f8fbff] p-4">

@@ -134,28 +134,27 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
   return (
     <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="text-[13px] text-[#64748b] mb-4">
-        工作台 / 挖企业 / <b className="text-[#334155] font-bold">方向调整逻辑</b>
+        工作台 / 挖企业 / <b className="text-[#334155] font-bold">调整挖掘目标</b>
       </div>
 
       <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px] mb-[18px]">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-start gap-3">
           <Button
             variant="outline"
             size="icon"
             onClick={onBack}
-            className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all"
+            className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all shrink-0"
             title="返回"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <span className="text-[12px] font-black text-[#2563eb] bg-[#eaf1ff] rounded-full px-[10px] py-[7px] inline-flex">
-            Direction Tuning · 单独逻辑页
-          </span>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">调整挖掘目标</h1>
+            <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
+              用户可以修改输入、选择 AI 拆解目标，并决定哪些目标进入下一轮产业线索分析。
+            </p>
+          </div>
         </div>
-        <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">调整挖掘目标</h1>
-        <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
-          用户可以修改输入、选择 AI 拆解目标，并决定哪些目标进入下一轮产业线索分析。
-        </p>
       </section>
 
       <section className="flex flex-col gap-[18px]">

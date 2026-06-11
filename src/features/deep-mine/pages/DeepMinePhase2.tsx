@@ -221,34 +221,35 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
   return (
     <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="text-[13px] text-[#64748b] mb-4">
-        工作台 / 挖企业 / <b className="text-[#334155] font-bold">阶段二：企业发现与标的跟进</b>
+        工作台 / 挖企业 / <b className="text-[#334155] font-bold">企业发现结果</b>
       </div>
       
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
         <main>
           {/* Panel 1 */}
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-start gap-3">
               {onBack && (
                 <Button 
                   variant="outline"
                   size="icon"
                   onClick={onBack}
-                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all"
+                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all shrink-0"
                   title="返回"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
               )}
-              <span className="text-[12px] font-black text-[#2563eb] bg-[#eaf1ff] rounded-full px-[10px] py-[7px] inline-flex">Deep Mine · 阶段二</span>
-            </div>
-            <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">企业发现结果</h1>
-            <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">这里展示的是本次任务的“任务结果池”。推荐企业不直接进入企业库，只有用户关注、入池、出报告或开启跟踪后，才沉淀为企业资产。</p>
-            <div className="flex flex-wrap gap-2 mt-3">
-              <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">任务结果 {enterprises.length} 家</span>
-              <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#f3ecff] text-[#8b5cf6]">推荐 {enterprises.length} 家</span>
-              <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eafaf1] text-[#16a34a]">已关注 {enterprises.filter(e => e.followed).length} 家</span>
-              <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#fff7e8] text-[#d97706]">已入池 {enterprises.filter(e => e.pooled).length} 家</span>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">企业发现结果</h1>
+                <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">这里展示的是本次任务的“任务结果池”。推荐企业不直接进入企业库，只有用户关注、入池、出报告或开启跟踪后，才沉淀为企业资产。</p>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">任务结果 {enterprises.length} 家</span>
+                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#f3ecff] text-[#8b5cf6]">推荐 {enterprises.length} 家</span>
+                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eafaf1] text-[#16a34a]">已关注 {enterprises.filter(e => e.followed).length} 家</span>
+                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#fff7e8] text-[#d97706]">已入池 {enterprises.filter(e => e.pooled).length} 家</span>
+                </div>
+              </div>
             </div>
           </section>
 

@@ -34,7 +34,7 @@ export default function DeepMinePhase1({
     <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="flex items-center gap-[12px] mb-4">
         <div className="text-[13px] text-[#64748b]">
-          工作台 / 挖企业 / <b className="text-[#334155] font-bold">阶段一：明确目标</b>
+          工作台 / 挖企业 / <b className="text-[#334155] font-bold">明确挖掘目标</b>
         </div>
       </div>
       
@@ -42,22 +42,20 @@ export default function DeepMinePhase1({
         <main>
           {/* Panel 1: 明确挖掘目标 */}
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex items-center gap-[12px] mb-3">
+            <div className="flex items-start gap-[12px]">
               {onBack && (
                 <Button 
                   variant="outline"
                   size="icon"
                   onClick={onBack}
-                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all"
+                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all shrink-0"
                   title="返回"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
               )}
-              <span className="text-[12px] font-black text-[#2563eb] bg-[#eaf1ff] rounded-full px-[10px] py-[7px] inline-flex">Deep Mine · 阶段一</span>
-            </div>
-            <div>
-              <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">明确挖掘目标</h1>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">明确挖掘目标</h1>
               <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">从首页点击“挖企业”后，系统先把用户输入转成可执行的企业挖掘目标，拆解完成后进入产业线索分析。</p>
               <div className="flex flex-col md:flex-row gap-[10px] mt-[18px]">
                 <Input 
@@ -70,6 +68,7 @@ export default function DeepMinePhase1({
                 >
                   {isDeconstructed ? '重新拆解' : 'AI 拆解目标'}
                 </Button>
+              </div>
               </div>
             </div>
           </section>

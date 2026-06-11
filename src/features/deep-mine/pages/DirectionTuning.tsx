@@ -2,14 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, PencilLine, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -72,7 +64,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
   const [selectedGoalId, setSelectedGoalId] = useState(1);
   const [excludedGoalIds, setExcludedGoalIds] = useState<number[]>([]);
   const [statusMessage, setStatusMessage] = useState('');
-  const [confirmAnalyzeOpen, setConfirmAnalyzeOpen] = useState(false);
 
   const selectedGoals = useMemo(
     () => goals.filter((goal) => !excludedGoalIds.includes(goal.id)),
@@ -137,7 +128,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
       onUpdateKeywords(activeGoal.keywords);
     }
 
-    setConfirmAnalyzeOpen(false);
     onBack();
   };
 
@@ -164,7 +154,7 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
         </div>
         <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">调整挖掘目标</h1>
         <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
-          用户可以修改输入、选择 AI 拆解目标。编辑本身不计费；只有重新做产业线索分析时才消耗额度。
+          用户可以修改输入、选择 AI 拆解目标，并决定哪些目标进入下一轮产业线索分析。
         </p>
       </section>
 
@@ -173,7 +163,7 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
           <div className="flex justify-between items-end mb-3">
             <h2 className="text-[17px] font-black m-0">原始需求</h2>
             <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#f1f5f9] text-[#64748b]">
-              编辑不计费
+              可编辑
             </span>
           </div>
           <Textarea
@@ -320,9 +310,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
               <p className="text-[#64748b] text-[13px] leading-[1.65] m-0">
                 保存调整只更新当前任务配置，不重新计算。重新做产业线索分析会使用已勾选的 {selectedGoals.length} 个目标刷新专利、技术路线和企业线索数据。
               </p>
-              <p className="m-0 text-[12px] leading-[1.6] text-[#92400e]">
-                重新分析将消耗 1 次线索分析额度，提交前会再次确认。
-              </p>
               {statusMessage && <p className="m-0 text-[12px] font-bold text-[#2563eb]">{statusMessage}</p>}
             </div>
             <div className="flex flex-col md:flex-row gap-[10px]">
@@ -334,7 +321,7 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
                 保存调整
               </Button>
               <Button
-                onClick={() => setConfirmAnalyzeOpen(true)}
+                onClick={handleConfirmAnalyze}
                 disabled={selectedGoals.length === 0}
                 className="h-[42px] px-[16px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_18px_rgba(37,99,235,0.18)] flex-1 md:flex-none hover:bg-[#1d4ed8]"
               >
@@ -344,32 +331,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
           </div>
         </div>
       </section>
-
-      <Dialog open={confirmAnalyzeOpen} onOpenChange={setConfirmAnalyzeOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>确认重新做产业线索分析？</DialogTitle>
-            <DialogDescription>
-              系统将基于已选择的 {selectedGoals.length} 个目标重新分析，并消耗 1 次线索分析额度。
-            </DialogDescription>
-          </DialogHeader>
-          <div className="rounded-[12px] bg-[#f8fafc] p-3">
-            <div className="flex flex-col gap-2">
-              {selectedGoals.map((goal) => (
-                <div key={goal.id} className="text-[13px] font-bold leading-[1.5] text-[#334155]">
-                  {goal.id}. {goal.title || '未命名目标'}
-                </div>
-              ))}
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmAnalyzeOpen(false)}>
-              取消
-            </Button>
-            <Button onClick={handleConfirmAnalyze}>确认重新分析</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

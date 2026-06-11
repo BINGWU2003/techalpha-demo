@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport }: { onBack?: () => void; onGenerateReport?: () => void; onOpenReport?: () => void; }) {
   const [activeTab, setActiveTab] = useState('全部企业');
   
-  const tabs = ['全部企业', '已关注', '标的池', '跟踪中', '已生成报告'];
+  const tabs = ['全部企业', '已关注', '标的池', '已生成报告'];
 
   return (
     <div className="max-w-[1180px] mx-auto p-[30px_28px_64px] max-md:p-[24px_16px_56px]">
@@ -32,12 +32,11 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
             <span className="text-[12px] font-black text-[#2563eb] bg-[#eaf1ff] rounded-full px-[10px] py-[7px] inline-flex">Company Library · 企业资产</span>
           </div>
           <h1 className="text-[28px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">企业库</h1>
-          <p className="mt-2 text-[#64748b] text-[13px] leading-[1.65]">企业库只管理用户确认过的企业。任务结果池中的临时企业不会自动进入企业库，只有被关注、入池、出报告或开启跟踪后才沉淀为企业资产。</p>
+          <p className="mt-2 text-[#64748b] text-[13px] leading-[1.65]">企业库只管理用户确认过的企业。任务结果池中的临时企业不会自动进入企业库，只有经过确认或出报告后才沉淀为企业资产。</p>
         </div>
-        <Button className="h-[40px] px-[16px] rounded-[13px] font-extrabold shadow-[0_10px_18px_rgba(37,99,235,0.18)] text-white bg-[#2563eb] hover:bg-[#1d4ed8] shrink-0 w-full md:w-auto">添加关注企业</Button>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[12px] mb-[18px]">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[12px] mb-[18px]">
         <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
           <span className="block text-[#64748b] text-[12px] mb-[5px]">已关注企业</span>
           <strong className="text-[26px] tracking-[-0.04em] font-normal">68</strong><small className="text-[#64748b] text-[12px]"> 家</small>
@@ -47,23 +46,8 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
           <strong className="text-[26px] tracking-[-0.04em] font-normal text-[#16a34a]">12</strong><small className="text-[#64748b] text-[12px]"> 家</small>
         </div>
         <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
-          <span className="block text-[#64748b] text-[12px] mb-[5px]">跟踪中</span>
-          <strong className="text-[26px] tracking-[-0.04em] font-normal text-[#2563eb]">19</strong><small className="text-[#64748b] text-[12px]"> 家</small>
-        </div>
-        <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
           <span className="block text-[#64748b] text-[12px] mb-[5px]">已生成报告</span>
           <strong className="text-[26px] tracking-[-0.04em] font-normal text-[#8b5cf6]">24</strong><small className="text-[#64748b] text-[12px]"> 家</small>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-[18px] mb-[18px]">
-        <div className="bg-[#f8fafc] border border-[#e5eaf3] rounded-[15px] p-[15px]">
-          <h3 className="text-[15px] m-0 mb-[8px] font-bold">企业库口径</h3>
-          <p className="text-[12px] text-[#64748b] leading-[1.7] m-0">企业库是“确认过的企业对象资产”，不是每次任务搜索出来的全部结果。推荐企业只有被关注后才进入企业库。</p>
-        </div>
-        <div className="bg-[#f8fafc] border border-[#e5eaf3] rounded-[15px] p-[15px]">
-          <h3 className="text-[15px] m-0 mb-[8px] font-bold">标的池关系</h3>
-          <p className="text-[12px] text-[#64748b] leading-[1.7] m-0">标的池是企业库中的重点跟进视图，不是独立企业池。入池企业可以设置优先级、负责人、下一步动作和跟踪频率。</p>
         </div>
       </section>
 
@@ -90,7 +74,6 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
                 <SelectItem value="全部状态">全部状态</SelectItem>
                 <SelectItem value="已关注">已关注</SelectItem>
                 <SelectItem value="标的池">标的池</SelectItem>
-                <SelectItem value="跟踪中">跟踪中</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -163,7 +146,6 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
                 <td className="py-[15px] border-b border-[#edf1f7] align-middle">
                   <div className="flex gap-[7px] items-center flex-wrap">
                     <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eafaf1] text-[#16a34a]">标的池</span>
-                    <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">跟踪中</span>
                   </div>
                 </td>
                 <td className="py-[15px] border-b border-[#edf1f7] align-middle">
@@ -172,10 +154,9 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
                     <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">技术领先</span>
                   </div>
                 </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">更新跟踪动态</td>
+                <td className="py-[15px] border-b border-[#edf1f7] align-middle">更新企业动态</td>
                 <td className="py-[15px] border-b border-[#edf1f7] align-middle text-right">
                   <div className="flex gap-[8px] justify-end flex-wrap">
-                    <Button variant="outline" size="sm" className="rounded-[10px] font-extrabold text-[#334155] border-[#dbe4f1] hover:bg-gray-50">查看跟踪</Button>
                     <Button size="sm" onClick={onOpenReport} className="rounded-[10px] font-extrabold text-[#ffffff] bg-[#2563eb] hover:bg-[#1d4ed8]">打开报告</Button>
                   </div>
                 </td>
@@ -213,7 +194,7 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
               <tr>
                 <td className="py-[15px] border-0 align-middle">
                   <div className="font-black text-[#172033]">某储能材料企业</div>
-                  <div className="text-[12px] text-[#64748b] mt-[4px] leading-[1.45]">来源：人工添加关注</div>
+                  <div className="text-[12px] text-[#64748b] mt-[4px] leading-[1.45]">来源：人工录入企业</div>
                 </td>
                 <td className="py-[15px] border-0 align-middle">
                   <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">普鲁士蓝</span>

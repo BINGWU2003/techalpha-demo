@@ -307,9 +307,10 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="flex flex-col gap-2">
               <h2 className="text-[17px] font-black m-0">执行方式</h2>
-              <p className="text-[#64748b] text-[13px] leading-[1.65] m-0">
-                保存调整只更新当前任务配置，不重新计算。重新做产业线索分析会使用已勾选的 {selectedGoals.length} 个目标刷新专利、技术路线和企业线索数据。
-              </p>
+              <div className="flex flex-col gap-1 text-[#64748b] text-[13px] leading-[1.65]">
+                <span>保存调整：保留当前修改，返回阶段一。</span>
+                <span>重新做产业线索分析：按已选 {selectedGoals.length} 个目标重新分析。</span>
+              </div>
               {statusMessage && <p className="m-0 text-[12px] font-bold text-[#2563eb]">{statusMessage}</p>}
             </div>
             <div className="flex flex-col md:flex-row gap-[10px]">

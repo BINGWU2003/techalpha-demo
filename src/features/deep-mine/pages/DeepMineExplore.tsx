@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowLeft, Download, X } from "lucide-react";
+import { Select as AntSelect } from "antd";
 import { Button } from "@/components/ui/button";
 
 type Company = {
@@ -279,34 +280,52 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
               <label className="grid gap-1.5 text-[12px] text-[#64748b]">
                 技术路线
-                <select value={route} onChange={(event) => setRoute(event.target.value)} className="h-[42px] rounded-[12px] border border-[#dbe4f1] bg-[#fbfcff] px-3 text-[14px] text-[#172033]">
-                  <option>全部路线</option>
-                  <option>SNN</option>
-                  <option>忆阻器</option>
-                  <option>3D 混合</option>
-                  <option>存算一体</option>
-                  <option>其他路线</option>
-                </select>
+                <AntSelect
+                  value={route}
+                  onChange={setRoute}
+                  size="large"
+                  className="w-full"
+                  options={[
+                    { value: "全部路线", label: "全部路线" },
+                    { value: "SNN", label: "SNN" },
+                    { value: "忆阻器", label: "忆阻器" },
+                    { value: "3D 混合", label: "3D 混合" },
+                    { value: "存算一体", label: "存算一体" },
+                    { value: "其他路线", label: "其他路线" },
+                  ]}
+                />
               </label>
               <label className="grid gap-1.5 text-[12px] text-[#64748b]">
                 企业类型
-                <select value={type} onChange={(event) => setType(event.target.value)} className="h-[42px] rounded-[12px] border border-[#dbe4f1] bg-[#fbfcff] px-3 text-[14px] text-[#172033]">
-                  <option>全部类型</option>
-                  <option>上市企业</option>
-                  <option>非上市企业</option>
-                  <option>高校/科研院所</option>
-                </select>
+                <AntSelect
+                  value={type}
+                  onChange={setType}
+                  size="large"
+                  className="w-full"
+                  options={[
+                    { value: "全部类型", label: "全部类型" },
+                    { value: "上市企业", label: "上市企业" },
+                    { value: "非上市企业", label: "非上市企业" },
+                    { value: "高校/科研院所", label: "高校/科研院所" },
+                  ]}
+                />
               </label>
               <label className="grid gap-1.5 text-[12px] text-[#64748b]">
                 信号来源
-                <select value={source} onChange={(event) => setSource(event.target.value)} className="h-[42px] rounded-[12px] border border-[#dbe4f1] bg-[#fbfcff] px-3 text-[14px] text-[#172033]">
-                  <option>全部来源</option>
-                  <option>专利</option>
-                  <option>创赛</option>
-                  <option>展会</option>
-                  <option>融资</option>
-                  <option>新闻</option>
-                </select>
+                <AntSelect
+                  value={source}
+                  onChange={setSource}
+                  size="large"
+                  className="w-full"
+                  options={[
+                    { value: "全部来源", label: "全部来源" },
+                    { value: "专利", label: "专利" },
+                    { value: "创赛", label: "创赛" },
+                    { value: "展会", label: "展会" },
+                    { value: "融资", label: "融资" },
+                    { value: "新闻", label: "新闻" },
+                  ]}
+                />
               </label>
               <label className="grid gap-1.5 text-[12px] text-[#64748b]">
                 关键词搜索
@@ -338,12 +357,16 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
                   </span>
                 )}
               </div>
-              <select className="h-[36px] rounded-[10px] border border-[#dbe4f1] bg-white px-3 text-[13px] text-[#64748b]">
-                <option>默认排序</option>
-                <option>最近活跃优先</option>
-                <option>相关专利数优先</option>
-                <option>创赛/展会命中优先</option>
-              </select>
+              <AntSelect
+                defaultValue="默认排序"
+                className="w-full lg:!w-[168px]"
+                options={[
+                  { value: "默认排序", label: "默认排序" },
+                  { value: "最近活跃优先", label: "最近活跃优先" },
+                  { value: "相关专利数优先", label: "相关专利数优先" },
+                  { value: "创赛/展会命中优先", label: "创赛/展会命中优先" },
+                ]}
+              />
             </div>
           </section>
 

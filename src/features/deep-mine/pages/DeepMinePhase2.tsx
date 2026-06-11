@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: () => void; onGenerateReport?: () => void }) {
+  const [activeFilter, setActiveFilter] = useState('推荐');
+  const [notice, setNotice] = useState('');
   const [enterprises, setEnterprises] = useState([
     {
       id: 1,
@@ -95,22 +97,49 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
     }
   ]);
 
-  const allSelected = enterprises.length > 0 && enterprises.every(ent => ent.selected);
-  const someSelected = enterprises.some(ent => ent.selected);
+  const visibleEnterprises = useMemo(() => {
+    switch (activeFilter) {
+      case '已关注':
+        return enterprises.filter(ent => ent.followed);
+      case '已入池':
+        return enterprises.filter(ent => ent.pooled);
+      case '推荐':
+      case '全部结果':
+      default:
+        return enterprises;
+    }
+  }, [activeFilter, enterprises]);
+
+  const visibleIds = useMemo(() => new Set(visibleEnterprises.map(ent => ent.id)), [visibleEnterprises]);
+  const selectedVisibleCount = visibleEnterprises.filter(ent => ent.selected).length;
+  const allSelected = visibleEnterprises.length > 0 && visibleEnterprises.every(ent => ent.selected);
+  const someSelected = selectedVisibleCount > 0;
+
+  const setFilter = (filter: string) => {
+    setActiveFilter(filter);
+    setNotice('');
+  };
 
   const toggleAll = () => {
-    setEnterprises(prev => prev.map(ent => ({ ...ent, selected: !allSelected })));
+    setNotice('');
+    setEnterprises(prev => prev.map(ent => (
+      visibleIds.has(ent.id) ? { ...ent, selected: !allSelected } : ent
+    )));
   };
 
   const toggleSelection = (id: number) => {
+    setNotice('');
     setEnterprises(prev => prev.map(ent => 
       ent.id === id ? { ...ent, selected: !ent.selected } : ent
     ));
   };
 
   const handleBatchFollow = () => {
+    const selectedIds = new Set(visibleEnterprises.filter(ent => ent.selected && !ent.followed).map(ent => ent.id));
+    const skippedCount = selectedVisibleCount - selectedIds.size;
+
     setEnterprises(prev => prev.map(ent => {
-      if (ent.selected && !ent.followed) {
+      if (selectedIds.has(ent.id)) {
         let newStatus = ent.statusText;
         if (!newStatus.includes('已关注')) {
           newStatus += ' · 已关注';
@@ -119,11 +148,18 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
       }
       return ent;
     }));
+
+    setNotice(selectedIds.size > 0
+      ? `已新增关注 ${selectedIds.size} 家${skippedCount > 0 ? `，${skippedCount} 家已关注` : ''}`
+      : '选中企业均已关注，无需重复操作');
   };
 
   const handleBatchPool = () => {
+    const selectedIds = new Set(visibleEnterprises.filter(ent => ent.selected && !ent.pooled).map(ent => ent.id));
+    const skippedCount = selectedVisibleCount - selectedIds.size;
+
     setEnterprises(prev => prev.map(ent => {
-      if (ent.selected && !ent.pooled) {
+      if (selectedIds.has(ent.id)) {
         let newStatus = ent.statusText;
         if (!newStatus.includes('已入池')) {
           newStatus += ' · 已入池';
@@ -132,9 +168,14 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
       }
       return ent;
     }));
+
+    setNotice(selectedIds.size > 0
+      ? `已新增入池 ${selectedIds.size} 家${skippedCount > 0 ? `，${skippedCount} 家已入池` : ''}`
+      : '选中企业均已入池，无需重复操作');
   };
 
   const handleFollow = (id: number) => {
+    setNotice('');
     setEnterprises(prev => prev.map(ent => {
       if (ent.id === id) {
         const isNowFollowed = !ent.followed;
@@ -151,6 +192,7 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
   };
 
   const handlePool = (id: number) => {
+    setNotice('');
     setEnterprises(prev => prev.map(ent => {
       if (ent.id === id) {
         const isNowPooled = !ent.pooled;
@@ -214,15 +256,26 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
           <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
             <div className="flex flex-col md:flex-row gap-[10px] items-start md:items-center justify-between mb-4">
               <div className="flex flex-wrap gap-2">
-                <Button className="rounded-full px-[12px] h-[34px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]">推荐</Button>
-                <Button variant="outline" className="rounded-full px-[12px] h-[34px] text-[12px] font-extrabold text-[#64748b]">全部结果</Button>
-                <Button variant="outline" className="rounded-full px-[12px] h-[34px] text-[12px] font-extrabold text-[#64748b]">已关注</Button>
-                <Button variant="outline" className="rounded-full px-[12px] h-[34px] text-[12px] font-extrabold text-[#64748b]">已入池</Button>
+                {['推荐', '全部结果', '已关注', '已入池'].map(filter => (
+                  <Button
+                    key={filter}
+                    variant={activeFilter === filter ? 'default' : 'outline'}
+                    onClick={() => setFilter(filter)}
+                    className={`rounded-full px-[12px] h-[34px] text-[12px] font-extrabold ${activeFilter === filter ? 'bg-[#2563eb] text-white hover:bg-[#1d4ed8]' : 'text-[#64748b]'}`}
+                  >
+                    {filter}
+                  </Button>
+                ))}
               </div>
               <div className="flex flex-wrap gap-2 w-full md:w-auto mt-2 md:mt-0">
-                <Button variant="outline" onClick={handleBatchFollow} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold flex-1 md:flex-none">批量关注</Button>
-                <Button variant="outline" onClick={handleBatchPool} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold flex-1 md:flex-none">批量入池</Button>
+                <Button variant="outline" onClick={handleBatchFollow} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold flex-1 md:flex-none">批量关注（{selectedVisibleCount}）</Button>
+                <Button variant="outline" onClick={handleBatchPool} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold flex-1 md:flex-none">批量入池（{selectedVisibleCount}）</Button>
               </div>
+            </div>
+
+            <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-[14px] border border-[#e5eaf3] bg-[#f8fafc] px-3 py-2 text-[12px] text-[#64748b]">
+              <span>当前视图 {visibleEnterprises.length} 家，已选 {selectedVisibleCount} 家</span>
+              {notice && <span className="font-bold text-[#2563eb]">{notice}</span>}
             </div>
 
             <div className="overflow-x-auto">
@@ -244,37 +297,37 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
                   </tr>
                 </thead>
                 <tbody>
-                  {enterprises.map((ent, index) => (
+                  {visibleEnterprises.length > 0 ? visibleEnterprises.map((ent, index) => (
                     <tr key={ent.id}>
-                      <td className={`py-[14px] ${index !== enterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
+                      <td className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
                         <Checkbox 
                           checked={ent.selected}
                           onCheckedChange={() => toggleSelection(ent.id)}
                           className="cursor-pointer" 
                         />
                       </td>
-                      <td className={`py-[14px] ${index !== enterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
+                      <td className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
                         <div className="font-black text-[#172033]">{ent.name}</div>
                         <div className="text-[12px] text-[#64748b] mt-1">{ent.statusText}</div>
                       </td>
-                      <td className={`py-[14px] ${index !== enterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
+                      <td className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
                         <div className="flex gap-2 flex-wrap">
                           {ent.techDirection.map((tag, i) => (
                             <span key={i} className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${getTagClasses(tag.type)}`}>{tag.text}</span>
                           ))}
                         </div>
                       </td>
-                      <td className={`py-[14px] ${index !== enterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
+                      <td className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
                         <div className="flex gap-2 flex-wrap">
                           {ent.coreSignals.map((tag, i) => (
                             <span key={i} className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${getTagClasses(tag.type)}`}>{tag.text}</span>
                           ))}
                         </div>
                       </td>
-                      <td className={`py-[14px] ${index !== enterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
+                      <td className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle`}>
                         <span className="font-black">{ent.score}</span>
                       </td>
-                      <td className={`py-[14px] ${index !== enterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle text-right`}>
+                      <td className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? 'border-b border-[#edf1f7]' : ''} align-middle text-right`}>
                         <div className="flex gap-2 justify-end">
                           <Button 
                             variant="outline"
@@ -299,7 +352,13 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan={6} className="py-10 text-center text-[#64748b]">
+                        当前视图暂无企业，请切换上方筛选。
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

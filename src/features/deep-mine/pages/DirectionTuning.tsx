@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { ArrowLeft, PencilLine, Plus, RotateCcw, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, PencilLine, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -72,8 +71,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
   const [goals, setGoals] = useState<Goal[]>(() => createInitialGoals(keywords));
   const [selectedGoalId, setSelectedGoalId] = useState(1);
   const [excludedGoalIds, setExcludedGoalIds] = useState<number[]>([]);
-  const [newKeywordType, setNewKeywordType] = useState<Keyword['type']>('include');
-  const [newKeywordText, setNewKeywordText] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [confirmAnalyzeOpen, setConfirmAnalyzeOpen] = useState(false);
 
@@ -127,66 +124,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
     setStatusMessage('');
   };
 
-  const handleAddKeyword = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const text = newKeywordText.trim();
-    if (!activeGoal || !text) {
-      showStatus('请输入关键词');
-      return;
-    }
-
-    const exists = activeGoal.keywords.some(
-      (keyword) => keyword.type === newKeywordType && keyword.text === text,
-    );
-
-    if (exists) {
-      showStatus('该关键词已存在');
-      return;
-    }
-
-    setGoals((items) =>
-      items.map((goal) =>
-        goal.id === activeGoal.id
-          ? { ...goal, keywords: [...goal.keywords, { type: newKeywordType, text }] }
-          : goal,
-      ),
-    );
-    setNewKeywordText('');
-    showStatus('关键词已添加');
-  };
-
-  const handleRemoveKeyword = (goalId: number, index: number) => {
-    setGoals((items) =>
-      items.map((goal) =>
-        goal.id === goalId
-          ? { ...goal, keywords: goal.keywords.filter((_, keywordIndex) => keywordIndex !== index) }
-          : goal,
-      ),
-    );
-    showStatus('关键词已移除');
-  };
-
-  const handleToggleKeywordType = (goalId: number, index: number) => {
-    setGoals((items) =>
-      items.map((goal) => {
-        if (goal.id !== goalId) {
-          return goal;
-        }
-
-        return {
-          ...goal,
-          keywords: goal.keywords.map((keyword, keywordIndex) =>
-            keywordIndex === index
-              ? { ...keyword, type: keyword.type === 'include' ? 'exclude' : 'include' }
-              : keyword,
-          ),
-        };
-      }),
-    );
-    showStatus('关键词类型已切换');
-  };
-
   const handleSave = () => {
     if (activeGoal) {
       onUpdateKeywords(activeGoal.keywords);
@@ -227,7 +164,7 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
         </div>
         <h1 className="text-[26px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">调整挖掘目标</h1>
         <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
-          用户可以修改输入、选择 AI 拆解目标、增删关键词。编辑本身不计费；只有重新做产业线索分析时才消耗额度。
+          用户可以修改输入、选择 AI 拆解目标。编辑本身不计费；只有重新做产业线索分析时才消耗额度。
         </p>
       </section>
 
@@ -251,7 +188,7 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
             <div className="flex flex-col gap-1">
               <h2 className="text-[17px] font-black m-0">AI 拆解目标</h2>
               <p className="text-[#64748b] text-[13px] leading-[1.55] m-0">
-                勾选进入本次分析的目标，右侧可直接编辑当前目标和关键词。至少保留 1 个分析目标。
+                勾选进入本次分析的目标，右侧可直接编辑当前目标内容。至少保留 1 个分析目标。
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -318,20 +255,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
                         <p className="m-0 mt-1 line-clamp-2 text-[13px] leading-[1.5] text-[#64748b]">
                           {goal.subtitle || '暂无描述'}
                         </p>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          {goal.keywords.slice(0, 4).map((keyword) => (
-                            <span
-                              key={`${keyword.type}-${keyword.text}`}
-                              className={`rounded-full px-2 py-1 text-[11px] font-bold ${
-                                keyword.type === 'include'
-                                  ? 'bg-[#eaf1ff] text-[#2563eb]'
-                                  : 'bg-[#fff1f2] text-[#e11d48]'
-                              }`}
-                            >
-                              {keyword.type === 'include' ? '+' : '-'} {keyword.text}
-                            </span>
-                          ))}
-                        </div>
                       </div>
                     </div>
                   );
@@ -379,74 +302,6 @@ export default function DirectionTuning({ onBack, keywords, onUpdateKeywords }: 
                       onChange={(event) => handleUpdateGoal(activeGoal.id, 'subtitle', event.target.value)}
                       placeholder="补充这个目标的分析边界、筛选标准或排除项"
                     />
-                  </div>
-
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <label className="text-[12px] font-bold text-[#334155]">关键词</label>
-                      <span className="text-[12px] text-[#64748b]">点击标签可切换包含/排除</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {activeGoal.keywords.map((keyword, index) => (
-                        <span
-                          key={`${keyword.type}-${keyword.text}-${index}`}
-                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[12px] font-bold ${
-                            keyword.type === 'include'
-                              ? 'bg-[#eaf1ff] text-[#2563eb]'
-                              : 'bg-[#fff1f2] text-[#e11d48]'
-                          }`}
-                        >
-                          <button
-                            type="button"
-                            onClick={() => handleToggleKeywordType(activeGoal.id, index)}
-                            className="border-0 bg-transparent p-0 text-inherit font-black cursor-pointer"
-                          >
-                            {keyword.type === 'include' ? '+' : '-'} {keyword.text}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveKeyword(activeGoal.id, index)}
-                            className="border-0 bg-transparent p-0 text-inherit cursor-pointer opacity-70 hover:opacity-100"
-                            aria-label={`删除关键词 ${keyword.text}`}
-                          >
-                            <X className="size-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-
-                    <form onSubmit={handleAddKeyword} className="flex flex-col gap-2 rounded-[14px] bg-[#f8fafc] p-3 md:flex-row md:items-center">
-                      <div className="flex rounded-[11px] bg-white p-1 text-[12px] font-bold">
-                        <button
-                          type="button"
-                          onClick={() => setNewKeywordType('include')}
-                          className={`rounded-[8px] border-0 px-3 py-1.5 cursor-pointer ${
-                            newKeywordType === 'include' ? 'bg-[#eaf1ff] text-[#2563eb]' : 'bg-transparent text-[#64748b]'
-                          }`}
-                        >
-                          包含
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setNewKeywordType('exclude')}
-                          className={`rounded-[8px] border-0 px-3 py-1.5 cursor-pointer ${
-                            newKeywordType === 'exclude' ? 'bg-[#fff1f2] text-[#e11d48]' : 'bg-transparent text-[#64748b]'
-                          }`}
-                        >
-                          排除
-                        </button>
-                      </div>
-                      <Input
-                        value={newKeywordText}
-                        onChange={(event) => setNewKeywordText(event.target.value)}
-                        placeholder="新增关键词"
-                        className="h-10 flex-1 bg-white"
-                      />
-                      <Button type="submit" size="sm" className="h-10 rounded-[11px]">
-                        <Plus data-icon="inline-start" />
-                        添加
-                      </Button>
-                    </form>
                   </div>
                 </div>
               ) : (

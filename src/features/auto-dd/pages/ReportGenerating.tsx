@@ -399,44 +399,9 @@ export default function ReportGenerating({
             </div>
           </div>
 
-          <div className="bg-white border border-[#e4ebf5] rounded-[20px] shadow-[0_8px_28px_rgba(20,38,80,0.04)] p-[22px]">
-            <h3 className="m-0 mb-[14px] text-[19px] font-bold text-[#14213d]">当前状态说明</h3>
-            <div className="bg-[#fbfcff] border border-[#e4ebf5] rounded-[15px] p-[14px] text-[#718096] text-[13px] leading-[1.7]">
-              <strong className="text-[#14213d]">生成中：</strong>用户可以等待，也可以离开页面。再次从历史任务点击进入时，会回到当前进度页。  
-              <br /><br />
-              <strong className="text-[#14213d]">已生成：</strong>默认进入报告预览页。  
-              <br /><br />
-              <strong className="text-[#14213d]">已入库：</strong>仍然可以从任务历史打开，但页面显示最终报告结果。
-            </div>
-          </div>
-
-          <div className="bg-white border border-[#e4ebf5] rounded-[20px] shadow-[0_8px_28px_rgba(20,38,80,0.04)] p-[22px]">
-            <h3 className="m-0 mb-[14px] text-[19px] font-bold text-[#14213d]">任务助手</h3>
-            <div className="border border-[#e4ebf5] bg-[#fbfcff] rounded-[16px] p-[14px] grid gap-[12px]">
-              <div className="flex gap-[9px] items-start">
-                <div className="w-[28px] h-[28px] rounded-[9px] bg-[#e3ecff] text-[#2f6df6] flex items-center justify-center text-[12px] font-extrabold shrink-0">AI</div>
-                <div className="bg-white border border-[#e4ebf5] rounded-[13px] p-[10px_12px] text-[13px] leading-[1.65] text-[#2d3950]">
-                  报告正在生成中。目前已完成企业画像和专利数据分析，正在生成技术能力与产业化判断。
-                </div>
-              </div>
-              <div className="flex gap-[9px] items-start">
-                <div className="w-[28px] h-[28px] rounded-[9px] bg-[#e3ecff] text-[#2f6df6] flex items-center justify-center text-[12px] font-extrabold shrink-0">AI</div>
-                <div className="bg-white border border-[#e4ebf5] rounded-[13px] p-[10px_12px] text-[13px] leading-[1.65] text-[#2d3950]">
-                  你可以先离开页面，生成完成后任务会保留在历史记录中，并自动进入报告预览状态。
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-[8px] mt-[12px]">
-              <button className="border border-[#d8e5ff] bg-white text-[#2f6df6] text-[12px] font-bold rounded-full p-[7px_10px] hover:bg-gray-50">为什么需要等待？</button>
-              <button className="border border-[#d8e5ff] bg-white text-[#2f6df6] text-[12px] font-bold rounded-full p-[7px_10px] hover:bg-gray-50">查看已完成章节</button>
-              <button className="border border-[#d8e5ff] bg-white text-[#2f6df6] text-[12px] font-bold rounded-full p-[7px_10px] hover:bg-gray-50">调整报告深度</button>
-              <button className="border border-[#d8e5ff] bg-white text-[#2f6df6] text-[12px] font-bold rounded-full p-[7px_10px] hover:bg-gray-50">生成失败怎么办？</button>
-            </div>
-
-            <div className="text-[12px] text-[#718096] mt-[10px] leading-[1.6]">
-              这里的助手可以调用后台 Skill，支持解释生成进度、重跑部分章节、调整报告配置和保存版本。
-            </div>
+          <div className="bg-[#f7faff] border border-[#d7e5ff] rounded-[20px] p-[18px] text-[13px] leading-[1.7] text-[#4a5870]">
+            <div className="font-bold text-[#14213d] mb-[6px]">生成提示</div>
+            <div>报告生成期间可以离开页面，任务完成后会保留在历史任务中，并进入报告预览状态。</div>
           </div>
         </aside>
       </div>

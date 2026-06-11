@@ -190,7 +190,25 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
   const [type, setType] = useState("全部类型");
   const [source, setSource] = useState("全部来源");
   const [keyword, setKeyword] = useState("");
+  const [sort, setSort] = useState("默认排序");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+
+  const hasActiveFilters =
+    quickFilter !== "全部" ||
+    route !== "全部路线" ||
+    type !== "全部类型" ||
+    source !== "全部来源" ||
+    keyword.trim() !== "" ||
+    sort !== "默认排序";
+
+  const resetFilters = () => {
+    setQuickFilter("全部");
+    setRoute("全部路线");
+    setType("全部类型");
+    setSource("全部来源");
+    setKeyword("");
+    setSort("默认排序");
+  };
 
   const visibleCompanies = useMemo(() => {
     return COMPANIES.filter((company) => {
@@ -276,7 +294,18 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
           </section>
 
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <h2 className="text-[18px] font-black mb-4">属性筛选</h2>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h2 className="text-[18px] font-black m-0">属性筛选</h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={resetFilters}
+                disabled={!hasActiveFilters}
+                className="rounded-[10px] font-extrabold text-[#334155] border-[#dbe4f1] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                重置筛选
+              </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
               <label className="grid gap-1.5 text-[12px] text-[#64748b]">
                 技术路线
@@ -334,6 +363,7 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
                   onChange={(event) => setKeyword(event.target.value)}
                   placeholder="企业名称 / 关键词"
                   size="large"
+                  allowClear
                   className="w-full"
                 />
               </label>
@@ -343,23 +373,52 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
               <div className="text-[14px] text-[#334155]">
                 当前结果：<strong className="text-[#2563eb]">{resultCount}</strong> 家
               </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-[#eaf1ff] px-3 py-1.5 text-[12px] font-extrabold text-[#2563eb]">
-                  {quickFilter}
-                </span>
-                {[route, type, source].filter((value) => !value.startsWith("全部")).map((value) => (
-                  <span key={value} className="rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b]">
-                    {value}
+              <div className="flex flex-wrap gap-2 flex-1">
+                {!hasActiveFilters && (
+                  <span className="rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#94a3b8]">
+                    未选择额外条件
                   </span>
-                ))}
+                )}
+                {quickFilter !== "全部" && (
+                  <button type="button" onClick={() => setQuickFilter("全部")} className="inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-3 py-1.5 text-[12px] font-extrabold text-[#2563eb] hover:bg-[#dbeafe] transition-colors">
+                    {quickFilter}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {route !== "全部路线" && (
+                  <button type="button" onClick={() => setRoute("全部路线")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                    {route}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {type !== "全部类型" && (
+                  <button type="button" onClick={() => setType("全部类型")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                    {type}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {source !== "全部来源" && (
+                  <button type="button" onClick={() => setSource("全部来源")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                    {source}
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
                 {keyword && (
-                  <span className="rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b]">
+                  <button type="button" onClick={() => setKeyword("")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
                     关键词：{keyword}
-                  </span>
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {sort !== "默认排序" && (
+                  <button type="button" onClick={() => setSort("默认排序")} className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                    {sort}
+                    <X className="w-3 h-3" />
+                  </button>
                 )}
               </div>
               <AntSelect
-                defaultValue="默认排序"
+                value={sort}
+                onChange={setSort}
                 className="w-full lg:!w-[168px]"
                 options={[
                   { value: "默认排序", label: "默认排序" },

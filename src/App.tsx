@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Layout } from './layouts/Layout';
 import Home from './features/workbench/pages/Home';
@@ -21,41 +21,16 @@ import SectorScan from './features/sector-scan/pages/SectorScan';
 import SectorScanPhase2 from './features/sector-scan/pages/SectorScanPhase2';
 import SectorScanPhase3 from './features/sector-scan/pages/SectorScanPhase3';
 import SectorScanPhase4 from './features/sector-scan/pages/SectorScanPhase4';
-import Login from './features/auth/pages/Login';
-import { authService, User } from './services/auth';
+import { authService } from './services/auth';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isInit, setIsInit] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check session on component mount
-    const checkSession = async () => {
-      try {
-        const user = await authService.getCurrentUser();
-        setCurrentUser(user);
-        setIsLoggedIn(true);
-      } catch (err) {
-        setIsLoggedIn(false);
-        setCurrentUser(null);
-      } finally {
-        setIsInit(true);
-      }
-    };
-    
-    checkSession();
-  }, []);
 
   const handleLogout = async () => {
     try {
       await authService.logout();
     } catch (err) {
       console.error('Logout error', err);
-    } finally {
-      setIsLoggedIn(false);
-      setCurrentUser(null);
     }
   };
 
@@ -97,24 +72,12 @@ export default function App() {
     navigate('/auto-report/config?from=deep-mine');
   };
 
-  if (!isInit) {
-    return <div className="min-h-screen bg-[#f6f8fc] flex items-center justify-center font-bold text-[#64748b]">加载中...</div>;
-  }
-
-  if (!isLoggedIn) {
-    return <Login onLogin={() => {
-      setIsLoggedIn(true);
-      // Re-fetch user on successful login
-      authService.getCurrentUser().then(setCurrentUser).catch(console.error);
-    }} />;
-  }
-
   // Define components wrapped in layout
   return (
     <Routes>
       <Route path="/report-view" element={<ReportView />} />
       <Route path="*" element={
-        <Layout onLogout={handleLogout} currentUser={currentUser}>
+        <Layout onLogout={handleLogout}>
           <Routes>
             <Route path="/" element={<Home onStartTask={handleStartTask} />} />
             
@@ -158,4 +121,3 @@ export default function App() {
     </Routes>
   );
 }
-

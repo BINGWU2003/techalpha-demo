@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const DEMO_USERNAME = 'admin';
+const DEMO_USERNAME = 'test';
 const DEMO_PASSWORD = 'admin123';
 
 export default function Login({ onLogin }: { onLogin: () => void }) {

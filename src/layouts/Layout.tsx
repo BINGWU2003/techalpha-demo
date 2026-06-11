@@ -36,7 +36,7 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
 
         <nav className="p-[18px_12px_8px] grid gap-[7px]">
           <Link to="/" className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === 'workbench' ? 'bg-[#2563eb] text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
-            <LayoutGrid size={16} /> 工作台
+            <LayoutGrid size={16} /> 新建任务
           </Link>
           <Link to="/companies" className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === 'companies' ? 'bg-[#2563eb] text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
             <Search size={16} /> 企业库

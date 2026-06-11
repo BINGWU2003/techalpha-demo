@@ -102,7 +102,7 @@ export default function App() {
               />
             } />
             <Route path="/deep-mine/explore" element={<DeepMineExplore onBack={() => navigate('/deep-mine/analysis')} />} />
-            <Route path="/deep-mine/results" element={<DeepMinePhase2 onBack={() => navigate('/deep-mine/analysis')} onGenerateReport={navigateToReportConfigFromDeepMine} />} />
+            <Route path="/deep-mine/results" element={<DeepMinePhase2 onBack={() => navigate('/deep-mine/analysis')} onGenerateReport={() => navigate('/auto-report/generating?from=deep-mine')} />} />
             <Route path="/direction-tuning" element={
               <DirectionTuning 
                 onBack={() => navigate(-1)} 
@@ -114,7 +114,7 @@ export default function App() {
             {/* Auto Report */}
             <Route path="/auto-report" element={<ReportConfirm onNext={() => navigate('/auto-report/config')} onCancel={() => navigate('/')} />} />
             <Route path="/auto-report/config" element={<ReportConfig onBack={() => navigate(-1)} onGenerate={() => navigate('/auto-report/generating')} />} />
-            <Route path="/auto-report/generating" element={<ReportGenerating onBack={() => navigate('/')} onViewReport={openReportInNewTab} />} />
+            <Route path="/auto-report/generating" element={<ReportGenerating onBack={() => navigate(-1)} onViewReport={openReportInNewTab} />} />
             
             {/* Libraries & Alerts */}
             <Route path="/companies" element={<CompanyLibrary onBack={() => navigate('/')} onGenerateReport={() => navigate('/auto-report')} onOpenReport={openReportInNewTab} />} />

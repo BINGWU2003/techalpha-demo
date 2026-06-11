@@ -222,7 +222,6 @@ export default function DeepMinePhase2({ onBack, onGenerateReport }: { onBack?: 
               <div className="flex flex-wrap gap-2 w-full md:w-auto mt-2 md:mt-0">
                 <Button variant="outline" onClick={handleBatchFollow} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold flex-1 md:flex-none">批量关注</Button>
                 <Button variant="outline" onClick={handleBatchPool} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold flex-1 md:flex-none">批量入池</Button>
-                <Button onClick={onGenerateReport} disabled={!someSelected} className="h-[42px] px-[16px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_18px_rgba(37,99,235,0.18)] hover:bg-[#1d4ed8] flex-1 md:flex-none">为已选企业出报告</Button>
               </div>
             </div>
 

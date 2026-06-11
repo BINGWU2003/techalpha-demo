@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechAlpha - 企业探索</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        background: #f5f7fb;
+        color: #10203b;
+      }
+      :root {
+        --blue: #2f6df6;
+        --blue2: #eaf1ff;
+        --navy: #091832;
+        --text: #10203b;
+        --muted: #73809a;
+        --border: #e2e9f4;
+        --card: #fff;
+        --green: #14b876;
+        --orange: #f59e0b;
+        --purple: #7c5cff;
+        --red: #ef476f;
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 232px 1fr;
+        min-height: 100vh;
+      }
+      .sidebar {
+        background: linear-gradient(180deg, #081832, #09152d);
+        color: #fff;
+        padding: 20px 14px;
+        display: flex;
+        flex-direction: column;
+      }
+      .logo {
+        padding: 4px 8px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 18px;
+      }
+      .logo h1 {
+        font-size: 28px;
+        margin: 0;
+      }
+      .logo p {
+        font-size: 11px;
+        margin: 5px 0 0;
+        color: rgba(255, 255, 255, 0.62);
+        letter-spacing: 1px;
+      }
+      .nav {
+        display: grid;
+        gap: 8px;
+      }
+      .nav a {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.82);
+        text-decoration: none;
+        font-size: 14px;
+      }
+      .nav a.active {
+        background: var(--blue);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(47, 109, 246, 0.28);
+      }
+      .ico {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid currentColor;
+        border-radius: 4px;
+      }
+      .recent-title {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        padding: 0 8px;
+        margin: 22px 0 10px;
+      }
+      .recent {
+        display: grid;
+        gap: 8px;
+      }
+      .recent div {
+        font-size: 12px;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.68);
+        padding: 9px 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .recent .on {
+        background: rgba(47, 109, 246, 0.16);
+        color: #fff;
+      }
+      .foot {
+        margin-top: auto;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.55);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 16px;
+      }
+      .main {
+        padding: 24px 34px 40px;
+        max-width: 1440px;
+      }
+      .crumb {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 18px;
+      }
+      .crumb b {
+        color: var(--text);
+      }
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+      .head h1 {
+        font-size: 36px;
+        letter-spacing: -0.8px;
+        margin: 0;
+      }
+      .head .sub {
+        font-size: 14px;
+        color: var(--muted);
+        margin: 4px 0 0;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 15px;
+        font-weight: 800;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .btn.primary {
+        background: var(--blue);
+        color: #fff;
+        border-color: var(--blue);
+        box-shadow: 0 10px 24px rgba(47, 109, 246, 0.22);
+      }
+      .btn.ghost {
+        color: var(--blue);
+        border-color: #d5e3ff;
+      }
+      .btn.small {
+        font-size: 12px;
+        padding: 8px 11px;
+        border-radius: 10px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(19, 42, 82, 0.04);
+      }
+      .pad {
+        padding: 22px;
+      }
+      .section {
+        margin-top: 16px;
+      }
+      .section-title {
+        font-size: 18px;
+        margin: 0 0 12px;
+      }
+      .quick {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .qbtn {
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #40506d;
+        cursor: pointer;
+      }
+      .qbtn.active {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+        box-shadow: 0 8px 18px rgba(47, 109, 246, 0.2);
+      }
+      .filter-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      .field select,
+      .field input {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: #fbfcff;
+        border-radius: 12px;
+        padding: 11px 12px;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+      }
+      .resultbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        border-radius: 16px;
+        background: #f9fbff;
+        border: 1px solid var(--border);
+        margin-top: 16px;
+      }
+      .resultbar strong {
+        color: var(--blue);
+      }
+      .chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .chip {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--blue2);
+        color: var(--blue);
+        font-size: 12px;
+        font-weight: 800;
+      }
+      .chip.gray {
+        background: #eef2f7;
+        color: #64738d;
+      }
+      .list {
+        display: grid;
+        gap: 12px;
+      }
+      .company {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: center;
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+      .company:hover {
+        border-color: #bfd1ff;
+      }
+      .cname {
+        font-size: 18px;
+        font-weight: 900;
+        margin: 0 0 10px;
+      }
+      .tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .tag {
+        font-size: 12px;
+        font-weight: 800;
+        border-radius: 999px;
+        padding: 6px 9px;
+        background: #eef3ff;
+        color: var(--blue);
+      }
+      .tag.green {
+        background: #eaf8f0;
+        color: var(--green);
+      }
+      .tag.orange {
+        background: #fff6e8;
+        color: #c56c00;
+      }
+      .tag.purple {
+        background: #f1edff;
+        color: var(--purple);
+      }
+      .summary {
+        font-size: 14px;
+        color: #41506a;
+        line-height: 1.65;
+        margin: 0 0 12px;
+      }
+      .metrics {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .metric {
+        font-size: 12px;
+        color: #66758d;
+        background: #f6f8fc;
+        border: 1px solid #edf1f7;
+        border-radius: 10px;
+        padding: 7px 9px;
+      }
+      .ops {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .more {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+      }
+      .sort {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .sort select {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 8px;
+        background: #fff;
+      }
+      .empty {
+        display: none;
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--muted);
+      }
+      .drawer-mask {
+        position: fixed;
+        inset: 0;
+        background: rgba(7, 18, 38, 0.28);
+        display: none;
+        z-index: 20;
+      }
+      .drawer {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 520px;
+        background: #fff;
+        box-shadow: -18px 0 40px rgba(10, 30, 70, 0.16);
+        z-index: 21;
+        transform: translateX(105%);
+        transition: 0.22s;
+        display: flex;
+        flex-direction: column;
+      }
+      .drawer.open {
+        transform: translateX(0);
+      }
+      .drawer-mask.show {
+        display: block;
+      }
+      .drawer-head {
+        padding: 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .drawer-head h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .close {
+        border: 0;
+        background: #f1f4f9;
+        border-radius: 10px;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+      }
+      .drawer-body {
+        padding: 22px;
+        overflow: auto;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 14px 0;
+      }
+      .info {
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fbfcff;
+      }
+      .info-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 5px;
+      }
+      .info-val {
+        font-weight: 900;
+      }
+      .evidence {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .evi {
+        padding: 13px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fff;
+      }
+      .evi strong {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .evi p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .drawer-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 18px 22px;
+        border-top: 1px solid var(--border);
+      }
+      @media (max-width: 1180px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .filter-row {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 780px) {
+        .main {
+          padding: 20px;
+        }
+        .head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .filter-row {
+          grid-template-columns: 1fr;
+        }
+        .company {
+          grid-template-columns: 1fr;
+        }
+        .drawer {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="logo">
+          <h1>TechAlpha</h1>
+          <p>AI INVESTMENT OS</p>
+        </div>
+        <nav class="nav">
+          <a class="active" href="#"><span class="ico"></span>工作台</a
+          ><a href="#"><span class="ico"></span>企业库</a
+          ><a href="#"><span class="ico"></span>报告库</a
+          ><a href="#"><span class="ico"></span>跟踪预警</a>
+        </nav>
+        <div class="recent-title">最近任务记录</div>
+        <div class="recent">
+          <div>存算一体神经形态芯片线索分析</div>
+          <div class="on">存算一体神经形态芯片企业探索</div>
+          <div>钠电池正极材料企业探索</div>
+        </div>
+        <div class="foot">AI 引擎已就绪</div>
+      </aside>
+      <main class="main">
+        <div class="crumb">工作台 / 挖企业 / <b>企业探索</b></div>
+        <div class="head">
+          <div>
+            <h1>企业探索</h1>
+            <p class="sub">当前目标：存算一体神经形态芯片</p>
+          </div>
+          <div class="actions">
+            <a class="btn ghost" href="./leads_analysis_simplified.html"
+              >← 返回线索分析</a
+            ><button class="btn">导出当前列表</button>
+          </div>
+        </div>
+        <section class="card pad">
+          <h2 class="section-title">快速筛选</h2>
+          <div class="quick">
+            <button class="qbtn active" data-filter="全部">全部 350</button
+            ><button class="qbtn" data-filter="强技术布局">强技术布局 86</button
+            ><button class="qbtn" data-filter="近三年活跃">
+              近三年活跃 128</button
+            ><button class="qbtn" data-filter="创赛/展会出现">
+              创赛/展会出现 24</button
+            ><button class="qbtn" data-filter="高校院所转化">
+              高校院所转化 79
+            </button>
+          </div>
+        </section>
+        <section class="card pad section">
+          <h2 class="section-title">属性筛选</h2>
+          <div class="filter-row">
+            <div class="field">
+              <label>技术路线</label
+              ><select id="route">
+                <option>全部路线</option>
+                <option>SNN</option>
+                <option>忆阻器</option>
+                <option>3D 混合</option>
+                <option>存算一体</option>
+                <option>其他路线</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>企业类型</label
+              ><select id="type">
+                <option>全部类型</option>
+                <option>上市企业</option>
+                <option>非上市企业</option>
+                <option>高校/科研院所</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>信号来源</label
+              ><select id="source">
+                <option>全部来源</option>
+                <option>专利</option>
+                <option>创赛</option>
+                <option>展会</option>
+                <option>融资</option>
+                <option>新闻</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>关键词搜索</label
+              ><input id="keyword" placeholder="企业名称 / 关键词" />
+            </div>
+          </div>
+          <div class="resultbar">
+            <div>当前结果：<strong id="count">32</strong> 家</div>
+            <div class="chips" id="filterChips">
+              <span class="chip">全部</span
+              ><span class="chip gray">默认排序</span>
+            </div>
+            <div class="sort">
+              排序
+              <select>
+                <option>默认排序</option>
+                <option>最近活跃优先</option>
+                <option>相关专利数优先</option>
+                <option>创赛/展会命中优先</option>
+              </select>
+            </div>
+          </div>
+        </section>
+        <section class="section list" id="list">
+          <article class="company">
+            <div>
+              <h3 class="cname">深圳时识科技有限公司</h3>
+              <div class="tags">
+                <span class="tag">SNN</span><span class="tag">存算一体</span
+                ><span class="tag green">非上市企业</span
+                ><span class="tag orange">专利</span>
+              </div>
+              <p class="summary">
+                近三年新增 3 件相关专利，覆盖 SNN
+                异步事件驱动与低功耗类脑计算方向。
+              </p>
+              <div class="metrics">
+                <span class="metric">相关专利 12</span
+                ><span class="metric">近三年新增 3</span
+                ><span class="metric">展会 1</span>
+              </div>
+            </div>
+            <div class="ops">
+              <button
+                class="btn primary small view"
+                data-name="深圳时识科技有限公司"
+              >
+                查看</button
+              ><button class="more">…</button>
+            </div>
+          </article>
+          <article class="company">
+            <div>
+              <h3 class="cname">北京灵汐科技有限公司</h3>
+              <div class="tags">
+                <span class="tag">类脑芯片</span><span class="tag">SNN</span
+                ><span class="tag green">非上市企业</span
+                ><span class="tag orange">专利</span>
+              </div>
+              <p class="summary">
+                识别到多件类脑芯片相关专利，技术路线与神经形态计算方向存在较高关联。
+              </p>
+              <div class="metrics">
+                <span class="metric">相关专利 9</span
+                ><span class="metric">近三年新增 2</span
+                ><span class="metric">创赛/展会 0</span>
+              </div>
+            </div>
+            <div class="ops">
+              <button
+                class="btn primary small view"
+                data-name="北京灵汐科技有限公司"
+              >
+                查看</button
+              ><button class="more">…</button>
+            </div>
+          </article>
+          <article class="company">
+            <div>
+              <h3 class="cname">北方集成电路技术创新中心（北京）有限公司</h3>
+              <div class="tags">
+                <span class="tag">3D 混合</span><span class="tag">异构集成</span
+                ><span class="tag green">非上市企业</span
+                ><span class="tag orange">专利</span>
+              </div>
+              <p class="summary">
+                相关专利集中在先进封装、异构集成与三维结构方向，适合从平台型能力继续查看。
+              </p>
+              <div class="metrics">
+                <span class="metric">相关专利 18</span
+                ><span class="metric">近三年新增 5</span
+                ><span class="metric">展会 1</span>
+              </div>
+            </div>
+            <div class="ops">
+              <button
+                class="btn primary small view"
+                data-name="北方集成电路技术创新中心（北京）有限公司"
+              >
+                查看</button
+              ><button class="more">…</button>
+            </div>
+          </article>
+          <article class="company">
+            <div>
+              <h3 class="cname">中国科学院自动化研究所</h3>
+              <div class="tags">
+                <span class="tag">神经形态计算</span
+                ><span class="tag purple">高校/科研院所</span
+                ><span class="tag orange">专利</span>
+              </div>
+              <p class="summary">
+                属于科研院所主体，识别到核心专利与潜在转化线索，适合继续寻找关联转化企业。
+              </p>
+              <div class="metrics">
+                <span class="metric">相关专利 21</span
+                ><span class="metric">近三年新增 4</span
+                ><span class="metric">转化线索 待确认</span>
+              </div>
+            </div>
+            <div class="ops">
+              <button
+                class="btn primary small view"
+                data-name="中国科学院自动化研究所"
+              >
+                查看</button
+              ><button class="more">…</button>
+            </div>
+          </article>
+          <article class="company">
+            <div>
+              <h3 class="cname">广东华芯振邦半导体有限公司</h3>
+              <div class="tags">
+                <span class="tag">存算一体</span><span class="tag">忆阻器</span
+                ><span class="tag green">非上市企业</span
+                ><span class="tag orange">专利</span>
+              </div>
+              <p class="summary">
+                专利信号覆盖存储计算融合架构，近三年仍有新增技术布局。
+              </p>
+              <div class="metrics">
+                <span class="metric">相关专利 7</span
+                ><span class="metric">近三年新增 2</span
+                ><span class="metric">融资信号 暂无</span>
+              </div>
+            </div>
+            <div class="ops">
+              <button
+                class="btn primary small view"
+                data-name="广东华芯振邦半导体有限公司"
+              >
+                查看</button
+              ><button class="more">…</button>
+            </div>
+          </article>
+          <article class="company">
+            <div>
+              <h3 class="cname">西安紫光国芯半导体股份有限公司</h3>
+              <div class="tags">
+                <span class="tag">存算一体</span
+                ><span class="tag green">上市/集团主体</span
+                ><span class="tag orange">专利</span>
+              </div>
+              <p class="summary">
+                集团/平台型主体，相关专利方向与存算一体架构有交集，适合做产业链参考企业。
+              </p>
+              <div class="metrics">
+                <span class="metric">相关专利 15</span
+                ><span class="metric">近三年新增 1</span
+                ><span class="metric">主体类型 平台型</span>
+              </div>
+            </div>
+            <div class="ops">
+              <button
+                class="btn primary small view"
+                data-name="西安紫光国芯半导体股份有限公司"
+              >
+                查看</button
+              ><button class="more">…</button>
+            </div>
+          </article>
+        </section>
+        <div class="card empty" id="empty">
+          当前筛选条件下暂无结果，请调整筛选条件。<br /><br /><button
+            class="btn ghost"
+            onclick="clearFilters()"
+          >
+            清空筛选
+          </button>
+        </div>
+      </main>
+    </div>
+    <div class="drawer-mask" id="mask"></div>
+    <aside class="drawer" id="drawer">
+      <div class="drawer-head">
+        <div>
+          <h2 id="drawerName">深圳时识科技有限公司</h2>
+          <div class="tags" style="margin-top: 10px">
+            <span class="tag">SNN</span><span class="tag">存算一体</span
+            ><span class="tag green">非上市企业</span>
+          </div>
+        </div>
+        <button class="close" onclick="closeDrawer()">×</button>
+      </div>
+      <div class="drawer-body">
+        <h3>企业基础信息</h3>
+        <div class="info-grid">
+          <div class="info">
+            <div class="info-label">企业类型</div>
+            <div class="info-val">非上市企业</div>
+          </div>
+          <div class="info">
+            <div class="info-label">技术路线覆盖</div>
+            <div class="info-val">SNN / 存算一体</div>
+          </div>
+          <div class="info">
+            <div class="info-label">相关专利数</div>
+            <div class="info-val">12 件</div>
+          </div>
+          <div class="info">
+            <div class="info-label">近三年新增</div>
+            <div class="info-val">3 件</div>
+          </div>
+        </div>
+        <h3>线索信号</h3>
+        <div class="evidence">
+          <div class="evi">
+            <strong>专利信号</strong>
+            <p>
+              识别到与事件驱动计算、脉冲神经网络、低功耗架构相关的专利线索。
+            </p>
+          </div>
+          <div class="evi">
+            <strong>代表性证据</strong>
+            <p>
+              一种基于脉冲神经网络的事件驱动计算芯片；一种低功耗类脑计算架构。
+            </p>
+          </div>
+          <div class="evi">
+            <strong>轻量判断</strong>
+            <p>
+              当前仅作线索查看，不进行深评。建议先关注或入池，后续补充更多企业动态。
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-actions">
+        <button class="btn primary">关注</button
+        ><button class="btn ghost">入池</button><button class="btn">标记</button
+        ><button class="btn">更多</button>
+      </div>
+    </aside>
+    <script>
+      const qbtns = document.querySelectorAll(".qbtn"),
+        count = document.getElementById("count"),
+        chips = document.getElementById("filterChips");
+      qbtns.forEach(
+        (b) =>
+          (b.onclick = () => {
+            qbtns.forEach((x) => x.classList.remove("active"));
+            b.classList.add("active");
+            const f = b.dataset.filter;
+            count.textContent =
+              f === "全部"
+                ? "32"
+                : f === "强技术布局"
+                  ? "12"
+                  : f === "近三年活跃"
+                    ? "18"
+                    : f === "创赛/展会出现"
+                      ? "6"
+                      : "9";
+            chips.innerHTML =
+              '<span class="chip">' +
+              f +
+              '</span><span class="chip gray">默认排序</span>';
+          }),
+      );
+      document
+        .querySelectorAll("select,input")
+        .forEach((el) => el.addEventListener("change", updateChips));
+      document.getElementById("keyword").addEventListener("input", updateChips);
+      function updateChips() {
+        const vals = [];
+        ["route", "type", "source"].forEach((id) => {
+          const v = document.getElementById(id).value;
+          if (!v.startsWith("全部")) vals.push(v);
+        });
+        const kw = document.getElementById("keyword").value.trim();
+        if (kw) vals.push("关键词：" + kw);
+        const active = document.querySelector(".qbtn.active").dataset.filter;
+        chips.innerHTML =
+          '<span class="chip">' +
+          active +
+          "</span>" +
+          vals.map((v) => '<span class="chip gray">' + v + "</span>").join("") +
+          '<span class="chip gray">默认排序</span>';
+      }
+      function clearFilters() {
+        document
+          .querySelectorAll("select")
+          .forEach((s) => (s.selectedIndex = 0));
+        document.getElementById("keyword").value = "";
+        qbtns[0].click();
+      }
+      const drawer = document.getElementById("drawer"),
+        mask = document.getElementById("mask");
+      document.querySelectorAll(".view").forEach(
+        (btn) =>
+          (btn.onclick = () => {
+            document.getElementById("drawerName").textContent =
+              btn.dataset.name;
+            drawer.classList.add("open");
+            mask.classList.add("show");
+          }),
+      );
+      function closeDrawer() {
+        drawer.classList.remove("open");
+        mask.classList.remove("show");
+      }
+      mask.onclick = closeDrawer;
+    </script>
+  </body>
+</html>

@@ -8,6 +8,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Layout } from './layouts/Layout';
 import Home from './features/workbench/pages/Home';
 import DeepMinePhase1 from './features/deep-mine/pages/DeepMinePhase1';
+import DeepMineAnalysis from './features/deep-mine/pages/DeepMineAnalysis';
 import DeepMinePhase2 from './features/deep-mine/pages/DeepMinePhase2';
 import DirectionTuning from './features/deep-mine/pages/DirectionTuning';
 import ReportConfirm from './features/auto-dd/pages/ReportConfirm';
@@ -84,14 +85,21 @@ export default function App() {
             {/* Deep Mine */}
             <Route path="/deep-mine" element={
               <DeepMinePhase1 
-                onNextStep={() => navigate('/deep-mine/results')} 
+                onAnalyze={() => navigate('/deep-mine/analysis')} 
                 onAdjustTarget={() => navigate('/direction-tuning')} 
                 onBack={() => navigate('/')}
                 state={deepMineState}
                 onUpdateState={updateDeepMineState}
               />
             } />
-            <Route path="/deep-mine/results" element={<DeepMinePhase2 onBack={() => navigate('/deep-mine')} onGenerateReport={navigateToReportConfigFromDeepMine} />} />
+            <Route path="/deep-mine/analysis" element={
+              <DeepMineAnalysis
+                onNextStep={() => navigate('/deep-mine/results')}
+                onAdjustTarget={() => navigate('/direction-tuning')}
+                onBack={() => navigate('/deep-mine')}
+              />
+            } />
+            <Route path="/deep-mine/results" element={<DeepMinePhase2 onBack={() => navigate('/deep-mine/analysis')} onGenerateReport={navigateToReportConfigFromDeepMine} />} />
             <Route path="/direction-tuning" element={
               <DirectionTuning 
                 onBack={() => navigate(-1)} 

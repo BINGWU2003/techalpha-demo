@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechAlpha - 开始挖掘</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{--bg:#f4f7fb;--nav:#0b1730;--blue:#2f6df6;--text:#102039;--muted:#738198;--card:#fff;--border:#dfe7f2;--soft:#eef4ff}
+    body{margin:0;font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,#081832,#0a142b);color:#fff;padding:18px 12px;display:flex;flex-direction:column}
+    .logo{padding:4px 8px 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px}.logo h1{margin:0;font-size:25px;line-height:1}.logo p{margin:5px 0 0;font-size:11px;letter-spacing:.8px;color:rgba(255,255,255,.62)}
+    .nav{display:grid;gap:8px}.nav a{color:rgba(255,255,255,.82);text-decoration:none;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;display:flex;gap:10px;align-items:center}.nav a.active{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(47,109,246,.28)}
+    .ico{width:16px;height:16px;border:1.5px solid currentColor;border-radius:4px}.recent-title{margin:22px 8px 10px;font-size:12px;color:rgba(255,255,255,.52)}.recent{font-size:12px;line-height:1.45;color:rgba(255,255,255,.72);padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.035);margin-bottom:7px}.footer{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.62)}
+    main{min-height:100vh;padding:0 28px;display:flex;align-items:center;justify-content:center}
+    .hero{width:min(760px,100%);transform:translateY(-34px);text-align:center}
+    h1{margin:0 0 12px;font-size:42px;letter-spacing:-.8px;line-height:1.18;color:#091a38}
+    .subtitle{margin:0 auto 30px;color:#5f6f89;font-size:16px;line-height:1.75;max-width:620px}
+    .task-box{position:relative;background:#fff;border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:0 16px 36px rgba(16,32,57,.08);text-align:left}
+    textarea{width:100%;min-height:116px;resize:vertical;border:0;outline:0;background:#fff;padding:4px 6px 54px;font-size:17px;line-height:1.75;font-family:inherit;color:var(--text)}
+    textarea::placeholder{color:#9aa8bc}.btn{position:absolute;right:18px;bottom:18px;border:0;background:var(--blue);color:#fff;border-radius:14px;font-weight:800;font-size:14px;padding:11px 18px;cursor:pointer;box-shadow:0 8px 18px rgba(47,109,246,.26);white-space:nowrap}
+    .examples{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}.chip{border:1px solid #d7e4ff;background:#fff;color:var(--blue);border-radius:999px;padding:8px 12px;font-weight:700;font-size:13px;cursor:pointer}.chip:hover{background:var(--soft)}
+    @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:32px 18px}.hero{transform:none}h1{font-size:32px}.btn{position:static;margin:8px 0 0 auto;display:flex;width:max-content}.task-box{padding:16px}textarea{padding-bottom:6px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo"><h1>TechAlpha</h1><p>AI INVESTMENT OS</p></div>
+      <nav class="nav">
+        <a class="active" href="#"><span class="ico"></span>新建任务</a>
+        <a href="#"><span class="ico"></span>企业库</a>
+        <a href="#"><span class="ico"></span>报告库</a>
+        <a href="#"><span class="ico"></span>跟踪预警</a>
+      </nav>
+      <div class="recent-title">最近任务</div>
+      <div class="recent">钠电池正极材料方向企业挖掘</div>
+      <div class="recent">机器人灵巧手企业线索</div>
+      <div class="recent">Chiplet先进封装潜力企业</div>
+      <div class="footer">AI 引擎已就绪</div>
+    </aside>
+    <main>
+      <section class="hero">
+        <h1>开始发现值得关注的硬科技企业</h1>
+        <p class="subtitle">输入赛道、技术方向或投资关注点，系统将拆解方向并生成企业线索。</p>
+        <div class="task-box">
+          <textarea id="taskInput" placeholder="例如：钠电池正极材料方向，关注压实密度、循环寿命、低成本和储能场景">钠电池正极材料方向，关注压实密度、循环寿命、低成本和储能场景</textarea>
+          <button class="btn">新建任务 →</button>
+        </div>
+        <div class="examples">
+          <span class="chip">固态电解质材料</span>
+          <span class="chip">机器人灵巧手</span>
+          <span class="chip">Chiplet先进封装</span>
+          <span class="chip">低空经济传感器</span>
+        </div>
+      </section>
+    </main>
+  </div>
+<script>document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.getElementById('taskInput').value=c.textContent})</script>
+</body>
+</html>

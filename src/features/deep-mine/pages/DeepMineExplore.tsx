@@ -464,8 +464,7 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
             <div className="p-5 border-t border-[#e5eaf3] flex flex-wrap gap-2">
               <Button className="rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]">关注</Button>
               <Button variant="outline" className="rounded-[12px] font-extrabold">入池</Button>
-              <Button variant="outline" className="rounded-[12px] font-extrabold">标记</Button>
-              <Button variant="outline" className="rounded-[12px] font-extrabold">更多</Button>
+              <Button variant="outline" className="rounded-[12px] font-extrabold">初筛分析</Button>
             </div>
           </aside>
         </>

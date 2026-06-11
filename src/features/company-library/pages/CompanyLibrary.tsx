@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { Select as AntSelect } from 'antd';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport }: { onBack?: () => void; onGenerateReport?: () => void; onOpenReport?: () => void; }) {
   const [activeTab, setActiveTab] = useState('全部企业');
@@ -55,27 +55,27 @@ export default function CompanyLibrary({ onBack, onGenerateReport, onOpenReport 
         <div className="flex flex-col md:flex-row gap-[10px] items-stretch lg:items-center justify-between flex-wrap mb-[14px]">
           <div className="flex gap-[10px] flex-wrap items-center w-full lg:w-auto">
             <Input className="h-[40px] rounded-[12px] bg-[#f8fafc] w-full md:w-[260px]" placeholder="搜索企业名称、技术标签..." />
-            <Select defaultValue="全部方向">
-              <SelectTrigger className="w-full md:w-[130px] h-[40px] rounded-[12px] bg-[#f8fafc]">
-                <SelectValue placeholder="方向" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="全部方向">全部方向</SelectItem>
-                <SelectItem value="钠电池正极材料">钠电池正极材料</SelectItem>
-                <SelectItem value="AI芯片">AI芯片</SelectItem>
-                <SelectItem value="人形机器人">人形机器人</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="全部状态">
-              <SelectTrigger className="w-full md:w-[130px] h-[40px] rounded-[12px] bg-[#f8fafc]">
-                <SelectValue placeholder="状态" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="全部状态">全部状态</SelectItem>
-                <SelectItem value="已关注">已关注</SelectItem>
-                <SelectItem value="标的池">标的池</SelectItem>
-              </SelectContent>
-            </Select>
+            <AntSelect
+              defaultValue="全部方向"
+              size="large"
+              className="w-full md:!w-[130px]"
+              options={[
+                { value: '全部方向', label: '全部方向' },
+                { value: '钠电池正极材料', label: '钠电池正极材料' },
+                { value: 'AI芯片', label: 'AI芯片' },
+                { value: '人形机器人', label: '人形机器人' },
+              ]}
+            />
+            <AntSelect
+              defaultValue="全部状态"
+              size="large"
+              className="w-full md:!w-[130px]"
+              options={[
+                { value: '全部状态', label: '全部状态' },
+                { value: '已关注', label: '已关注' },
+                { value: '标的池', label: '标的池' },
+              ]}
+            />
           </div>
           <div className="flex gap-[8px] flex-wrap mt-[10px] lg:mt-0">
             {tabs.map(tab => (

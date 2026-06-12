@@ -120,7 +120,7 @@ export default function App() {
             {/* Auto Report */}
             <Route path="/auto-report" element={<ReportConfirm onNext={() => navigate('/auto-report/config')} onCancel={() => navigate('/')} />} />
             <Route path="/auto-report/config" element={<ReportConfig onBack={() => navigate(-1)} onGenerate={() => navigate('/auto-report/generating')} />} />
-            <Route path="/auto-report/generating" element={<ReportGenerating onBack={() => navigate(-1)} onViewReport={openReportInNewTab} />} />
+            <Route path="/auto-report/generating" element={<ReportGenerating onBack={() => navigate(-1)} onViewReport={openReportInNewTab} onBackToEnterpriseResults={() => navigate('/deep-mine/results')} />} />
             
             {/* Libraries & Alerts */}
             <Route path="/companies" element={<CompanyLibrary onBack={() => navigate('/')} onGenerateReport={() => navigate('/auto-report')} onOpenReport={openReportInNewTab} />} />

@@ -194,92 +194,94 @@ export default function DeepMinePhase1({
 
             <div className="p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-4">
-              <div>
-                <h2 className="text-[22px] font-black m-0 text-[#102039]">
-                  选择技术方向
-                </h2>
-                {statusMessage && (
-                  <p className="mt-1.5 m-0 text-[13px] font-bold text-[#2563eb]">
-                    {statusMessage}
-                  </p>
-                )}
+                <div>
+                  <h2 className="text-[22px] font-black m-0 text-[#102039]">
+                    选择技术方向
+                  </h2>
+                  {statusMessage && (
+                    <p className="mt-1.5 m-0 text-[13px] font-bold text-[#2563eb]">
+                      {statusMessage}
+                    </p>
+                  )}
+                </div>
+                <div className="inline-flex h-8 items-center rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-3 text-[13px] font-extrabold text-[#2563eb]">
+                  已选 {selectedCount}/3
+                </div>
               </div>
-              <div className="inline-flex h-8 items-center rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-3 text-[13px] font-extrabold text-[#2563eb]">
-                已选 {selectedCount}/3
+
+              <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
+                {directions.map((direction) => {
+                  const isSelected = selectedDirectionIds.includes(
+                    direction.id,
+                  );
+
+                  return (
+                    <article
+                      key={direction.id}
+                      onClick={() =>
+                        handleToggleDirection(direction.id, !isSelected)
+                      }
+                      className={`relative min-h-[172px] cursor-pointer rounded-[18px] border bg-white p-[18px_18px_54px_52px] transition-all ${
+                        blockedDirectionId === direction.id
+                          ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
+                          : isSelected
+                            ? "border-[#2563eb] shadow-[inset_0_0_0_3px_#edf4ff]"
+                            : "border-[#dfe7f2] hover:border-[#bfdbfe]"
+                      }`}
+                    >
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={(checked) =>
+                          handleToggleDirection(direction.id, checked)
+                        }
+                        onClick={(event) => event.stopPropagation()}
+                        aria-label={`选择${direction.title}`}
+                        className="absolute left-[18px] top-[20px] size-5 rounded-[6px]"
+                      />
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="text-[12px] font-extrabold text-[#94a3b8]">
+                          方向名称
+                        </span>
+                        <span className="inline-flex items-center gap-1 rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-2 py-1 text-[11px] font-extrabold text-[#2563eb]">
+                          <PencilLine className="size-3" />
+                          可编辑
+                        </span>
+                      </div>
+                      <Textarea
+                        aria-label="技术方向标题"
+                        value={direction.title}
+                        placeholder="输入方向名称"
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) =>
+                          handleUpdateDirection(
+                            direction.id,
+                            "title",
+                            event.target.value,
+                          )
+                        }
+                        className="min-h-[50px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[18px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
+                      />
+                      <div className="mb-2 mt-3 text-[12px] font-extrabold text-[#94a3b8]">
+                        分析说明
+                      </div>
+                      <Textarea
+                        aria-label="技术方向说明"
+                        value={direction.description}
+                        placeholder="输入分析说明"
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) =>
+                          handleUpdateDirection(
+                            direction.id,
+                            "description",
+                            event.target.value,
+                          )
+                        }
+                        className="min-h-[68px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[14px] leading-[1.65] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
+                      />
+                    </article>
+                  );
+                })}
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
-              {directions.map((direction) => {
-                const isSelected = selectedDirectionIds.includes(direction.id);
-
-                return (
-                  <article
-                    key={direction.id}
-                    onClick={() =>
-                      handleToggleDirection(direction.id, !isSelected)
-                    }
-                    className={`relative min-h-[172px] cursor-pointer rounded-[18px] border bg-white p-[18px_18px_54px_52px] transition-all ${
-                      blockedDirectionId === direction.id
-                        ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
-                        : isSelected
-                          ? "border-[#2563eb] shadow-[inset_0_0_0_3px_#edf4ff]"
-                          : "border-[#dfe7f2] hover:border-[#bfdbfe]"
-                    }`}
-                  >
-                    <Checkbox
-                      checked={isSelected}
-                      onCheckedChange={(checked) =>
-                        handleToggleDirection(direction.id, checked)
-                      }
-                      onClick={(event) => event.stopPropagation()}
-                      aria-label={`选择${direction.title}`}
-                      className="absolute left-[18px] top-[20px] size-5 rounded-[6px]"
-                    />
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <span className="text-[12px] font-extrabold text-[#94a3b8]">
-                        方向名称
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-2 py-1 text-[11px] font-extrabold text-[#2563eb]">
-                        <PencilLine className="size-3" />
-                        可编辑
-                      </span>
-                    </div>
-                    <Textarea
-                      aria-label="技术方向标题"
-                      value={direction.title}
-                      placeholder="输入方向名称"
-                      onClick={(event) => event.stopPropagation()}
-                      onChange={(event) =>
-                        handleUpdateDirection(
-                          direction.id,
-                          "title",
-                          event.target.value,
-                        )
-                      }
-                      className="min-h-[50px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[18px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
-                    />
-                    <div className="mb-2 mt-3 text-[12px] font-extrabold text-[#94a3b8]">
-                      分析说明
-                    </div>
-                    <Textarea
-                      aria-label="技术方向说明"
-                      value={direction.description}
-                      placeholder="输入分析说明"
-                      onClick={(event) => event.stopPropagation()}
-                      onChange={(event) =>
-                        handleUpdateDirection(
-                          direction.id,
-                          "description",
-                          event.target.value,
-                        )
-                      }
-                      className="min-h-[68px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[14px] leading-[1.65] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
-                    />
-                  </article>
-                );
-              })}
-            </div>
             </div>
           </section>
 
@@ -306,7 +308,7 @@ export default function DeepMinePhase1({
                 重新拆解
               </Button>
             </div>
-            <div className="mt-5 flex flex-col gap-3 border-t border-[#edf2f8] pt-5 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-3 pt-5 md:flex-row md:items-center md:justify-between">
               <div className="text-[13px] text-[#64748b]">
                 已选择 <b className="text-[#2563eb]">{selectedCount}</b>{" "}
                 个技术方向

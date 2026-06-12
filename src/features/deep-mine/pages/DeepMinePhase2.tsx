@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { TableProps } from "antd";
-import { Table as AntTable } from "antd";
+import { message, Table as AntTable } from "antd";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import styles from "./DeepMinePhase2.module.css";
@@ -25,7 +25,6 @@ export default function DeepMinePhase2({
   onGenerateReport?: () => void;
 }) {
   const [activeFilter, setActiveFilter] = useState("推荐");
-  const [notice, setNotice] = useState("");
   const [enterprises, setEnterprises] = useState<Enterprise[]>([
     {
       id: 1,
@@ -168,11 +167,9 @@ export default function DeepMinePhase2({
 
   const setFilter = (filter: string) => {
     setActiveFilter(filter);
-    setNotice("");
   };
 
   const toggleAll = () => {
-    setNotice("");
     setEnterprises((prev) =>
       prev.map((ent) =>
         visibleIds.has(ent.id) ? { ...ent, selected: !allSelected } : ent,
@@ -181,7 +178,6 @@ export default function DeepMinePhase2({
   };
 
   const toggleSelection = (id: number) => {
-    setNotice("");
     setEnterprises((prev) =>
       prev.map((ent) =>
         ent.id === id ? { ...ent, selected: !ent.selected } : ent,
@@ -210,11 +206,15 @@ export default function DeepMinePhase2({
       }),
     );
 
-    setNotice(
+    const content =
       selectedIds.size > 0
         ? `已新增关注 ${selectedIds.size} 家${skippedCount > 0 ? `，${skippedCount} 家已关注` : ""}`
-        : "选中企业均已关注，无需重复操作",
-    );
+        : "选中企业均已关注，无需重复操作";
+
+    message[selectedIds.size > 0 ? "success" : "info"]({
+      content,
+      key: "deep-mine-batch-follow",
+    });
   };
 
   const handleBatchPool = () => {
@@ -238,15 +238,18 @@ export default function DeepMinePhase2({
       }),
     );
 
-    setNotice(
+    const content =
       selectedIds.size > 0
         ? `已新增入池 ${selectedIds.size} 家${skippedCount > 0 ? `，${skippedCount} 家已入池` : ""}`
-        : "选中企业均已入池，无需重复操作",
-    );
+        : "选中企业均已入池，无需重复操作";
+
+    message[selectedIds.size > 0 ? "success" : "info"]({
+      content,
+      key: "deep-mine-batch-pool",
+    });
   };
 
   const handleFollow = (id: number) => {
-    setNotice("");
     setEnterprises((prev) =>
       prev.map((ent) => {
         if (ent.id === id) {
@@ -265,7 +268,6 @@ export default function DeepMinePhase2({
   };
 
   const handlePool = (id: number) => {
-    setNotice("");
     setEnterprises((prev) =>
       prev.map((ent) => {
         if (ent.id === id) {
@@ -361,14 +363,14 @@ export default function DeepMinePhase2({
           <Button
             variant="outline"
             onClick={() => handleFollow(ent.id)}
-            className={`h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.followed ? "border-[#eafaf1] bg-[#eafaf1] text-[#16a34a] hover:bg-[#dcfce7]" : ""}`}
+            className={`h-[32px] w-[58px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.followed ? "border-[#eafaf1] bg-[#eafaf1] text-[#16a34a] hover:bg-[#dcfce7]" : ""}`}
           >
             {ent.followed ? "已关注" : "关注"}
           </Button>
           <Button
             variant="outline"
             onClick={() => handlePool(ent.id)}
-            className={`h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.pooled ? "border-[#fff7e8] bg-[#fff7e8] text-[#d97706] hover:bg-[#fef3c7]" : ""}`}
+            className={`h-[32px] w-[58px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.pooled ? "border-[#fff7e8] bg-[#fff7e8] text-[#d97706] hover:bg-[#fef3c7]" : ""}`}
           >
             {ent.pooled ? "已入池" : "入池"}
           </Button>
@@ -494,16 +496,6 @@ export default function DeepMinePhase2({
               </div>
             </div>
 
-            <div className="mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-[14px] border border-[#e5eaf3] bg-[#f8fafc] px-3 py-2 text-[12px] text-[#64748b]">
-              <span>
-                当前视图 {visibleEnterprises.length} 家，已选{" "}
-                {selectedVisibleCount} 家
-              </span>
-              {notice && (
-                <span className="font-bold text-[#2563eb]">{notice}</span>
-              )}
-            </div>
-
             <AntTable<Enterprise>
               className={styles.table}
               columns={enterpriseColumns}
@@ -516,7 +508,7 @@ export default function DeepMinePhase2({
                 emptyText: "当前视图暂无企业，请切换上方筛选。",
               }}
             />
-            <div className="mt-5 flex justify-start border-t border-[#edf2f8] pt-5">
+            <div className="flex justify-end  pt-5">
               <Button
                 type="button"
                 onClick={() => onBack?.()}

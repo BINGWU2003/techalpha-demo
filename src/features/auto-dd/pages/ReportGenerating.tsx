@@ -515,7 +515,7 @@ export default function ReportGenerating({
               </div>
             )}
 
-            <div className="mx-[-22px] mb-[-22px] mt-[22px] flex justify-end border-t border-[#e4ebf5] bg-white p-[16px_22px] rounded-b-[20px]">
+            <div className="mx-[-22px] mb-[-22px]  flex justify-end  bg-white p-[16px_22px] rounded-b-[20px]">
               <button
                 type="button"
                 onClick={() => onBackToEnterpriseResults?.()}

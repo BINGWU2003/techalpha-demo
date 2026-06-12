@@ -182,8 +182,8 @@ export default function DeepMinePhase1({
     <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="mx-auto w-full">
         <main className="space-y-[18px]">
-          <div className="flex items-start gap-3">
-            <div className="min-w-0 flex-1">
+          <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+            <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <h1 className="text-[30px] leading-[1.2] m-0 tracking-[-0.04em] font-black text-[#102039]">
                 目标拆解
               </h1>
@@ -191,10 +191,9 @@ export default function DeepMinePhase1({
                 {taskName}
               </p>
             </div>
-          </div>
 
-          <section className="bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-4">
+            <div className="p-[22px]">
+              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-4">
               <div>
                 <h2 className="text-[22px] font-black m-0 text-[#102039]">
                   选择技术方向
@@ -280,6 +279,7 @@ export default function DeepMinePhase1({
                   </article>
                 );
               })}
+            </div>
             </div>
           </section>
 

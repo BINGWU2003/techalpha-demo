@@ -261,14 +261,7 @@ export default function DeepMineAnalysis({
 
   return (
     <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
-      <div className="flex items-center gap-[12px] mb-4">
-        <div className="text-[13px] text-[#64748b]">
-          工作台 / 挖企业 /{" "}
-          <b className="text-[#334155] font-bold">产业线索分析</b>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
+      <div className="grid grid-cols-1 gap-[18px] items-start">
         <main>
           <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
             <div className="flex items-start gap-3 mb-5">
@@ -900,62 +893,6 @@ export default function DeepMineAnalysis({
             </div>
           </section>
         </main>
-
-        {/* 侧边进度栏 */}
-        <aside className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[18px] xl:sticky xl:top-[74px]">
-          <h3 className="m-0 mb-[14px] text-[15px]">任务阶段</h3>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="absolute left-[10px] top-[24px] w-[2px] h-[calc(100%-18px)] bg-[#dbe4f1]"></div>
-            <div className="w-[22px] h-[22px] rounded-full bg-[#2563eb] border-4 border-white shadow-[0_0_0_4px_#eaf1ff] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                明确目标
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                把输入转成企业挖掘目标
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="absolute left-[10px] top-[24px] w-[2px] h-[calc(100%-18px)] bg-[#dbe4f1]"></div>
-            <div className="w-[22px] h-[22px] rounded-full bg-[#2563eb] border-4 border-white shadow-[0_0_0_4px_#eaf1ff] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                产业线索分析
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                用专利、技术和企业线索判断方向
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="absolute left-[10px] top-[24px] w-[2px] h-[calc(100%-18px)] bg-[#dbe4f1]"></div>
-            <div className="w-[22px] h-[22px] rounded-full bg-[#e2e8f0] border-4 border-white shadow-[0_0_0_1px_#dbe4f1] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                企业发现
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                生成任务结果池
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="w-[22px] h-[22px] rounded-full bg-[#e2e8f0] border-4 border-white shadow-[0_0_0_1px_#dbe4f1] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                标的跟进
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                保存企业、入池、出报告或跟踪
-              </span>
-            </div>
-          </div>
-        </aside>
       </div>
     </div>
   );

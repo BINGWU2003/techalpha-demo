@@ -237,9 +237,19 @@ export default function DeepMinePhase1({
                       aria-label={`选择${direction.title}`}
                       className="absolute left-[18px] top-[20px] size-5 rounded-[6px]"
                     />
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <span className="text-[12px] font-extrabold text-[#94a3b8]">
+                        方向名称
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-2 py-1 text-[11px] font-extrabold text-[#2563eb]">
+                        <PencilLine className="size-3" />
+                        可编辑
+                      </span>
+                    </div>
                     <Textarea
                       aria-label="技术方向标题"
                       value={direction.title}
+                      placeholder="输入方向名称"
                       onClick={(event) => event.stopPropagation()}
                       onChange={(event) =>
                         handleUpdateDirection(
@@ -248,11 +258,15 @@ export default function DeepMinePhase1({
                           event.target.value,
                         )
                       }
-                      className="min-h-[46px] resize-none border-0 bg-transparent p-0 text-[18px] font-black leading-[1.35] text-[#102039] shadow-none focus-visible:ring-0"
+                      className="min-h-[50px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[18px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
                     />
+                    <div className="mb-2 mt-3 text-[12px] font-extrabold text-[#94a3b8]">
+                      分析说明
+                    </div>
                     <Textarea
                       aria-label="技术方向说明"
                       value={direction.description}
+                      placeholder="输入分析说明"
                       onClick={(event) => event.stopPropagation()}
                       onChange={(event) =>
                         handleUpdateDirection(
@@ -261,11 +275,8 @@ export default function DeepMinePhase1({
                           event.target.value,
                         )
                       }
-                      className="mt-2 min-h-[58px] resize-none border-0 bg-transparent p-0 text-[14px] leading-[1.65] text-[#5d6f8a] shadow-none focus-visible:ring-0"
+                      className="min-h-[68px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[14px] leading-[1.65] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
                     />
-                    <span className="absolute bottom-[14px] right-[14px] inline-flex size-[30px] items-center justify-center rounded-[10px] border border-[#d7e4ff] bg-[#f8fbff] text-[#2563eb]">
-                      <PencilLine className="size-4" />
-                    </span>
                   </article>
                 );
               })}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, Download, X } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { Input as AntInput, Select as AntSelect } from "antd";
 import { Button } from "@/components/ui/button";
 
@@ -233,14 +233,14 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
         visibleCompanies.length);
 
   return (
-    <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
+    <div className="max-w-[1120px] mx-auto p-[28px_28px_132px] max-md:p-[22px_16px_126px]">
+      <div className="grid grid-cols-1 gap-[18px] items-start">
         <main className="space-y-4">
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex items-start gap-3">
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-[26px] leading-[1.25] m-0 font-bold">
+                  <h1 className="text-[26px] leading-tight m-0 font-bold">
                     企业探索
                   </h1>
                   <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
@@ -421,7 +421,7 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
               <AntSelect
                 value={sort}
                 onChange={setSort}
-                className="w-full lg:!w-[168px]"
+                className="w-full lg:w-[168px]!"
                 options={[
                   { value: "默认排序", label: "默认排序" },
                   { value: "最近活跃优先", label: "最近活跃优先" },
@@ -484,21 +484,26 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
             )}
           </section>
         </main>
+      </div>
 
-        <aside className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[18px] xl:sticky xl:top-[74px]">
-          <h3 className="m-0 mb-[14px] text-[15px]">探索视图</h3>
-          <div className="space-y-3 text-[12px] text-[#64748b] leading-[1.6]">
-            <div className="rounded-[14px] bg-[#f8fafc] border border-[#eef2f7] p-3">
-              候选主体：350 家
+      <div className="fixed left-4 right-4 bottom-5 z-30 lg:left-[264px]">
+        <div className="mx-auto max-w-[1120px] rounded-[18px] border border-[#dbe4f1] bg-white/95 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-[13px] text-[#64748b]">
+              当前展示
+              <strong className="mx-1 text-[#2563eb]">{resultCount}</strong>
+              家候选主体，可随时返回线索分析调整判断。
             </div>
-            <div className="rounded-[14px] bg-[#f8fafc] border border-[#eef2f7] p-3">
-              默认结果：32 家
-            </div>
-            <div className="rounded-[14px] bg-[#f8fafc] border border-[#eef2f7] p-3">
-              筛选后可继续查看证据、关注或入池。
-            </div>
+            <Button
+              type="button"
+              onClick={() => onBack?.()}
+              className="h-[42px] rounded-[12px] bg-[#2563eb] px-5 font-extrabold text-white hover:bg-[#1d4ed8]"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              返回线索分析
+            </Button>
           </div>
-        </aside>
+        </div>
       </div>
 
       {selectedCompany && (

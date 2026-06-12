@@ -45,8 +45,7 @@ const INITIAL_DIRECTIONS: Direction[] = [
 ];
 
 const MAX_SELECTED_DIRECTIONS = 3;
-const DIRECTION_LIMIT_WARNING =
-  "最多选择 3 个技术方向，请先取消一个已选方向";
+const DIRECTION_LIMIT_WARNING = "最多选择 3 个技术方向，请先取消一个已选方向";
 
 export default function DeepMinePhase1({
   onAnalyze,
@@ -180,27 +179,10 @@ export default function DeepMinePhase1({
   };
 
   return (
-    <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
-      <div className="flex items-center gap-[12px] mb-4">
-        <div className="text-[13px] text-[#64748b]">
-          工作台 / 挖企业 / <b className="text-[#334155] font-bold">目标拆解</b>
-        </div>
-      </div>
-
+    <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
         <main className="space-y-[18px]">
           <div className="flex items-start gap-3">
-            {onBack && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={onBack}
-                className="mt-1 w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all shrink-0"
-                title="返回"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            )}
             <div className="min-w-0 flex-1">
               <h1 className="text-[30px] leading-[1.2] m-0 tracking-[-0.04em] font-black text-[#102039]">
                 目标拆解
@@ -242,8 +224,8 @@ export default function DeepMinePhase1({
                       blockedDirectionId === direction.id
                         ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
                         : isSelected
-                        ? "border-[#2563eb] shadow-[inset_0_0_0_3px_#edf4ff]"
-                        : "border-[#dfe7f2] hover:border-[#bfdbfe]"
+                          ? "border-[#2563eb] shadow-[inset_0_0_0_3px_#edf4ff]"
+                          : "border-[#dfe7f2] hover:border-[#bfdbfe]"
                     }`}
                   >
                     <Checkbox
@@ -337,66 +319,6 @@ export default function DeepMinePhase1({
             </Button>
           </div>
         </main>
-
-        {/* 侧边进度栏 */}
-        <aside className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[18px] xl:sticky xl:top-[74px]">
-          <h3 className="m-0 mb-[14px] text-[15px]">任务阶段</h3>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="absolute left-[10px] top-[24px] w-[2px] h-[calc(100%-18px)] bg-[#dbe4f1]"></div>
-            <div className="w-[22px] h-[22px] rounded-full bg-[#2563eb] border-4 border-white shadow-[0_0_0_4px_#eaf1ff] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                目标拆解
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                选择技术方向和偏好
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="absolute left-[10px] top-[24px] w-[2px] h-[calc(100%-18px)] bg-[#dbe4f1]"></div>
-            <div className="w-[22px] h-[22px] rounded-full bg-[#e2e8f0] border-4 border-white shadow-[0_0_0_1px_#dbe4f1] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                产业线索分析
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                用专利、技术和企业线索判断方向
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="absolute left-[10px] top-[24px] w-[2px] h-[calc(100%-18px)] bg-[#dbe4f1]"></div>
-            <div className="w-[22px] h-[22px] rounded-full bg-[#e2e8f0] border-4 border-white shadow-[0_0_0_1px_#dbe4f1] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                企业发现
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                生成任务结果池
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-[24px_1fr] gap-[10px] pb-[18px]">
-            <div className="w-[22px] h-[22px] rounded-full bg-[#e2e8f0] border-4 border-white shadow-[0_0_0_1px_#dbe4f1] relative z-10 box-border"></div>
-            <div>
-              <strong className="block text-[13px] font-bold text-[#172033]">
-                标的跟进
-              </strong>
-              <span className="block text-[12px] text-[#64748b] mt-[3px] leading-[1.45]">
-                保存企业、入池、出报告或跟踪
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-1 rounded-[14px] border border-[#eef2f7] bg-[#f8fafc] p-3 text-[12px] leading-[1.6] text-[#64748b]">
-            当前将围绕 {selectedCount} 个方向展开下一步线索分析。
-          </div>
-        </aside>
       </div>
     </div>
   );

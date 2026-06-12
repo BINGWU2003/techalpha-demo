@@ -15,7 +15,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const ALL_PATENT_DATA = [
   { year: "2010", count: 45 },
@@ -971,6 +971,7 @@ export default function DeepMineAnalysis({
                   onClick={onBack}
                   className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
                 >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
                   返回拆解目标
                 </Button>
               )}

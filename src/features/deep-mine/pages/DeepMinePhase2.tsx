@@ -530,7 +530,8 @@ export default function DeepMinePhase2({
               <Button
                 type="button"
                 onClick={() => onBack?.()}
-                className="h-[42px] rounded-[12px] bg-[#2563eb] px-5 font-extrabold text-white hover:bg-[#1d4ed8]"
+                variant="outline"
+                className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 返回线索分析

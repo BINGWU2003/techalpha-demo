@@ -1,7 +1,21 @@
 import { useMemo, useState } from "react";
+import type { TableProps } from "antd";
+import { Table as AntTable } from "antd";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import styles from "./DeepMinePhase2.module.css";
+
+type Enterprise = {
+  id: number;
+  name: string;
+  statusText: string;
+  techDirection: Array<{ text: string; type: string }>;
+  coreSignals: Array<{ text: string; type: string }>;
+  score: number;
+  followed: boolean;
+  pooled: boolean;
+  selected: boolean;
+};
 
 export default function DeepMinePhase2({
   onBack,
@@ -12,7 +26,7 @@ export default function DeepMinePhase2({
 }) {
   const [activeFilter, setActiveFilter] = useState("推荐");
   const [notice, setNotice] = useState("");
-  const [enterprises, setEnterprises] = useState([
+  const [enterprises, setEnterprises] = useState<Enterprise[]>([
     {
       id: 1,
       name: "浙江钠创新能源有限公司",
@@ -148,6 +162,9 @@ export default function DeepMinePhase2({
     visibleEnterprises.length > 0 &&
     visibleEnterprises.every((ent) => ent.selected);
   const someSelected = selectedVisibleCount > 0;
+  const selectedRowKeys = visibleEnterprises
+    .filter((ent) => ent.selected)
+    .map((ent) => ent.id);
 
   const setFilter = (filter: string) => {
     setActiveFilter(filter);
@@ -281,6 +298,98 @@ export default function DeepMinePhase2({
     }
   };
 
+  const enterpriseColumns: TableProps<Enterprise>["columns"] = [
+    {
+      title: "企业",
+      dataIndex: "name",
+      key: "name",
+      render: (_, ent) => (
+        <>
+          <div className="font-black text-[#172033]">{ent.name}</div>
+          <div className="text-[12px] text-[#64748b] mt-1">
+            {ent.statusText}
+          </div>
+        </>
+      ),
+    },
+    {
+      title: "技术方向",
+      dataIndex: "techDirection",
+      key: "techDirection",
+      render: (_, ent) => (
+        <div className="flex gap-2 flex-wrap">
+          {ent.techDirection.map((tag) => (
+            <span
+              key={`${ent.id}-direction-${tag.text}`}
+              className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${getTagClasses(tag.type)}`}
+            >
+              {tag.text}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "核心信号",
+      dataIndex: "coreSignals",
+      key: "coreSignals",
+      render: (_, ent) => (
+        <div className="flex gap-2 flex-wrap">
+          {ent.coreSignals.map((tag) => (
+            <span
+              key={`${ent.id}-signal-${tag.text}`}
+              className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${getTagClasses(tag.type)}`}
+            >
+              {tag.text}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "评分",
+      dataIndex: "score",
+      key: "score",
+      render: (score) => <span className="font-black">{score}</span>,
+    },
+    {
+      title: "操作",
+      key: "action",
+      align: "right",
+      render: (_, ent) => (
+        <div className="flex gap-2 justify-end">
+          <Button
+            variant="outline"
+            onClick={() => handleFollow(ent.id)}
+            className={`h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.followed ? "border-[#eafaf1] bg-[#eafaf1] text-[#16a34a] hover:bg-[#dcfce7]" : ""}`}
+          >
+            {ent.followed ? "已关注" : "关注"}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handlePool(ent.id)}
+            className={`h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.pooled ? "border-[#fff7e8] bg-[#fff7e8] text-[#d97706] hover:bg-[#fef3c7]" : ""}`}
+          >
+            {ent.pooled ? "已入池" : "入池"}
+          </Button>
+          <Button
+            onClick={onGenerateReport}
+            className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+          >
+            出报告
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  const rowSelection: TableProps<Enterprise>["rowSelection"] = {
+    selectedRowKeys,
+    onSelect: (record) => toggleSelection(record.id),
+    onSelectAll: () => toggleAll(),
+    columnWidth: 36,
+  };
+
   return (
     <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
@@ -395,137 +504,18 @@ export default function DeepMinePhase2({
               )}
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-[13px] min-w-[700px]">
-                <thead>
-                  <tr>
-                    <th className="text-left text-[#64748b] text-[12px] font-normal pb-[10px] border-b border-[#e5eaf3] w-[36px]">
-                      <Checkbox
-                        checked={
-                          (allSelected
-                            ? true
-                            : someSelected
-                              ? "indeterminate"
-                              : false) as any
-                        }
-                        onCheckedChange={toggleAll}
-                        className="cursor-pointer"
-                      />
-                    </th>
-                    <th className="text-left text-[#64748b] text-[12px] font-normal pb-[10px] border-b border-[#e5eaf3]">
-                      企业
-                    </th>
-                    <th className="text-left text-[#64748b] text-[12px] font-normal pb-[10px] border-b border-[#e5eaf3]">
-                      技术方向
-                    </th>
-                    <th className="text-left text-[#64748b] text-[12px] font-normal pb-[10px] border-b border-[#e5eaf3]">
-                      核心信号
-                    </th>
-                    <th className="text-left text-[#64748b] text-[12px] font-normal pb-[10px] border-b border-[#e5eaf3]">
-                      评分
-                    </th>
-                    <th className="text-right text-[#64748b] text-[12px] font-normal pb-[10px] border-b border-[#e5eaf3]">
-                      操作
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleEnterprises.length > 0 ? (
-                    visibleEnterprises.map((ent, index) => (
-                      <tr key={ent.id}>
-                        <td
-                          className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? "border-b border-[#edf1f7]" : ""} align-middle`}
-                        >
-                          <Checkbox
-                            checked={ent.selected}
-                            onCheckedChange={() => toggleSelection(ent.id)}
-                            className="cursor-pointer"
-                          />
-                        </td>
-                        <td
-                          className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? "border-b border-[#edf1f7]" : ""} align-middle`}
-                        >
-                          <div className="font-black text-[#172033]">
-                            {ent.name}
-                          </div>
-                          <div className="text-[12px] text-[#64748b] mt-1">
-                            {ent.statusText}
-                          </div>
-                        </td>
-                        <td
-                          className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? "border-b border-[#edf1f7]" : ""} align-middle`}
-                        >
-                          <div className="flex gap-2 flex-wrap">
-                            {ent.techDirection.map((tag, i) => (
-                              <span
-                                key={i}
-                                className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${getTagClasses(tag.type)}`}
-                              >
-                                {tag.text}
-                              </span>
-                            ))}
-                          </div>
-                        </td>
-                        <td
-                          className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? "border-b border-[#edf1f7]" : ""} align-middle`}
-                        >
-                          <div className="flex gap-2 flex-wrap">
-                            {ent.coreSignals.map((tag, i) => (
-                              <span
-                                key={i}
-                                className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${getTagClasses(tag.type)}`}
-                              >
-                                {tag.text}
-                              </span>
-                            ))}
-                          </div>
-                        </td>
-                        <td
-                          className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? "border-b border-[#edf1f7]" : ""} align-middle`}
-                        >
-                          <span className="font-black">{ent.score}</span>
-                        </td>
-                        <td
-                          className={`py-[14px] ${index !== visibleEnterprises.length - 1 ? "border-b border-[#edf1f7]" : ""} align-middle text-right`}
-                        >
-                          <div className="flex gap-2 justify-end">
-                            <Button
-                              variant="outline"
-                              onClick={() => handleFollow(ent.id)}
-                              className={`h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.followed ? "border-[#eafaf1] bg-[#eafaf1] text-[#16a34a] hover:bg-[#dcfce7]" : ""}`}
-                            >
-                              {ent.followed ? "已关注" : "关注"}
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handlePool(ent.id)}
-                              className={`h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold ${ent.pooled ? "border-[#fff7e8] bg-[#fff7e8] text-[#d97706] hover:bg-[#fef3c7]" : ""}`}
-                            >
-                              {ent.pooled ? "已入池" : "入池"}
-                            </Button>
-                            <Button
-                              onClick={onGenerateReport}
-                              className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
-                            >
-                              出报告
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        className="py-10 text-center text-[#64748b]"
-                      >
-                        当前视图暂无企业，请切换上方筛选。
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <AntTable<Enterprise>
+              className={styles.table}
+              columns={enterpriseColumns}
+              dataSource={visibleEnterprises}
+              rowKey="id"
+              rowSelection={rowSelection}
+              pagination={false}
+              scroll={{ x: 700 }}
+              locale={{
+                emptyText: "当前视图暂无企业，请切换上方筛选。",
+              }}
+            />
             <div className="mt-5 flex justify-start border-t border-[#edf2f8] pt-5">
               <Button
                 type="button"

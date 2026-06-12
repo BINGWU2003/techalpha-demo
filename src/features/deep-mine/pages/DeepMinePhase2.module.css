@@ -1,0 +1,14 @@
+.table :global(.ant-table-thead > tr > th) {
+  background: #fff;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.table :global(.ant-table-tbody > tr.ant-table-row-selected > td),
+.table :global(.ant-table-tbody > tr.ant-table-row-selected:hover > td),
+.table :global(
+    .ant-table-tbody > tr.ant-table-row-selected > td.ant-table-cell-row-hover
+  ) {
+  background: #fff !important;
+}

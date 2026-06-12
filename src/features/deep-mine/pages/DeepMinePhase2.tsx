@@ -416,7 +416,7 @@ export default function DeepMinePhase2({
               <div className="rounded-[14px] border border-[#dbeafe] bg-[#eff6ff] px-3 py-2">
                 <div className="mb-1 flex items-center gap-2 text-[12px] font-bold text-[#2563eb]">
                   <span className="h-2 w-2 rounded-full bg-[#2563eb]" />
-                  任务结果
+                  推荐
                 </div>
                 <div className="text-[18px] font-black text-[#172033]">
                   {enterprises.length}
@@ -428,7 +428,7 @@ export default function DeepMinePhase2({
               <div className="rounded-[14px] border border-[#e9d5ff] bg-[#faf5ff] px-3 py-2">
                 <div className="mb-1 flex items-center gap-2 text-[12px] font-bold text-[#8b5cf6]">
                   <span className="h-2 w-2 rounded-full bg-[#8b5cf6]" />
-                  推荐
+                  全部结果
                 </div>
                 <div className="text-[18px] font-black text-[#172033]">
                   {enterprises.length}

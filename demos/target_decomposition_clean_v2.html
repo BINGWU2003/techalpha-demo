@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechAlpha - 目标拆解</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: #f4f7fb;
+        --nav: #0b1730;
+        --blue: #2f6df6;
+        --soft: #eef4ff;
+        --text: #102039;
+        --muted: #738198;
+        --border: #dfe7f2;
+        --card: #fff;
+        --green: #18a957;
+      }
+      body {
+        margin: 0;
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 236px 1fr;
+        min-height: 100vh;
+      }
+      .sidebar {
+        background: linear-gradient(180deg, #081832, #0a142b);
+        color: #fff;
+        padding: 18px 12px;
+        display: flex;
+        flex-direction: column;
+      }
+      .logo {
+        padding: 4px 8px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 16px;
+      }
+      .logo h1 {
+        margin: 0;
+        font-size: 25px;
+      }
+      .logo p {
+        margin: 5px 0 0;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+        color: rgba(255, 255, 255, 0.62);
+      }
+      .nav {
+        display: grid;
+        gap: 8px;
+      }
+      .nav a {
+        color: rgba(255, 255, 255, 0.82);
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .nav a.active {
+        background: var(--blue);
+        color: #fff;
+      }
+      .ico {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid currentColor;
+        border-radius: 4px;
+      }
+      .recent-title {
+        margin: 22px 8px 10px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.52);
+      }
+      .recent {
+        font-size: 12px;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 9px 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.035);
+        margin-bottom: 7px;
+      }
+      .recent.active {
+        background: rgba(47, 109, 246, 0.18);
+        color: #fff;
+      }
+      .footer {
+        margin-top: auto;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.62);
+      }
+      main {
+        padding: 42px;
+      }
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 20px;
+        font-size: 36px;
+        letter-spacing: -0.5px;
+      }
+      .task-name {
+        margin: -8px 0 24px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: 0 8px 28px rgba(16, 32, 57, 0.04);
+        padding: 22px;
+        margin-bottom: 18px;
+      }
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      h2 {
+        margin: 0;
+        font-size: 22px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .route-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .route {
+        position: relative;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px 18px 54px 52px;
+        background: #fff;
+        min-height: 166px;
+        cursor: pointer;
+      }
+      .route.selected {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px #edf4ff inset;
+      }
+      .route input[type="checkbox"] {
+        position: absolute;
+        left: 18px;
+        top: 20px;
+        width: 20px;
+        height: 20px;
+        accent-color: var(--blue);
+      }
+      .edit {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        border: 1px solid #d7e4ff;
+        background: #f8fbff;
+        color: var(--blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .route h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+      .route h3,
+      .route p {
+        outline: 0;
+        border-radius: 8px;
+      }
+      .route h3:focus,
+      .route p:focus {
+        box-shadow: 0 0 0 2px #d9e6ff;
+        background: #fbfdff;
+      }
+      .route p {
+        margin: 0;
+        color: #5d6f8a;
+        font-size: 14px;
+        line-height: 1.65;
+      }
+      .pref {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: end;
+      }
+      .pref textarea {
+        width: 100%;
+        min-height: 78px;
+        resize: vertical;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 16px;
+        font-size: 14px;
+        line-height: 1.6;
+        font-family: inherit;
+        color: var(--text);
+        outline: none;
+        background: #fbfcff;
+      }
+      .pref textarea:focus {
+        border-color: #adc5ff;
+        background: #fff;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px 18px;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        color: #1c2b44;
+      }
+      .btn.primary {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(47, 109, 246, 0.18);
+      }
+      .btn.ghost {
+        color: var(--blue);
+        border-color: #d7e4ff;
+      }
+      .bottom {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-top: 24px;
+      }
+      .selected-count {
+        font-size: 13px;
+        color: var(--muted);
+        margin-right: auto;
+      }
+      @media (max-width: 1100px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .route-grid {
+          grid-template-columns: 1fr;
+        }
+        .pref {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="logo">
+          <h1>TechAlpha</h1>
+          <p>AI INVESTMENT OS</p>
+        </div>
+        <nav class="nav">
+          <a class="active" href="#"><span class="ico"></span>新建任务</a
+          ><a href="#"><span class="ico"></span>企业库</a
+          ><a href="#"><span class="ico"></span>报告库</a
+          ><a href="#"><span class="ico"></span>跟踪预警</a>
+        </nav>
+        <div class="recent-title">最近任务</div>
+        <div class="recent active">钠电池正极材料方向企业挖掘</div>
+        <div class="recent">机器人灵巧手企业线索</div>
+        <div class="recent">Chiplet先进封装潜力企业</div>
+        <div class="footer">AI 引擎已就绪</div>
+      </aside>
+      <main>
+        <div class="page">
+          <h1>目标拆解</h1>
+          <div class="task-name">钠电池正极材料方向企业挖掘</div>
+          <section class="card">
+            <div class="section-head">
+              <h2>选择技术方向</h2>
+              <div class="hint">最多选择 3 个</div>
+            </div>
+            <div class="route-grid">
+              <div class="route selected">
+                <input type="checkbox" checked />
+                <h3 contenteditable="true">层状氧化物正极材料企业</h3>
+                <p contenteditable="true">优先挖掘，产业化路径较清晰。</p>
+                <button class="edit" title="编辑">✎</button>
+              </div>
+              <div class="route selected">
+                <input type="checkbox" checked />
+                <h3 contenteditable="true">聚阴离子正极材料企业</h3>
+                <p contenteditable="true">适合寻找技术壁垒型企业。</p>
+                <button class="edit" title="编辑">✎</button>
+              </div>
+              <div class="route selected">
+                <input type="checkbox" checked />
+                <h3 contenteditable="true">普鲁士蓝类材料企业</h3>
+                <p contenteditable="true">成本优势明显，商业化需验证。</p>
+                <button class="edit" title="编辑">✎</button>
+              </div>
+              <div class="route">
+                <input type="checkbox" />
+                <h3 contenteditable="true">正极材料包覆改性企业</h3>
+                <p contenteditable="true">关注循环寿命、安全性和稳定性提升。</p>
+                <button class="edit" title="编辑">✎</button>
+              </div>
+              <div class="route">
+                <input type="checkbox" />
+                <h3 contenteditable="true">低成本前驱体企业</h3>
+                <p contenteditable="true">关注规模化制备和成本控制。</p>
+                <button class="edit" title="编辑">✎</button>
+              </div>
+              <div class="route">
+                <input type="checkbox" />
+                <h3 contenteditable="true">储能场景材料企业</h3>
+                <p contenteditable="true">关注长循环、低温性能和工程化应用。</p>
+                <button class="edit" title="编辑">✎</button>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="section-head">
+              <h2>偏好调整</h2>
+              <div class="hint">可选</div>
+            </div>
+            <div class="pref">
+              <textarea
+                placeholder="例如：更关注压实密度和循环寿命，暂不关注负极材料和电解液方向。"
+              >
+更关注压实密度、循环寿命、低成本和储能场景。</textarea
+              ><button class="btn ghost">重新拆解</button>
+            </div>
+          </section>
+          <div class="bottom">
+            <div class="selected-count">已选择 3 个技术方向</div>
+            <button class="btn primary">进入线索分析 →</button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      document.querySelectorAll(".route input").forEach((cb) =>
+        cb.addEventListener("change", () => {
+          cb.closest(".route").classList.toggle("selected", cb.checked);
+        }),
+      );
+    </script>
+  </body>
+</html>

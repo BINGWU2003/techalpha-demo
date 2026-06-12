@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechAlpha - 线索分析</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: #f4f7fb;
+        --nav: #0b1730;
+        --blue: #2f6df6;
+        --soft: #eef4ff;
+        --text: #102039;
+        --muted: #738198;
+        --border: #dfe7f2;
+        --card: #fff;
+        --green: #18a957;
+        --orange: #ff9f1a;
+        --purple: #7a5af8;
+      }
+      body {
+        margin: 0;
+        font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 236px 1fr;
+        min-height: 100vh;
+      }
+      .sidebar {
+        background: linear-gradient(180deg, #081832, #0a142b);
+        color: #fff;
+        padding: 18px 12px;
+        display: flex;
+        flex-direction: column;
+      }
+      .logo {
+        padding: 4px 8px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 16px;
+      }
+      .logo h1 {
+        margin: 0;
+        font-size: 25px;
+      }
+      .logo p {
+        margin: 5px 0 0;
+        font-size: 11px;
+        letter-spacing: 0.8px;
+        color: rgba(255, 255, 255, 0.62);
+      }
+      .nav {
+        display: grid;
+        gap: 8px;
+      }
+      .nav a {
+        color: rgba(255, 255, 255, 0.82);
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .nav a.active {
+        background: var(--blue);
+        color: #fff;
+      }
+      .ico {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid currentColor;
+        border-radius: 4px;
+      }
+      .recent-title {
+        margin: 22px 8px 10px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.52);
+      }
+      .recent {
+        font-size: 12px;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 9px 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.035);
+        margin-bottom: 7px;
+      }
+      .recent.active {
+        background: rgba(47, 109, 246, 0.18);
+        color: #fff;
+      }
+      .footer {
+        margin-top: auto;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.62);
+      }
+      main {
+        padding: 42px;
+      }
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 24px;
+        font-size: 36px;
+        letter-spacing: -0.5px;
+      }
+      .task-name {
+        margin: -12px 0 24px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: 0 8px 28px rgba(16, 32, 57, 0.04);
+        padding: 22px;
+        margin-bottom: 18px;
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      h2 {
+        margin: 0;
+        font-size: 22px;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .overview {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 16px;
+      }
+      .big-num {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 180px;
+      }
+      .big-num .label {
+        font-size: 18px;
+        font-weight: 900;
+        margin-bottom: 12px;
+      }
+      .big-num .num {
+        font-size: 68px;
+        font-weight: 900;
+        letter-spacing: -2px;
+      }
+      .big-num .unit {
+        font-size: 18px;
+        color: var(--muted);
+        margin-left: 5px;
+      }
+      .type-row {
+        display: grid;
+        gap: 12px;
+      }
+      .type-title {
+        font-size: 18px;
+        font-weight: 900;
+        margin-bottom: 14px;
+      }
+      .type {
+        display: grid;
+        grid-template-columns: 120px 1fr 44px;
+        gap: 12px;
+        align-items: center;
+      }
+      .bar {
+        height: 12px;
+        background: #edf2f8;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .fill {
+        height: 100%;
+        background: var(--blue);
+        border-radius: 999px;
+      }
+      .fill.green {
+        background: var(--green);
+      }
+      .fill.orange {
+        background: var(--orange);
+      }
+      .route-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+      .route {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+        background: #fbfcff;
+      }
+      .route h3 {
+        margin: 0 0 14px;
+        font-size: 17px;
+      }
+      .route-metrics {
+        display: grid;
+        gap: 8px;
+        font-size: 13px;
+        color: #586a83;
+      }
+      .route strong {
+        font-size: 22px;
+        color: #11213b;
+      }
+      .charts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .chart {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        background: #fff;
+      }
+      .chart-title {
+        font-size: 17px;
+        font-weight: 900;
+        margin-bottom: 12px;
+      }
+      .svgbox {
+        height: 260px;
+        background: linear-gradient(
+            to top,
+            rgba(16, 32, 57, 0.055) 1px,
+            transparent 1px
+          )
+          0 0/100% 52px;
+        border-radius: 12px;
+      }
+      .dist {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+      .donut {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--blue) 0 54%,
+          var(--orange) 54% 78%,
+          var(--green) 78% 96%,
+          #9bb6ff 96% 100%
+        );
+        position: relative;
+        margin: auto;
+      }
+      .donut:after {
+        content: "110件";
+        position: absolute;
+        inset: 38px;
+        background: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+      }
+      .legend {
+        display: grid;
+        gap: 10px;
+        font-size: 14px;
+      }
+      .legend span:before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--blue);
+        margin-right: 8px;
+      }
+      .legend span:nth-child(2):before {
+        background: var(--orange);
+      }
+      .legend span:nth-child(3):before {
+        background: var(--green);
+      }
+      .legend span:nth-child(4):before {
+        background: #9bb6ff;
+      }
+      .cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .word {
+        background: var(--soft);
+        color: var(--blue);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 800;
+      }
+      .word.big {
+        font-size: 20px;
+      }
+      .word.green {
+        background: #eaf8f0;
+        color: var(--green);
+      }
+      .word.orange {
+        background: #fff6e8;
+        color: #c66c00;
+      }
+      .progress-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #556985;
+        font-size: 14px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 18px;
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        background: var(--green);
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px #e4f7ed;
+      }
+      .bottom {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 24px;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 14px;
+        padding: 12px 18px;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        color: #1c2b44;
+      }
+      .btn.primary {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(47, 109, 246, 0.18);
+      }
+      @media (max-width: 1100px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .overview,
+        .charts {
+          grid-template-columns: 1fr;
+        }
+        .route-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .bottom {
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+      }
+      @media (max-width: 700px) {
+        .route-grid {
+          grid-template-columns: 1fr;
+        }
+        .dist {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="logo">
+          <h1>TechAlpha</h1>
+          <p>AI INVESTMENT OS</p>
+        </div>
+        <nav class="nav">
+          <a class="active" href="#"><span class="ico"></span>新建任务</a
+          ><a href="#"><span class="ico"></span>企业库</a
+          ><a href="#"><span class="ico"></span>报告库</a
+          ><a href="#"><span class="ico"></span>跟踪预警</a>
+        </nav>
+        <div class="recent-title">最近任务</div>
+        <div class="recent active">钠电池正极材料方向企业挖掘</div>
+        <div class="recent">机器人灵巧手企业线索</div>
+        <div class="recent">Chiplet先进封装潜力企业</div>
+        <div class="footer">AI 引擎已就绪</div>
+      </aside>
+      <main>
+        <div class="page">
+          <h1>线索分析</h1>
+          <div class="task-name">钠电池正极材料方向企业挖掘</div>
+          <section class="card">
+            <div class="overview">
+              <div class="big-num">
+                <div class="label">产业企业总数</div>
+                <div>
+                  <span class="num">350</span><span class="unit">家</span>
+                </div>
+              </div>
+              <div>
+                <div class="type-title">企业类型分布</div>
+                <div class="type-row">
+                  <div class="type">
+                    <b>非上市企业</b>
+                    <div class="bar">
+                      <div class="fill" style="width: 68%"></div>
+                    </div>
+                    <strong>238</strong>
+                  </div>
+                  <div class="type">
+                    <b>上市企业</b>
+                    <div class="bar">
+                      <div class="fill green" style="width: 19%"></div>
+                    </div>
+                    <strong>67</strong>
+                  </div>
+                  <div class="type">
+                    <b>高校院所</b>
+                    <div class="bar">
+                      <div class="fill orange" style="width: 13%"></div>
+                    </div>
+                    <strong>45</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="section-head">
+              <h2>技术路线线索统计</h2>
+              <div class="hint">非互斥统计</div>
+            </div>
+            <div class="route-grid">
+              <div class="route">
+                <h3>层状氧化物</h3>
+                <div class="route-metrics">
+                  <span>主体数 <strong>126</strong></span
+                  ><span>近三年活跃 42</span><span>相关专利 320</span>
+                </div>
+              </div>
+              <div class="route">
+                <h3>聚阴离子</h3>
+                <div class="route-metrics">
+                  <span>主体数 <strong>84</strong></span
+                  ><span>近三年活跃 26</span><span>相关专利 210</span>
+                </div>
+              </div>
+              <div class="route">
+                <h3>普鲁士蓝类</h3>
+                <div class="route-metrics">
+                  <span>主体数 <strong>73</strong></span
+                  ><span>近三年活跃 19</span><span>相关专利 168</span>
+                </div>
+              </div>
+              <div class="route">
+                <h3>材料改性</h3>
+                <div class="route-metrics">
+                  <span>主体数 <strong>58</strong></span
+                  ><span>近三年活跃 14</span><span>相关专利 112</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="section-head"><h2>统计分析</h2></div>
+            <div class="charts">
+              <div class="chart">
+                <div class="chart-title">专利趋势统计</div>
+                <div class="svgbox">
+                  <svg
+                    viewBox="0 0 600 260"
+                    width="100%"
+                    height="100%"
+                    preserveAspectRatio="none"
+                  >
+                    <polyline
+                      fill="none"
+                      stroke="#2f6df6"
+                      stroke-width="4"
+                      points="30,220 80,200 130,180 180,150 230,135 280,108 330,125 380,88 430,70 480,46 530,65 570,42"
+                    />
+                    <g fill="#2f6df6">
+                      <circle cx="30" cy="220" r="5" />
+                      <circle cx="80" cy="200" r="5" />
+                      <circle cx="130" cy="180" r="5" />
+                      <circle cx="180" cy="150" r="5" />
+                      <circle cx="230" cy="135" r="5" />
+                      <circle cx="280" cy="108" r="5" />
+                      <circle cx="330" cy="125" r="5" />
+                      <circle cx="380" cy="88" r="5" />
+                      <circle cx="430" cy="70" r="5" />
+                      <circle cx="480" cy="46" r="5" />
+                      <circle cx="530" cy="65" r="5" />
+                      <circle cx="570" cy="42" r="5" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <div class="chart">
+                <div class="chart-title">专利类型分布</div>
+                <div class="dist">
+                  <div class="donut"></div>
+                  <div class="legend">
+                    <span>发明公开 69</span><span>发明授权 28</span
+                    ><span>发明申请 12</span><span>未知类型 1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="section-head"><h2>创新词云</h2></div>
+            <div class="cloud">
+              <span class="word big">压实密度</span
+              ><span class="word green">循环寿命</span
+              ><span class="word">层状氧化物</span
+              ><span class="word orange">低成本</span
+              ><span class="word">储能场景</span
+              ><span class="word green">包覆改性</span
+              ><span class="word">钠离子电池</span
+              ><span class="word orange">前驱体</span
+              ><span class="word">低温性能</span>
+            </div>
+          </section>
+          <div class="progress-line">
+            <span class="dot"></span
+            ><span>正在获取深圳钠能新材料有限公司的相关专利…</span>
+          </div>
+          <div class="bottom">
+            <button class="btn">← 返回目标拆解</button
+            ><button class="btn primary">进入企业探索 →</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -41,6 +41,7 @@ export default function App() {
   };
 
   const [deepMineState, setDeepMineState] = useState({
+    taskInput: '钠电池正极材料方向企业挖掘',
     isDeconstructed: false,
     isAnalyzing: false,
     showAnalysis: false,
@@ -60,6 +61,12 @@ export default function App() {
 
   const handleStartTask = (taskType: string, input: string) => {
     if (taskType === 'DeepMine') {
+      updateDeepMineState({
+        taskInput: input,
+        isDeconstructed: true,
+        isAnalyzing: false,
+        showAnalysis: false,
+      });
       navigate('/deep-mine');
     } else if (taskType === 'AutoReport') {
       navigate('/auto-report');

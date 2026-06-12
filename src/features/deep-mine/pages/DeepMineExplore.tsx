@@ -234,42 +234,20 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
 
   return (
     <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
-      <div className="text-[13px] text-[#64748b] mb-4">
-        工作台 / 挖企业 / <b className="text-[#334155] font-bold">企业探索</b>
-      </div>
-
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
         <main className="space-y-4">
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex items-start gap-3">
-                  {onBack && (
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={onBack}
-                      className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] shrink-0"
-                      title="返回"
-                    >
-                      <ArrowLeft className="w-4 h-4" />
-                    </Button>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <h1 className="text-[26px] leading-[1.25] m-0 font-bold">
-                      企业探索
-                    </h1>
-                    <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
-                      当前目标：存算一体神经形态芯片。这里用于查看线索分析后的候选企业、筛选条件和轻量证据。
-                    </p>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-[26px] leading-[1.25] m-0 font-bold">
+                    企业探索
+                  </h1>
+                  <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
+                    当前目标：存算一体神经形态芯片。这里用于查看线索分析后的候选企业、筛选条件和轻量证据。
+                  </p>
+                </div>
               </div>
-              <Button
-                variant="outline"
-                className="h-[42px] rounded-[13px] font-extrabold shadow-sm shrink-0"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                导出当前列表
-              </Button>
             </div>
           </section>
 

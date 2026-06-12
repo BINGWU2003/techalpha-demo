@@ -288,19 +288,7 @@ export default function DeepMineAnalysis({
           <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
             <div className="flex items-start gap-3 mb-5">
               <div className="min-w-0 flex-1">
-                <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3">
-                  <div>
-                    <h2 className="text-[24px] font-black m-0">产业线索分析</h2>
-                  </div>
-                  {onExplore && (
-                    <Button
-                      onClick={onExplore}
-                      className="h-[42px] rounded-[13px] bg-[#2563eb] px-4 text-white font-extrabold hover:bg-[#1d4ed8] shadow-[0_10px_18px_rgba(37,99,235,0.18)] shrink-0"
-                    >
-                      进入企业探索
-                    </Button>
-                  )}
-                </div>
+                <h2 className="text-[24px] font-black m-0">产业线索分析</h2>
               </div>
             </div>
 
@@ -975,7 +963,7 @@ export default function DeepMineAnalysis({
             </div>
 
             {/* Action Buttons Row */}
-            <div className="flex flex-col md:flex-row gap-[12px] justify-end mt-[22px]">
+            <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
               {onBack && (
                 <Button
                   variant="outline"
@@ -985,12 +973,22 @@ export default function DeepMineAnalysis({
                   返回拆解目标
                 </Button>
               )}
-              <Button
-                onClick={onNextStep}
-                className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:translate-y-[-1px]"
-              >
-                确认目标，发现企业
-              </Button>
+              <div className="flex flex-col md:flex-row gap-[12px] md:justify-end">
+                {onExplore && (
+                  <Button
+                    onClick={onExplore}
+                    className="h-[44px] px-[20px] rounded-[13px] bg-[#0f766e] text-white font-extrabold hover:bg-[#0f5f59] shadow-[0_10px_18px_rgba(15,118,110,0.18)]"
+                  >
+                    进入企业探索
+                  </Button>
+                )}
+                <Button
+                  onClick={onNextStep}
+                  className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:translate-y-[-1px]"
+                >
+                  确认目标，发现企业
+                </Button>
+              </div>
             </div>
           </section>
         </main>

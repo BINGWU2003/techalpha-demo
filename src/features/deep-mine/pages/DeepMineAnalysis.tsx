@@ -15,6 +15,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { ArrowRight } from "lucide-react";
 
 const ALL_PATENT_DATA = [
   { year: "2010", count: 45 },
@@ -987,6 +988,7 @@ export default function DeepMineAnalysis({
                   className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:translate-y-[-1px]"
                 >
                   确认目标，发现企业
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>

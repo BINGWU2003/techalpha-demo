@@ -526,18 +526,17 @@ export default function DeepMinePhase2({
                 </tbody>
               </table>
             </div>
+            <div className="mt-5 flex justify-start border-t border-[#edf2f8] pt-5">
+              <Button
+                type="button"
+                onClick={() => onBack?.()}
+                className="h-[42px] rounded-[12px] bg-[#2563eb] px-5 font-extrabold text-white hover:bg-[#1d4ed8]"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                返回线索分析
+              </Button>
+            </div>
           </section>
-
-          <div className="mt-[18px] flex justify-start">
-            <Button
-              type="button"
-              onClick={() => onBack?.()}
-              className="h-[42px] rounded-[12px] bg-[#2563eb] px-5 font-extrabold text-white hover:bg-[#1d4ed8]"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              返回线索分析
-            </Button>
-          </div>
         </main>
       </div>
     </div>

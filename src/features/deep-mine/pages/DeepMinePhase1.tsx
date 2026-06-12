@@ -306,29 +306,28 @@ export default function DeepMinePhase1({
                 重新拆解
               </Button>
             </div>
-          </section>
-
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between pt-1">
-            <div className="text-[13px] text-[#64748b]">
-              已选择 <b className="text-[#2563eb]">{selectedCount}</b>{" "}
-              个技术方向
+            <div className="mt-5 flex flex-col gap-3 border-t border-[#edf2f8] pt-5 md:flex-row md:items-center md:justify-between">
+              <div className="text-[13px] text-[#64748b]">
+                已选择 <b className="text-[#2563eb]">{selectedCount}</b>{" "}
+                个技术方向
+              </div>
+              <Button
+                onClick={handleAnalyze}
+                disabled={isAnalyzing || selectedDirections.length === 0}
+                className={`h-[46px] px-[22px] rounded-[14px] font-extrabold ${
+                  isAnalyzing
+                    ? "bg-[#f1f5f9] text-[#94a3b8] shadow-none"
+                    : "bg-[#2563eb] text-white shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8]"
+                }`}
+              >
+                {isAnalyzing
+                  ? "正在分析线索..."
+                  : showAnalysis
+                    ? "查看线索分析 →"
+                    : "进入线索分析 →"}
+              </Button>
             </div>
-            <Button
-              onClick={handleAnalyze}
-              disabled={isAnalyzing || selectedDirections.length === 0}
-              className={`h-[46px] px-[22px] rounded-[14px] font-extrabold ${
-                isAnalyzing
-                  ? "bg-[#f1f5f9] text-[#94a3b8] shadow-none"
-                  : "bg-[#2563eb] text-white shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8]"
-              }`}
-            >
-              {isAnalyzing
-                ? "正在分析线索..."
-                : showAnalysis
-                  ? "查看线索分析 →"
-                  : "进入线索分析 →"}
-            </Button>
-          </div>
+          </section>
         </main>
       </div>
     </div>

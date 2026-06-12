@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
 import { ArrowLeft, X } from "lucide-react";
-import { Input as AntInput, Select as AntSelect } from "antd";
+import {
+  Input as AntInput,
+  Select as AntSelect,
+  Table as AntTable,
+} from "antd";
 import { Button } from "@/components/ui/button";
+import styles from "./DeepMineExplore.module.css";
 
 type Company = {
   name: string;
@@ -232,8 +237,79 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
       : (QUICK_FILTERS.find((filter) => filter.name === quickFilter)?.count ??
         visibleCompanies.length);
 
+  const companyColumns = [
+    {
+      title: "企业",
+      dataIndex: "name",
+      key: "name",
+      render: (_: string, company: Company) => (
+        <>
+          <div className="font-black text-[#172033]">{company.name}</div>
+          <div className="text-[12px] text-[#64748b] mt-1">{company.type}</div>
+        </>
+      ),
+    },
+    {
+      title: "技术路线",
+      dataIndex: "tags",
+      key: "tags",
+      render: (_: Company["tags"], company: Company) => (
+        <div className="flex gap-2 flex-wrap">
+          {company.tags.map((tag) => (
+            <span
+              key={`${company.name}-${tag.text}`}
+              className={`inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap ${tagClasses[tag.tone ?? "blue"]}`}
+            >
+              {tag.text}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "线索摘要",
+      dataIndex: "summary",
+      key: "summary",
+      render: (summary: string) => (
+        <p className="m-0 max-w-[360px] text-[13px] leading-[1.6] text-[#41506a]">
+          {summary}
+        </p>
+      ),
+    },
+    {
+      title: "关键指标",
+      dataIndex: "metrics",
+      key: "metrics",
+      render: (metrics: Company["metrics"]) => (
+        <div className="flex gap-2 flex-wrap">
+          {metrics.map((metric) => (
+            <span
+              key={metric}
+              className="inline-flex items-center rounded-[10px] border border-[#edf1f7] bg-[#f6f8fc] px-[9px] py-[6px] text-[12px] text-[#66758d] whitespace-nowrap"
+            >
+              {metric}
+            </span>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "操作",
+      key: "action",
+      align: "right" as const,
+      render: (_: unknown, company: Company) => (
+        <Button
+          onClick={() => setSelectedCompany(company)}
+          className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+        >
+          查看
+        </Button>
+      ),
+    },
+  ];
+
   return (
-    <div className="max-w-[1280px] mx-auto p-[28px_28px_132px] max-md:p-[22px_16px_126px]">
+    <div className="max-w-[1280px] mx-auto p-[28px] max-md:p-[22px_16px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
         <main className="space-y-4">
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
@@ -432,78 +508,36 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
             </div>
           </section>
 
-          <section className="grid gap-3">
-            {visibleCompanies.length > 0 ? (
-              visibleCompanies.map((company) => (
-                <article
-                  key={company.name}
-                  className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4 items-center rounded-[18px] border border-[#e5eaf3] bg-white p-[18px] shadow-sm hover:border-[#bfdbfe] transition-colors"
-                >
-                  <div>
-                    <h3 className="text-[18px] font-black text-[#172033] mb-3">
-                      {company.name}
-                    </h3>
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {company.tags.map((tag) => (
-                        <span
-                          key={`${company.name}-${tag.text}`}
-                          className={`rounded-full px-2.5 py-1.5 text-[12px] font-extrabold ${tagClasses[tag.tone ?? "blue"]}`}
-                        >
-                          {tag.text}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-[14px] leading-[1.65] text-[#41506a] mb-3">
-                      {company.summary}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {company.metrics.map((metric) => (
-                        <span
-                          key={metric}
-                          className="rounded-[10px] border border-[#edf1f7] bg-[#f6f8fc] px-2.5 py-1.5 text-[12px] text-[#66758d]"
-                        >
-                          {metric}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => setSelectedCompany(company)}
-                      className="h-[38px] rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]"
-                    >
-                      查看
-                    </Button>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div className="rounded-[20px] border border-[#e5eaf3] bg-white p-12 text-center text-[#64748b]">
-                当前筛选条件下暂无结果，请调整筛选条件。
+          <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
+            <AntTable<Company>
+              className={styles.table}
+              columns={companyColumns}
+              dataSource={visibleCompanies}
+              rowKey="name"
+              pagination={false}
+              scroll={{ x: 820 }}
+              locale={{
+                emptyText: "当前筛选条件下暂无结果，请调整筛选条件。",
+              }}
+            />
+            <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
+              <div className="text-[13px] text-[#64748b]">
+                当前展示
+                <strong className="mx-1 text-[#2563eb]">{resultCount}</strong>
+                家候选主体
               </div>
-            )}
+              <Button
+                type="button"
+                onClick={() => onBack?.()}
+                variant="outline"
+                className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                返回线索分析
+              </Button>
+            </div>
           </section>
         </main>
-      </div>
-
-      <div className="fixed left-4 right-4 bottom-5 z-30 lg:left-[264px]">
-        <div className="mx-auto max-w-[1280px] rounded-[18px] border border-[#dbe4f1] bg-white/95 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-[13px] text-[#64748b]">
-              当前展示
-              <strong className="mx-1 text-[#2563eb]">{resultCount}</strong>
-              家候选主体，可随时返回线索分析调整判断。
-            </div>
-            <Button
-              type="button"
-              onClick={() => onBack?.()}
-              className="h-[42px] rounded-[12px] bg-[#2563eb] px-5 font-extrabold text-white hover:bg-[#1d4ed8]"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              返回线索分析
-            </Button>
-          </div>
-        </div>
       </div>
 
       {selectedCompany && (

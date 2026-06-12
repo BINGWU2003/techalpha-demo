@@ -1,0 +1,3 @@
+.table :global(.ant-table-thead > tr > th) {
+  background: #fff;
+}

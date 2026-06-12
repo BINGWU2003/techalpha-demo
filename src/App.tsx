@@ -104,7 +104,6 @@ export default function App() {
               <DeepMineAnalysis
                 onNextStep={() => navigate('/deep-mine/results')}
                 onExplore={() => navigate('/deep-mine/explore')}
-                onAdjustTarget={() => navigate('/direction-tuning')}
                 onBack={() => navigate('/deep-mine')}
               />
             } />

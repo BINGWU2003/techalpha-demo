@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   ResponsiveContainer,
@@ -92,15 +91,40 @@ const WORDS = [
 
 const ENTERPRISE_TYPE_DATA = [
   { name: "非上市企业", value: 162, percentage: "46.29%", color: "#10b981" },
-  { name: "上市企业 / 集团主体", value: 109, percentage: "31.14%", color: "#3b82f6" },
-  { name: "高校 / 科研院所", value: 79, percentage: "22.57%", color: "#f59e0b" },
+  {
+    name: "上市企业 / 集团主体",
+    value: 109,
+    percentage: "31.14%",
+    color: "#3b82f6",
+  },
+  {
+    name: "高校 / 科研院所",
+    value: 79,
+    percentage: "22.57%",
+    color: "#f59e0b",
+  },
 ];
 
 const TECH_ROUTE_DATA = [
-  { name: "SNN 异步事件驱动", subjectCount: 92, activeCount: 31, patentCount: 186 },
-  { name: "忆阻器交叉阵列", subjectCount: 76, activeCount: 22, patentCount: 143 },
+  {
+    name: "SNN 异步事件驱动",
+    subjectCount: 92,
+    activeCount: 31,
+    patentCount: 186,
+  },
+  {
+    name: "忆阻器交叉阵列",
+    subjectCount: 76,
+    activeCount: 22,
+    patentCount: 143,
+  },
   { name: "3D 混合集成", subjectCount: 54, activeCount: 18, patentCount: 99 },
-  { name: "存算一体架构", subjectCount: 128, activeCount: 43, patentCount: 238 },
+  {
+    name: "存算一体架构",
+    subjectCount: 128,
+    activeCount: 43,
+    patentCount: 238,
+  },
 ];
 
 const ROUTE_PATENT_SHARE_DATA = [
@@ -235,14 +259,12 @@ const AWARDS_DATA = [
 type DeepMineAnalysisProps = {
   onNextStep: () => void;
   onExplore?: () => void;
-  onAdjustTarget: () => void;
   onBack?: () => void;
 };
 
 export default function DeepMineAnalysis({
   onNextStep,
   onExplore,
-  onAdjustTarget,
   onBack,
 }: DeepMineAnalysisProps) {
   const [progressIndex, setProgressIndex] = useState(0);
@@ -251,8 +273,8 @@ export default function DeepMineAnalysis({
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setProgressIndex((current) =>
-        (current + 1) % ANALYSIS_PROGRESS_LINES.length
+      setProgressIndex(
+        (current) => (current + 1) % ANALYSIS_PROGRESS_LINES.length,
       );
     }, 2600);
 
@@ -265,24 +287,10 @@ export default function DeepMineAnalysis({
         <main>
           <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
             <div className="flex items-start gap-3 mb-5">
-              {onBack && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={onBack}
-                  className="w-8 h-8 rounded-[8px] bg-white border-[#dbe4f1] text-[#334155] hover:bg-gray-50 hover:border-[#2563eb] hover:text-[#2563eb] transition-all shrink-0"
-                  title="返回"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-              )}
               <div className="min-w-0 flex-1">
                 <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3">
                   <div>
-                    <h2 className="text-[17px] font-black m-0">产业线索分析</h2>
-                    <div className="text-[#64748b] text-[13px] leading-[1.65] mt-1">
-                      这不是独立“看赛道”，而是为企业发现提供支撑：有没有足够的技术、专利和企业线索。
-                    </div>
+                    <h2 className="text-[24px] font-black m-0">产业线索分析</h2>
                   </div>
                   {onExplore && (
                     <Button
@@ -353,15 +361,22 @@ export default function DeepMineAnalysis({
                             endAngle={-270}
                           >
                             {ENTERPRISE_TYPE_DATA.map((entry, index) => (
-                              <Cell key={`enterprise-type-${index}`} fill={entry.color} />
+                              <Cell
+                                key={`enterprise-type-${index}`}
+                                fill={entry.color}
+                              />
                             ))}
                           </Pie>
                           <Tooltip />
                         </PieChart>
                       </ResponsiveContainer>
                       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-[12px] text-[#64748b]">主体总数</span>
-                        <strong className="text-[28px] text-[#0f1f3d]">350</strong>
+                        <span className="text-[12px] text-[#64748b]">
+                          主体总数
+                        </span>
+                        <strong className="text-[28px] text-[#0f1f3d]">
+                          350
+                        </strong>
                       </div>
                     </div>
                     <div>
@@ -370,8 +385,14 @@ export default function DeepMineAnalysis({
                       </h3>
                       <div className="space-y-4">
                         {ENTERPRISE_TYPE_DATA.map((item) => (
-                          <div key={item.name} className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]">
-                            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></span>
+                          <div
+                            key={item.name}
+                            className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
+                          >
+                            <span
+                              className="w-2.5 h-2.5 rounded-full"
+                              style={{ backgroundColor: item.color }}
+                            ></span>
                             <span className="text-[#172033]">{item.name}</span>
                             <b className="text-[#0f1f3d]">{item.value} 家</b>
                           </div>
@@ -439,14 +460,57 @@ export default function DeepMineAnalysis({
                   </div>
                   <div className="h-[280px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={ROUTE_PATENT_TREND_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef2f7" />
-                        <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                        <Tooltip contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)" }} />
-                        <Line name="存算一体架构" type="monotone" dataKey="compute" stroke="#2563eb" strokeWidth={4} dot={false} />
-                        <Line name="SNN 异步事件驱动" type="monotone" dataKey="snn" stroke="#10b981" strokeWidth={4} dot={false} />
-                        <Line name="忆阻器交叉阵列" type="monotone" dataKey="memristor" stroke="#f59e0b" strokeWidth={4} dot={false} />
+                      <LineChart
+                        data={ROUTE_PATENT_TREND_DATA}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#eef2f7"
+                        />
+                        <XAxis
+                          dataKey="year"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#94a3b8", fontSize: 11 }}
+                        />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#94a3b8", fontSize: 11 }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            borderRadius: "12px",
+                            border: "none",
+                            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                          }}
+                        />
+                        <Line
+                          name="存算一体架构"
+                          type="monotone"
+                          dataKey="compute"
+                          stroke="#2563eb"
+                          strokeWidth={4}
+                          dot={false}
+                        />
+                        <Line
+                          name="SNN 异步事件驱动"
+                          type="monotone"
+                          dataKey="snn"
+                          stroke="#10b981"
+                          strokeWidth={4}
+                          dot={false}
+                        />
+                        <Line
+                          name="忆阻器交叉阵列"
+                          type="monotone"
+                          dataKey="memristor"
+                          stroke="#f59e0b"
+                          strokeWidth={4}
+                          dot={false}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -463,12 +527,21 @@ export default function DeepMineAnalysis({
                     {ROUTE_PATENT_SHARE_DATA.map((item) => (
                       <div key={item.name}>
                         <div className="grid grid-cols-[12px_1fr_auto] items-center gap-3 text-[14px] mb-2">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></span>
+                          <span
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ backgroundColor: item.color }}
+                          ></span>
                           <span className="text-[#172033]">{item.name}</span>
                           <b className="text-[#0f1f3d]">{item.value}%</b>
                         </div>
                         <div className="h-2 rounded-full bg-[#eef2f7] overflow-hidden">
-                          <div className="h-full rounded-full" style={{ width: `${item.value}%`, backgroundColor: item.color }}></div>
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${item.value}%`,
+                              backgroundColor: item.color,
+                            }}
+                          ></div>
                         </div>
                       </div>
                     ))}
@@ -488,9 +561,19 @@ export default function DeepMineAnalysis({
                     <div className="relative w-[140px] h-[140px] mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
-                          <Pie data={PATENT_TYPE_DATA} cx="50%" cy="50%" innerRadius={44} outerRadius={70} dataKey="value">
+                          <Pie
+                            data={PATENT_TYPE_DATA}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={44}
+                            outerRadius={70}
+                            dataKey="value"
+                          >
                             {PATENT_TYPE_DATA.map((entry, index) => (
-                              <Cell key={`patent-type-${index}`} fill={entry.color} />
+                              <Cell
+                                key={`patent-type-${index}`}
+                                fill={entry.color}
+                              />
                             ))}
                           </Pie>
                           <Tooltip />
@@ -499,8 +582,14 @@ export default function DeepMineAnalysis({
                     </div>
                     <div className="space-y-4">
                       {PATENT_TYPE_DATA.map((item) => (
-                        <div key={item.name} className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></span>
+                        <div
+                          key={item.name}
+                          className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ backgroundColor: item.color }}
+                          ></span>
                           <span className="text-[#172033]">{item.name}</span>
                           <b className="text-[#0f1f3d]">{item.value}</b>
                         </div>
@@ -520,9 +609,19 @@ export default function DeepMineAnalysis({
                     <div className="relative w-[140px] h-[140px] mx-auto">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
-                          <Pie data={PATENT_VALIDITY_DATA} cx="50%" cy="50%" innerRadius={44} outerRadius={70} dataKey="value">
+                          <Pie
+                            data={PATENT_VALIDITY_DATA}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={44}
+                            outerRadius={70}
+                            dataKey="value"
+                          >
                             {PATENT_VALIDITY_DATA.map((entry, index) => (
-                              <Cell key={`patent-validity-${index}`} fill={entry.color} />
+                              <Cell
+                                key={`patent-validity-${index}`}
+                                fill={entry.color}
+                              />
                             ))}
                           </Pie>
                           <Tooltip />
@@ -531,8 +630,14 @@ export default function DeepMineAnalysis({
                     </div>
                     <div className="space-y-4">
                       {PATENT_VALIDITY_DATA.map((item) => (
-                        <div key={item.name} className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></span>
+                        <div
+                          key={item.name}
+                          className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ backgroundColor: item.color }}
+                          ></span>
                           <span className="text-[#172033]">{item.name}</span>
                           <b className="text-[#0f1f3d]">{item.value}</b>
                         </div>
@@ -871,19 +976,15 @@ export default function DeepMineAnalysis({
 
             {/* Action Buttons Row */}
             <div className="flex flex-col md:flex-row gap-[12px] justify-end mt-[22px]">
-              <Button
-                variant="outline"
-                onClick={onAdjustTarget}
-                className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
-              >
-                调整目标
-              </Button>
-              <Button
-                variant="outline"
-                className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
-              >
-                重新分析线索
-              </Button>
+              {onBack && (
+                <Button
+                  variant="outline"
+                  onClick={onBack}
+                  className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
+                >
+                  返回拆解目标
+                </Button>
+              )}
               <Button
                 onClick={onNextStep}
                 className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:translate-y-[-1px]"

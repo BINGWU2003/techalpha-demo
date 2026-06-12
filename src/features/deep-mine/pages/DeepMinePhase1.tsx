@@ -180,7 +180,7 @@ export default function DeepMinePhase1({
 
   return (
     <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_232px] gap-[18px] items-start">
+      <div className="mx-auto w-full">
         <main className="space-y-[18px]">
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">

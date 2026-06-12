@@ -233,7 +233,7 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
         visibleCompanies.length);
 
   return (
-    <div className="max-w-[1120px] mx-auto p-[28px_28px_132px] max-md:p-[22px_16px_126px]">
+    <div className="max-w-[1280px] mx-auto p-[28px_28px_132px] max-md:p-[22px_16px_126px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
         <main className="space-y-4">
           <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
@@ -487,7 +487,7 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
       </div>
 
       <div className="fixed left-4 right-4 bottom-5 z-30 lg:left-[264px]">
-        <div className="mx-auto max-w-[1120px] rounded-[18px] border border-[#dbe4f1] bg-white/95 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur">
+        <div className="mx-auto max-w-[1280px] rounded-[18px] border border-[#dbe4f1] bg-white/95 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-[13px] text-[#64748b]">
               当前展示

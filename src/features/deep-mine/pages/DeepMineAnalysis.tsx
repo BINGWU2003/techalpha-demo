@@ -283,7 +283,7 @@ export default function DeepMineAnalysis({
   }, []);
 
   return (
-    <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
+    <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
         <main>
           <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">

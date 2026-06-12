@@ -282,7 +282,7 @@ export default function DeepMinePhase2({
   };
 
   return (
-    <div className="max-w-[1120px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
+    <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
         <main>
           {/* Panel 1 */}

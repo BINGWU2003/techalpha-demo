@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechAlpha - 事件跟踪</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#0b1f3a;
+      --muted:#66758e;
+      --line:#e3ebf6;
+      --blue:#2f6df6;
+      --blue-50:#eef4ff;
+      --green:#16b978;
+      --green-50:#eaf8f1;
+      --orange:#f59e0b;
+      --orange-50:#fff6e6;
+      --red:#ef4444;
+      --red-50:#fff1f1;
+      --purple:#8057ff;
+      --purple-50:#f2efff;
+      --nav:#07142b;
+    }
+
+    body{
+      margin:0;
+      font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:240px 1fr;
+    }
+
+    .sidebar{
+      background:linear-gradient(180deg,#07172f,#081327);
+      color:#fff;
+      padding:18px 12px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .brand{
+      padding-bottom:18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      margin-bottom:18px;
+    }
+
+    .brand .name{
+      font-size:22px;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .brand .sub{
+      margin-top:5px;
+      font-size:12px;
+      color:#82a7ff;
+      letter-spacing:.8px;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .nav a{
+      color:#cdd6e7;
+      text-decoration:none;
+      height:44px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:0 12px;
+      border-radius:10px;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .nav a.active{
+      color:#fff;
+      background:var(--blue);
+      box-shadow:0 8px 22px rgba(47,109,246,.28);
+    }
+
+    .icon{
+      width:16px;
+      height:16px;
+      border:1.6px solid currentColor;
+      border-radius:4px;
+      display:inline-block;
+      opacity:.9;
+    }
+
+    .recent-title{
+      margin:24px 8px 10px;
+      color:#61708c;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .recent{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .recent div{
+      color:#8fa0bd;
+      font-size:12px;
+      line-height:1.45;
+      padding:8px 10px;
+      border-radius:8px;
+    }
+
+    .recent div.active{
+      color:#dce7ff;
+      background:rgba(255,255,255,.06);
+    }
+
+    .ready{
+      margin-top:auto;
+      color:#87f0b7;
+      font-size:12px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    main{
+      padding:28px 48px 56px;
+    }
+
+    .wrap{
+      max-width:1160px;
+      margin:0 auto;
+    }
+
+    .canvas{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:0 16px 40px rgba(23,39,70,.05);
+      padding:28px;
+    }
+
+    .head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:22px;
+    }
+
+    h1{
+      margin:0;
+      font-size:32px;
+      line-height:1.2;
+      letter-spacing:-.4px;
+    }
+
+    .subtitle{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .summary{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .summary-item{
+      border:1px solid var(--line);
+      background:#f8fbff;
+      border-radius:14px;
+      padding:10px 14px;
+      min-width:88px;
+    }
+
+    .summary-label{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:5px;
+    }
+
+    .summary-num{
+      font-size:22px;
+      line-height:1;
+      font-weight:900;
+    }
+
+    .filters{
+      border-top:1px solid var(--line);
+      padding-top:20px;
+    }
+
+    .quick{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .pill{
+      border:1px solid #d6e2f2;
+      background:#fff;
+      color:#18345d;
+      padding:10px 18px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .pill.active{
+      color:#fff;
+      background:var(--blue);
+      border-color:var(--blue);
+      box-shadow:0 8px 18px rgba(47,109,246,.18);
+    }
+
+    .tool-row{
+      display:grid;
+      grid-template-columns:1.5fr 1fr 1fr 1.1fr;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    input,select{
+      width:100%;
+      height:44px;
+      border:1px solid #d9e4f1;
+      border-radius:12px;
+      background:#fff;
+      padding:0 14px;
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+
+    .result-line{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border:1px solid var(--line);
+      background:#f8fbff;
+      border-radius:16px;
+      padding:12px 16px;
+      color:#4e5f78;
+      font-size:13px;
+      margin-bottom:14px;
+    }
+
+    .result-line b{
+      color:var(--blue);
+    }
+
+    .events{
+      border-top:1px solid var(--line);
+    }
+
+    .event{
+      display:grid;
+      grid-template-columns:34px minmax(0,1fr) 110px;
+      gap:14px;
+      padding:20px 8px;
+      border-bottom:1px solid var(--line);
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .event:hover{
+      background:#f8fbff;
+      margin-left:-8px;
+      margin-right:-8px;
+      padding-left:16px;
+      padding-right:16px;
+      border-radius:16px;
+    }
+
+    .event-icon{
+      width:28px;
+      height:28px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:15px;
+    }
+
+    .event-icon.blue{background:var(--blue-50);color:var(--blue);}
+    .event-icon.green{background:var(--green-50);color:var(--green);}
+    .event-icon.orange{background:var(--orange-50);color:var(--orange);}
+    .event-icon.red{background:var(--red-50);color:var(--red);}
+    .event-icon.purple{background:var(--purple-50);color:var(--purple);}
+
+    .event-title{
+      font-size:16px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .event-desc{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+      max-width:780px;
+    }
+
+    .tags{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      background:#f2f5fa;
+      color:#66758e;
+    }
+
+    .tag.blue{background:var(--blue-50);color:var(--blue);}
+    .tag.green{background:var(--green-50);color:var(--green);}
+    .tag.orange{background:var(--orange-50);color:#b76a00;}
+    .tag.red{background:var(--red-50);color:var(--red);}
+    .tag.purple{background:var(--purple-50);color:var(--purple);}
+
+    .time{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      color:var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .more{
+      display:flex;
+      justify-content:flex-start;
+      padding-top:18px;
+    }
+
+    .btn{
+      border:1px solid #d6e2f2;
+      background:#fff;
+      color:#18345d;
+      height:42px;
+      padding:0 16px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(11,23,42,.32);
+      backdrop-filter:blur(2px);
+      opacity:0;
+      pointer-events:none;
+      transition:.18s ease;
+      z-index:20;
+    }
+
+    .drawer{
+      position:fixed;
+      top:0;
+      right:0;
+      width:420px;
+      height:100vh;
+      background:#fff;
+      box-shadow:-20px 0 50px rgba(11,23,42,.18);
+      transform:translateX(100%);
+      transition:.22s ease;
+      z-index:30;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .overlay.show{opacity:1;pointer-events:auto;}
+    .drawer.show{transform:translateX(0);}
+
+    .drawer-head{
+      padding:22px 24px 14px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .drawer-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .drawer h2{
+      margin:0;
+      font-size:22px;
+      line-height:1.35;
+    }
+
+    .close{
+      border:0;
+      background:#f3f6fb;
+      width:32px;
+      height:32px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:18px;
+      color:#66758e;
+    }
+
+    .drawer-body{
+      padding:20px 24px;
+      overflow:auto;
+      flex:1;
+    }
+
+    .section{
+      margin-bottom:22px;
+    }
+
+    .section-title{
+      font-size:15px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .info{
+      border:1px solid var(--line);
+      background:#f9fbfe;
+      border-radius:14px;
+      padding:12px;
+    }
+
+    .info .k{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .info .v{
+      font-size:15px;
+      font-weight:900;
+    }
+
+    .evidence{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:13px 14px;
+      margin-bottom:10px;
+      line-height:1.65;
+      color:#31415d;
+      font-size:13px;
+      background:#fff;
+    }
+
+    .drawer-actions{
+      border-top:1px solid var(--line);
+      padding:16px 24px;
+      display:flex;
+      gap:10px;
+    }
+
+    .btn.primary{
+      background:var(--blue);
+      color:#fff;
+      border-color:var(--blue);
+      flex:1;
+    }
+
+    .btn.secondary{
+      flex:1;
+    }
+
+    @media(max-width:1100px){
+      .app{grid-template-columns:1fr;}
+      .sidebar{display:none;}
+      main{padding:20px;}
+      .tool-row{grid-template-columns:1fr 1fr;}
+      .event{grid-template-columns:34px 1fr;}
+      .time{grid-column:2;justify-content:flex-start;}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="name">TechAlpha</div>
+        <div class="sub">AI INVESTMENT OS</div>
+      </div>
+
+      <nav class="nav">
+        <a href="#"><span class="icon"></span>新建任务</a>
+        <a href="#"><span class="icon"></span>企业库</a>
+        <a href="#"><span class="icon"></span>报告库</a>
+        <a class="active" href="#"><span class="icon"></span>事件跟踪</a>
+      </nav>
+
+      <div class="recent-title">最近任务记录</div>
+      <div class="recent">
+        <div>分析钠电池正极材料赛道机会</div>
+        <div>挖掘钠电池正极材料核心企业</div>
+        <div>生成浙江钠创新能源报告</div>
+        <div class="active">跟踪机器人灵巧手企业动态</div>
+      </div>
+
+      <div class="ready">● AI 引擎已就绪</div>
+    </aside>
+
+    <main>
+      <div class="wrap">
+        <section class="canvas">
+          <div class="head">
+            <div>
+              <h1>事件跟踪</h1>
+              <p class="subtitle">已关注企业和标的池企业的最新事件。</p>
+            </div>
+
+            <div class="summary">
+              <div class="summary-item">
+                <div class="summary-label">今日新增</div>
+                <div class="summary-num">4</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">本周新增</div>
+                <div class="summary-num">18</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">跟踪企业</div>
+                <div class="summary-num">26</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filters">
+            <div class="quick">
+              <button class="pill active">全部 18</button>
+              <button class="pill">融资/资本 2</button>
+              <button class="pill">专利/技术 7</button>
+              <button class="pill">客户/订单 3</button>
+              <button class="pill">工商/股权 4</button>
+              <button class="pill">风险/舆情 2</button>
+            </div>
+
+            <div class="tool-row">
+              <input placeholder="搜索企业或事件..." />
+              <select>
+                <option>全部企业</option>
+                <option>已关注企业</option>
+                <option>标的池企业</option>
+              </select>
+              <select>
+                <option>全部类型</option>
+                <option>融资/资本</option>
+                <option>专利/技术</option>
+                <option>客户/订单</option>
+                <option>工商/股权</option>
+                <option>风险/舆情</option>
+              </select>
+              <select>
+                <option>按时间排序</option>
+                <option>按企业名称排序</option>
+              </select>
+            </div>
+
+            <div class="result-line">
+              <span>当前结果：<b>18</b> 条事件｜范围：已关注企业 + 标的池企业</span>
+              <span>点击事件查看详情</span>
+            </div>
+          </div>
+
+          <div class="events">
+            <div class="event" onclick="openDrawer(0)">
+              <div class="event-icon orange">¥</div>
+              <div>
+                <div class="event-title">浙江钠创新能源出现融资相关动态</div>
+                <div class="event-desc">系统发现融资相关公开线索，可能影响估值判断和进入时点，可补充到企业记录。</div>
+                <div class="tags">
+                  <span class="tag orange">融资/资本</span>
+                  <span class="tag purple">已关注企业</span>
+                  <span class="tag">浙江钠创新能源</span>
+                </div>
+              </div>
+              <div class="time">2小时前</div>
+            </div>
+
+            <div class="event" onclick="openDrawer(1)">
+              <div class="event-icon green">✓</div>
+              <div>
+                <div class="event-title">中科海钠发布产业合作动态</div>
+                <div class="event-desc">新增动态与客户验证和产业协同相关，可同步到企业记录，并补充产业化观察线索。</div>
+                <div class="tags">
+                  <span class="tag green">客户/订单</span>
+                  <span class="tag blue">标的池企业</span>
+                  <span class="tag">中科海钠</span>
+                </div>
+              </div>
+              <div class="time">今天</div>
+            </div>
+
+            <div class="event" onclick="openDrawer(2)">
+              <div class="event-icon blue">P</div>
+              <div>
+                <div class="event-title">某新材料科技公司新增相关专利</div>
+                <div class="event-desc">系统发现聚阴离子方向相关专利新增，说明企业在目标方向仍有技术布局。</div>
+                <div class="tags">
+                  <span class="tag blue">专利/技术</span>
+                  <span class="tag purple">已关注企业</span>
+                  <span class="tag">某新材料科技公司</span>
+                </div>
+              </div>
+              <div class="time">昨天</div>
+            </div>
+
+            <div class="event" onclick="openDrawer(3)">
+              <div class="event-icon blue">P</div>
+              <div>
+                <div class="event-title">浙江钠创新能源新增专利申请</div>
+                <div class="event-desc">新增专利与层状氧化物材料制备工艺相关，可补充到企业技术线索。</div>
+                <div class="tags">
+                  <span class="tag blue">专利/技术</span>
+                  <span class="tag purple">已关注企业</span>
+                  <span class="tag">浙江钠创新能源</span>
+                </div>
+              </div>
+              <div class="time">昨天</div>
+            </div>
+
+            <div class="event" onclick="openDrawer(4)">
+              <div class="event-icon red">!</div>
+              <div>
+                <div class="event-title">某企业出现经营异常相关信息</div>
+                <div class="event-desc">系统识别到工商或经营异常相关公开信息，建议核对主体后更新企业风险记录。</div>
+                <div class="tags">
+                  <span class="tag red">风险/舆情</span>
+                  <span class="tag purple">已关注企业</span>
+                  <span class="tag">某材料企业</span>
+                </div>
+              </div>
+              <div class="time">3天前</div>
+            </div>
+          </div>
+
+          <div class="more">
+            <button class="btn">查看更多事件</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <div class="drawer-top">
+        <div>
+          <h2 id="drawerTitle">浙江钠创新能源出现融资相关动态</h2>
+          <div class="tags" id="drawerTags">
+            <span class="tag orange">融资/资本</span>
+            <span class="tag purple">已关注企业</span>
+          </div>
+        </div>
+        <button class="close" onclick="closeDrawer()">×</button>
+      </div>
+    </div>
+
+    <div class="drawer-body">
+      <div class="section">
+        <div class="section-title">事件信息</div>
+        <div class="info-grid">
+          <div class="info">
+            <div class="k">关联企业</div>
+            <div class="v" id="company">浙江钠创新能源</div>
+          </div>
+          <div class="info">
+            <div class="k">企业状态</div>
+            <div class="v" id="companyStatus">已关注</div>
+          </div>
+          <div class="info">
+            <div class="k">事件类型</div>
+            <div class="v" id="eventType">融资/资本</div>
+          </div>
+          <div class="info">
+            <div class="k">更新时间</div>
+            <div class="v" id="eventTime">2小时前</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">事件摘要</div>
+        <div class="evidence" id="summaryText">系统发现该企业出现融资相关公开线索，可能影响估值判断和进入时点。建议补充资本背景信息，并关注后续融资金额、投资方和资金用途。</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">代表证据</div>
+        <div class="evidence" id="evidenceText">公开信息中出现融资、投资方或资本动态相关表述，当前建议作为企业记录补充，不直接形成投资结论。</div>
+      </div>
+    </div>
+
+    <div class="drawer-actions">
+      <button class="btn secondary">同步到企业记录</button>
+      <button class="btn primary">查看企业</button>
+    </div>
+  </aside>
+
+  <script>
+    const data = [
+      {
+        title:'浙江钠创新能源出现融资相关动态',
+        tags:'<span class="tag orange">融资/资本</span><span class="tag purple">已关注企业</span>',
+        company:'浙江钠创新能源',
+        status:'已关注',
+        type:'融资/资本',
+        time:'2小时前',
+        summary:'系统发现该企业出现融资相关公开线索，可能影响估值判断和进入时点。建议补充资本背景信息，并关注后续融资金额、投资方和资金用途。',
+        evidence:'公开信息中出现融资、投资方或资本动态相关表述，当前建议作为企业记录补充，不直接形成投资结论。'
+      },
+      {
+        title:'中科海钠发布产业合作动态',
+        tags:'<span class="tag green">客户/订单</span><span class="tag blue">标的池企业</span>',
+        company:'中科海钠',
+        status:'标的池企业',
+        type:'客户/订单',
+        time:'今天',
+        summary:'新增动态与客户验证和产业协同相关，可同步到企业记录，并补充产业化观察线索。',
+        evidence:'公开信息中出现客户合作、产业协同或项目进展相关内容，适合作为企业产业化信号补充。'
+      },
+      {
+        title:'某新材料科技公司新增相关专利',
+        tags:'<span class="tag blue">专利/技术</span><span class="tag purple">已关注企业</span>',
+        company:'某新材料科技公司',
+        status:'已关注',
+        type:'专利/技术',
+        time:'昨天',
+        summary:'系统发现聚阴离子方向相关专利新增，说明企业在目标方向仍有技术布局。',
+        evidence:'新增专利标题与聚阴离子正极材料、循环寿命或材料稳定性相关。'
+      },
+      {
+        title:'浙江钠创新能源新增专利申请',
+        tags:'<span class="tag blue">专利/技术</span><span class="tag purple">已关注企业</span>',
+        company:'浙江钠创新能源',
+        status:'已关注',
+        type:'专利/技术',
+        time:'昨天',
+        summary:'新增专利与层状氧化物材料制备工艺相关，可补充到企业技术线索。',
+        evidence:'新增专利与层状氧化物正极材料制备工艺相关，可作为后续初筛报告更新依据。'
+      },
+      {
+        title:'某企业出现经营异常相关信息',
+        tags:'<span class="tag red">风险/舆情</span><span class="tag purple">已关注企业</span>',
+        company:'某材料企业',
+        status:'已关注',
+        type:'风险/舆情',
+        time:'3天前',
+        summary:'系统识别到工商或经营异常相关公开信息，建议核对主体后更新企业风险记录。',
+        evidence:'公开工商信息中出现经营异常、行政处罚或司法风险相关字段，需人工核验主体后再更新记录。'
+      }
+    ];
+
+    function openDrawer(i){
+      const item = data[i];
+      document.getElementById('drawerTitle').innerText = item.title;
+      document.getElementById('drawerTags').innerHTML = item.tags;
+      document.getElementById('company').innerText = item.company;
+      document.getElementById('companyStatus').innerText = item.status;
+      document.getElementById('eventType').innerText = item.type;
+      document.getElementById('eventTime').innerText = item.time;
+      document.getElementById('summaryText').innerText = item.summary;
+      document.getElementById('evidenceText').innerText = item.evidence;
+      document.getElementById('overlay').classList.add('show');
+      document.getElementById('drawer').classList.add('show');
+    }
+
+    function closeDrawer(){
+      document.getElementById('overlay').classList.remove('show');
+      document.getElementById('drawer').classList.remove('show');
+    }
+  </script>
+</body>
+</html>

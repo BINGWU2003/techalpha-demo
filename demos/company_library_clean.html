@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechAlpha - 企业库</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{--bg:#f4f7fb;--nav:#0b1730;--blue:#2f6df6;--blue2:#edf4ff;--green:#18a957;--green2:#eaf8f0;--orange:#f59e0b;--orange2:#fff7e8;--purple:#7c5cff;--purple2:#f2eeff;--red:#ef4444;--red2:#fff1f1;--text:#102039;--muted:#718096;--line:#e3ebf6;--card:#fff;--shadow:0 12px 34px rgba(18,39,80,.06);--radius:24px}
+    body{margin:0;font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,#081832,#0a142b);color:#fff;padding:18px 12px;display:flex;flex-direction:column}
+    .logo{padding:4px 8px 18px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px}.logo h1{margin:0;font-size:25px;line-height:1}.logo p{margin:5px 0 0;font-size:11px;letter-spacing:.8px;color:rgba(255,255,255,.62)}
+    .nav{display:grid;gap:8px}.nav a{color:rgba(255,255,255,.82);text-decoration:none;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:700;display:flex;gap:10px;align-items:center}.nav a.active{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(47,109,246,.28)}
+    .ico{width:16px;height:16px;border:1.5px solid currentColor;border-radius:4px}.recent-title{margin:22px 8px 10px;font-size:12px;color:rgba(255,255,255,.52)}.recent{font-size:12px;line-height:1.45;color:rgba(255,255,255,.72);padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.035);margin-bottom:7px}.footer{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.62)}
+    .page{padding:34px 36px 44px}.shell{max-width:1440px;margin:0 auto}.canvas{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.head{padding:30px 28px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)}
+    h1{margin:0;font-size:34px;letter-spacing:-.5px;line-height:1.2}.desc{margin-top:10px;color:var(--muted);font-size:14px}.stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.stat{padding:8px 12px;border-radius:999px;background:#f6f9fd;border:1px solid #e6edf7;color:#536177;font-size:13px;font-weight:800}.stat strong{color:var(--blue);font-size:16px;margin-left:3px}
+    .tools{padding:20px 24px 16px;border-bottom:1px solid var(--line);background:#fff}.quick{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}.chip{border:1px solid #dce6f6;background:#fff;color:#4d5b73;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:800;cursor:pointer;transition:.16s ease}.chip.active{background:var(--blue2);border-color:#bdd1ff;color:var(--blue)}.chip span{color:#8a96aa;margin-left:3px}
+    .filters{display:grid;grid-template-columns:minmax(260px,1.5fr) repeat(2,minmax(150px,1fr)) 150px;gap:10px}select,.search{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 12px;color:#3f4d65;font-size:13px;outline:none;font-family:inherit}.search{padding:0 14px}select:focus,.search:focus{border-color:#a9c2ff;box-shadow:0 0 0 4px rgba(47,109,246,.08)}
+    .result-line{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:13px 24px;border-bottom:1px solid var(--line);color:#536177;font-size:13px;background:#fbfdff}.result-line strong{color:var(--text)}.hint{color:#8b96a8}
+    table{width:100%;border-collapse:collapse;table-layout:fixed;background:#fff}th{text-align:left;font-size:12px;color:#7a8699;font-weight:900;padding:14px 18px;border-bottom:1px solid var(--line);background:#fbfcff}td{padding:18px;border-bottom:1px solid #eef3fa;vertical-align:middle;font-size:14px}.asset-row{cursor:pointer;transition:.16s ease}.asset-row:hover{background:#f7faff}.asset-row.selected{background:#f3f7ff}.name{font-weight:900;font-size:15px;line-height:1.45}.sub{margin-top:5px;color:#8a96a8;font-size:12px}.tags,.signals{display:flex;flex-wrap:wrap;gap:7px}.tag{display:inline-flex;align-items:center;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:900;color:var(--blue);background:var(--blue2)}.tag.green{background:var(--green2);color:var(--green)}.tag.orange{background:var(--orange2);color:#bd6b00}.tag.purple{background:var(--purple2);color:var(--purple)}.tag.gray{background:#f2f5fa;color:#5d687b}.last{color:#43506a;font-size:13px;line-height:1.6}.arrow{text-align:right;color:#a0aabc;font-weight:900;font-size:20px}
+    .overlay{position:fixed;inset:0;background:rgba(12,25,48,.42);opacity:0;pointer-events:none;transition:.18s ease;z-index:20}.overlay.open{opacity:1;pointer-events:auto}.drawer{position:fixed;right:0;top:0;height:100vh;width:460px;max-width:92vw;background:#fff;box-shadow:-18px 0 44px rgba(15,30,60,.18);transform:translateX(104%);transition:.22s ease;z-index:30;display:flex;flex-direction:column}.drawer.open{transform:translateX(0)}.drawer-inner{padding:22px;overflow:auto;height:100%}.drawer-title{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}.drawer h2{margin:0;font-size:24px;line-height:1.35}.drawer .drawer-sub{margin-top:8px;color:#7b879b;font-size:13px}.close{width:34px;height:34px;border-radius:12px;border:1px solid var(--line);background:#f7f9fd;color:#6d7890;cursor:pointer;font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center}.section{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px}.section h3{margin:0 0 12px;font-size:15px}.kv{display:grid;grid-template-columns:94px 1fr;gap:10px;font-size:13px;line-height:1.6;padding:7px 0;border-bottom:1px dashed #edf1f7}.kv:last-child{border-bottom:none}.k{color:#7b879b}.v{color:#243149;font-weight:800}.note{color:#43506a;font-size:13px;line-height:1.75;margin:0}.actions{display:grid;gap:10px;margin-top:16px}.btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:800;cursor:pointer;text-decoration:none;text-align:center;transition:.16s ease}.btn:hover{border-color:#cbd8eb;transform:translateY(-1px)}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 10px 20px rgba(47,109,246,.16)}.btn.green{background:var(--green);border-color:var(--green);color:#fff}.btn.gray{background:#f7f9fd;color:#657287}.btn.red{background:#fff;color:var(--red);border-color:#ffd6d6}
+    @media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{display:none}.page{padding:24px 18px}.filters{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){.filters{grid-template-columns:1fr}.result-line{align-items:flex-start;flex-direction:column}table,thead,tbody,tr,td{display:block;width:100%}thead{display:none}.asset-row{padding:14px 16px;border-bottom:1px solid #eef3fa}td{padding:7px 0;border-bottom:none}.arrow{text-align:left}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo"><h1>TechAlpha</h1><p>AI INVESTMENT OS</p></div>
+    <nav class="nav">
+      <a href="./new_task_business_minimal_v2.html"><span class="ico"></span>新建任务</a>
+      <a class="active" href="#"><span class="ico"></span>企业库</a>
+      <a href="./report_library_clean.html"><span class="ico"></span>报告库</a>
+      <a href="#"><span class="ico"></span>跟踪预警</a>
+    </nav>
+    <div class="recent-title">最近任务</div>
+    <div class="recent">钠电池正极材料方向企业挖掘</div>
+    <div class="recent">机器人灵巧手企业线索</div>
+    <div class="recent">Chiplet先进封装潜力企业</div>
+    <div class="footer">AI 引擎已就绪</div>
+  </aside>
+  <main class="page">
+    <div class="shell">
+      <section class="canvas">
+        <header class="head">
+          <h1>企业库</h1>
+          <div class="desc">管理已关注企业，并决定是否加入标的池、开启跟踪或生成初筛报告。</div>
+          <div class="stats"><span class="stat">已关注<strong>68</strong></span><span class="stat">标的池<strong>12</strong></span><span class="stat">已初筛<strong>24</strong></span><span class="stat">跟踪中<strong>9</strong></span></div>
+        </header>
+        <div class="tools">
+          <div class="quick" id="quickFilters">
+            <button class="chip active" data-filter="全部">全部企业<span>68</span></button>
+            <button class="chip" data-filter="已关注">已关注<span>68</span></button>
+            <button class="chip" data-filter="标的池">标的池<span>12</span></button>
+            <button class="chip" data-filter="已初筛">已初筛<span>24</span></button>
+            <button class="chip" data-filter="跟踪中">跟踪中<span>9</span></button>
+          </div>
+          <div class="filters">
+            <input class="search" id="search" placeholder="搜索企业名称或技术标签" />
+            <select id="direction"><option>全部方向</option><option>钠电池正极材料</option><option>存算一体</option><option>机器人灵巧手</option></select>
+            <select id="status"><option>全部状态</option><option>已关注</option><option>标的池</option><option>已初筛</option><option>跟踪中</option></select>
+            <select id="sort"><option>最近更新</option><option>最近关注</option><option>已初筛优先</option></select>
+          </div>
+        </div>
+        <div class="result-line"><div><strong id="resultCount">当前结果：5家</strong>｜点击企业行查看详情与资产操作</div><div class="hint">入池与跟踪不默认联动，需单独确认</div></div>
+        <table><thead><tr><th style="width:25%">企业</th><th style="width:18%">关注方向</th><th style="width:22%">资产状态</th><th style="width:22%">核心信号</th><th>最近动作</th><th style="width:54px"></th></tr></thead><tbody id="list"></tbody></table>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer"><div class="drawer-inner">
+  <div class="drawer-title"><div><h2 id="dName">浙江钠创新能源</h2><div class="drawer-sub" id="dSub">钠电池正极材料｜已关注</div></div><button class="close" id="close">×</button></div>
+  <div class="tags" id="dTags"></div>
+  <div class="section"><h3>企业资产信息</h3><div class="kv"><div class="k">关注方向</div><div class="v" id="dDirection"></div></div><div class="kv"><div class="k">来源</div><div class="v" id="dSource"></div></div><div class="kv"><div class="k">资产状态</div><div class="v" id="dStatus"></div></div><div class="kv"><div class="k">最近动作</div><div class="v" id="dLast"></div></div></div>
+  <div class="section"><h3>核心信号</h3><p class="note" id="dSignals"></p></div>
+  <div class="section"><h3>建议动作</h3><p class="note" id="dAdvice"></p></div>
+  <div class="actions"><button class="btn green" id="poolBtn">加入标的池</button><button class="btn primary" id="trackBtn">开启跟踪</button><button class="btn" id="reportBtn">生成初筛报告</button><button class="btn red" id="cancelBtn">取消关注</button></div>
+</div></aside>
+<script>
+const rows=[
+{id:1,name:'浙江钠创新能源',type:'非上市企业',direction:'钠电池正极材料',source:'钠电池正极材料企业发现任务',status:['已关注','待入池'],signals:['专利活跃','融资动态'],last:'生成企业初筛报告',pooled:false,tracking:false,report:true,advice:'该企业已生成初筛报告，建议根据报告结论决定是否加入标的池，并单独开启跟踪。'},
+{id:2,name:'中科海钠',type:'非上市企业',direction:'钠电体系化布局',source:'企业库历史关注',status:['标的池','跟踪中'],signals:['产业协同','技术领先'],last:'更新企业动态',pooled:true,tracking:true,report:true,advice:'该企业已在标的池且开启跟踪，可持续观察融资、产品与客户进展。'},
+{id:3,name:'某新材料科技公司',type:'非上市企业',direction:'聚阴离子',source:'钠电池正极材料企业发现任务',status:['已关注'],signals:['客户线索','需复核'],last:'关注企业',pooled:false,tracking:false,report:false,advice:'当前为已关注企业，可先生成初筛报告，再决定是否加入标的池。'},
+{id:4,name:'某储能材料企业',type:'非上市企业',direction:'普鲁士蓝',source:'人工录入企业',status:['已关注','低优先级'],signals:['专利增长','商业化不确定'],last:'补充企业标签',pooled:false,tracking:false,report:false,advice:'该企业信息仍偏弱，建议补充线索后再考虑初筛。'},
+{id:5,name:'深圳时识科技有限公司',type:'非上市企业',direction:'存算一体神经形态芯片',source:'存算一体企业探索任务',status:['已关注','已初筛'],signals:['专利信号','展会线索'],last:'查看初筛报告',pooled:false,tracking:false,report:true,advice:'已生成初筛报告，建议查看报告后决定是否加入标的池。'}
+];
+let active='全部', selected=1;const list=document.getElementById('list'),overlay=document.getElementById('overlay'),drawer=document.getElementById('drawer');
+function tagClass(t){if(['标的池','跟踪中','已初筛','专利活跃','产业协同','专利增长'].includes(t))return 'green';if(['待入池','融资动态','客户线索','商业化不确定'].includes(t))return 'orange';if(['低优先级','需复核'].includes(t))return 'gray';return ''}
+function filtered(){const q=document.getElementById('search').value.trim();const dir=document.getElementById('direction').value;const st=document.getElementById('status').value;return rows.filter(r=>(active==='全部'||active==='全部企业'||r.status.includes(active)||active==='已关注')&&(dir==='全部方向'||r.direction===dir)&&(st==='全部状态'||r.status.includes(st))&&(!q||r.name.includes(q)||r.direction.includes(q)||r.signals.join('').includes(q)))}
+function render(){const data=filtered();document.getElementById('resultCount').textContent=`当前结果：${data.length}家`;list.innerHTML=data.map(r=>`<tr class="asset-row ${r.id===selected?'selected':''}" data-id="${r.id}"><td><div class="name">${r.name}</div><div class="sub">来源：${r.source}</div></td><td><span class="tag">${r.direction}</span></td><td><div class="tags">${r.status.map(s=>`<span class="tag ${tagClass(s)}">${s}</span>`).join('')}</div></td><td><div class="signals">${r.signals.map(s=>`<span class="tag ${tagClass(s)}">${s}</span>`).join('')}</div></td><td><div class="last">${r.last}</div></td><td class="arrow">›</td></tr>`).join('')||`<tr><td colspan="6" style="text-align:center;padding:42px;color:#8792a6">当前条件下暂无企业</td></tr>`;document.querySelectorAll('.asset-row').forEach(el=>el.onclick=()=>{selected=Number(el.dataset.id);renderDrawer();render();openD()})}
+function renderDrawer(){const r=rows.find(x=>x.id===selected);document.getElementById('dName').textContent=r.name;document.getElementById('dSub').textContent=`${r.direction}｜${r.type}`;document.getElementById('dTags').innerHTML=[`<span class="tag">${r.direction}</span>`,...r.status.map(s=>`<span class="tag ${tagClass(s)}">${s}</span>`)].join('');document.getElementById('dDirection').textContent=r.direction;document.getElementById('dSource').textContent=r.source;document.getElementById('dStatus').textContent=r.status.join('、');document.getElementById('dLast').textContent=r.last;document.getElementById('dSignals').textContent=r.signals.join('、');document.getElementById('dAdvice').textContent=r.advice;document.getElementById('poolBtn').textContent=r.pooled?'已在标的池':'加入标的池';document.getElementById('poolBtn').className=r.pooled?'btn green':'btn';document.getElementById('trackBtn').textContent=r.tracking?'已开启跟踪':'开启跟踪';document.getElementById('trackBtn').className=r.tracking?'btn green':'btn primary';document.getElementById('reportBtn').textContent=r.report?'查看初筛报告':'生成初筛报告'}
+function openD(){overlay.classList.add('open');drawer.classList.add('open')}function closeD(){overlay.classList.remove('open');drawer.classList.remove('open')}
+document.getElementById('quickFilters').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');active=c.dataset.filter;render()};['search','direction','status','sort'].forEach(id=>document.getElementById(id).addEventListener('input',render));['direction','status','sort'].forEach(id=>document.getElementById(id).addEventListener('change',render));document.getElementById('close').onclick=closeD;overlay.onclick=closeD;document.getElementById('poolBtn').onclick=()=>{let r=rows.find(x=>x.id===selected);r.pooled=!r.pooled;r.status=r.status.filter(s=>s!=='标的池'&&s!=='待入池');r.status.push(r.pooled?'标的池':'已关注');renderDrawer();render()};document.getElementById('trackBtn').onclick=()=>{let r=rows.find(x=>x.id===selected);r.tracking=!r.tracking;r.status=r.status.filter(s=>s!=='跟踪中');if(r.tracking)r.status.push('跟踪中');renderDrawer();render()};document.getElementById('reportBtn').onclick=()=>{let r=rows.find(x=>x.id===selected);if(r.report){location.href='./screening_report_clean_v3.html'}else{r.report=true;r.status.push('已初筛');r.last='生成初筛报告';renderDrawer();render()}};render();renderDrawer();
+</script>
+</body>
+</html>

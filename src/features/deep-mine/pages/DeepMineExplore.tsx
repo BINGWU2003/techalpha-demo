@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { ArrowLeft, Star, X } from "lucide-react";
 import {
   Input as AntInput,
+  Modal,
   Select as AntSelect,
   Table as AntTable,
 } from "antd";
@@ -25,6 +26,12 @@ type Company = {
 };
 
 type ReportStatus = "none" | "running" | "ready";
+
+type FilterChip = {
+  key: string;
+  label: string;
+  onClear: () => void;
+};
 
 const QUICK_FILTERS = [
   { name: "全部", count: 350 },
@@ -220,6 +227,21 @@ const getMetricNumber = (metrics: string[], keyword: string) => {
   return value ? Number(value.replace(/\D/g, "")) : 0;
 };
 
+const hasEventSignal = (company: Company) =>
+  company.summary.includes("展会") ||
+  company.metrics.some(
+    (metric) => metric.includes("展会") || metric.includes("创赛"),
+  );
+
+const matchesQuickFilter = (company: Company, filter: string) =>
+  filter === "全部" ||
+  (filter === "强技术布局" &&
+    getMetricNumber(company.metrics, "相关专利") >= 12) ||
+  (filter === "近三年活跃" &&
+    getMetricNumber(company.metrics, "近三年新增") >= 3) ||
+  (filter === "创赛/展会出现" && hasEventSignal(company)) ||
+  (filter === "高校院所转化" && company.type.includes("高校/科研院所"));
+
 export default function DeepMineExplore({
   onBack,
   onGenerateReport,
@@ -264,25 +286,58 @@ export default function DeepMineExplore({
     setSort("默认排序");
   };
 
+  const activeFilterChips: FilterChip[] = [
+    quickFilter !== "全部"
+      ? {
+          key: "quickFilter",
+          label: `快捷筛选：${quickFilter}`,
+          onClear: () => setQuickFilter("全部"),
+        }
+      : null,
+    route !== "全部路线"
+      ? {
+          key: "route",
+          label: `路线：${route}`,
+          onClear: () => setRoute("全部路线"),
+        }
+      : null,
+    type !== "全部类型"
+      ? {
+          key: "type",
+          label: `类型：${type}`,
+          onClear: () => setType("全部类型"),
+        }
+      : null,
+    source !== "全部来源"
+      ? {
+          key: "source",
+          label: `来源：${source}`,
+          onClear: () => setSource("全部来源"),
+        }
+      : null,
+    keyword.trim() !== ""
+      ? {
+          key: "keyword",
+          label: `关键词：${keyword.trim()}`,
+          onClear: () => setKeyword(""),
+        }
+      : null,
+    sort !== "默认排序"
+      ? {
+          key: "sort",
+          label: `排序：${sort}`,
+          onClear: () => setSort("默认排序"),
+        }
+      : null,
+  ].filter((chip): chip is FilterChip => Boolean(chip));
+
   const visibleCompanies = useMemo(() => {
-    return COMPANIES.filter((company) => {
+    const filteredCompanies = COMPANIES.filter((company) => {
       const matchesRoute =
         route === "全部路线" || company.route.includes(route);
       const matchesType = type === "全部类型" || company.type.includes(type);
       const matchesSource = source === "全部来源" || company.source === source;
-      const matchesQuick =
-        quickFilter === "全部" ||
-        (quickFilter === "强技术布局" &&
-          getMetricNumber(company.metrics, "相关专利") >= 12) ||
-        (quickFilter === "近三年活跃" &&
-          getMetricNumber(company.metrics, "近三年新增") >= 3) ||
-        (quickFilter === "创赛/展会出现" &&
-          (company.summary.includes("展会") ||
-            company.metrics.some(
-              (metric) => metric.includes("展会") || metric.includes("创赛"),
-            ))) ||
-        (quickFilter === "高校院所转化" &&
-          company.type.includes("高校/科研院所"));
+      const matchesQuick = matchesQuickFilter(company, quickFilter);
       const matchesKeyword =
         keyword.trim() === "" ||
         company.name.includes(keyword.trim()) ||
@@ -297,11 +352,31 @@ export default function DeepMineExplore({
         matchesKeyword
       );
     });
-  }, [keyword, quickFilter, route, source, type]);
+
+    return [...filteredCompanies].sort((first, second) => {
+      if (sort === "最近活跃优先") {
+        return (
+          getMetricNumber(second.metrics, "近三年新增") -
+          getMetricNumber(first.metrics, "近三年新增")
+        );
+      }
+
+      if (sort === "相关专利数优先") {
+        return (
+          getMetricNumber(second.metrics, "相关专利") -
+          getMetricNumber(first.metrics, "相关专利")
+        );
+      }
+
+      if (sort === "创赛/展会命中优先") {
+        return Number(hasEventSignal(second)) - Number(hasEventSignal(first));
+      }
+
+      return 0;
+    });
+  }, [keyword, quickFilter, route, sort, source, type]);
 
   const resultCount = visibleCompanies.length;
-
-  const filterSummary = [route, type, source].join("、");
 
   const toggleWatch = (company: Company) => {
     setWatchedCompanies((prev) => ({
@@ -322,25 +397,53 @@ export default function DeepMineExplore({
       return;
     }
 
-    const shouldGenerate = window.confirm(
-      "将为该企业生成初筛报告，消耗1个初筛额度。是否继续？",
-    );
+    Modal.confirm({
+      title: "生成企业初筛报告？",
+      content: `将为「${company.name}」生成初筛报告，消耗 1 个初筛额度。生成完成后可进入独立报告页查看。`,
+      okText: "确认生成",
+      cancelText: "暂不生成",
+      centered: true,
+      onOk: () => {
+        onGenerateReport?.();
+        setReportStatuses((prev) => ({
+          ...prev,
+          [company.name]: "running",
+        }));
 
-    if (!shouldGenerate) {
+        window.setTimeout(() => {
+          setReportStatuses((prev) => ({
+            ...prev,
+            [company.name]: "ready",
+          }));
+        }, 1200);
+      },
+    });
+  };
+
+  const clearKeywordOnly = () => {
+    setKeyword("");
+    setSort("默认排序");
+  };
+
+  const clearFiltersExceptKeyword = () => {
+    setQuickFilter("全部");
+    setRoute("全部路线");
+    setType("全部类型");
+    setSource("全部来源");
+    setSort("默认排序");
+  };
+
+  const handleEmptyReset = () => {
+    if (keyword.trim() !== "") {
+      clearFiltersExceptKeyword();
       return;
     }
 
-    setReportStatuses((prev) => ({
-      ...prev,
-      [company.name]: "running",
-    }));
+    resetFilters();
+  };
 
-    window.setTimeout(() => {
-      setReportStatuses((prev) => ({
-        ...prev,
-        [company.name]: "ready",
-      }));
-    }, 1200);
+  const closeSelectedCompany = () => {
+    setSelectedCompany(null);
   };
 
   const selectedReportStatus: ReportStatus = selectedCompany
@@ -544,26 +647,39 @@ export default function DeepMineExplore({
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-[18px] border-b border-[#e3ebf6] bg-[#fbfdff] px-6 py-[13px] text-[13px] text-[#536177] max-md:flex-col max-md:items-start max-md:gap-2 max-md:px-5">
-            <div>
-              <strong className="text-[#13213a]">
-                当前结果：{resultCount}家
-              </strong>
-              <span className="mx-2 text-[#c4cfdd]">|</span>
-              <span>筛选条件：{filterSummary}</span>
-              {quickFilter !== "全部" && (
+          <div className="flex items-start justify-between gap-[18px] border-b border-[#e3ebf6] bg-[#fbfdff] px-6 py-[13px] text-[13px] text-[#536177] max-md:flex-col max-md:items-start max-md:gap-2 max-md:px-5">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <strong className="text-[#13213a]">
+                  当前结果：{resultCount}家
+                </strong>
+                {activeFilterChips.length === 0 && (
+                  <span className="text-[#8b96a8]">全部候选企业</span>
+                )}
+                {activeFilterChips.map((chip) => (
+                  <button
+                    key={chip.key}
+                    type="button"
+                    onClick={chip.onClear}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-2.5 py-1 text-[12px] font-extrabold text-[#2563eb] transition-colors hover:bg-[#dbeafe]"
+                  >
+                    {chip.label}
+                    <X className="h-3 w-3" />
+                  </button>
+                ))}
+              </div>
+              {keyword.trim() !== "" && activeFilterChips.length > 1 && (
                 <button
                   type="button"
-                  onClick={() => setQuickFilter("全部")}
-                  className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-2.5 py-1 text-[12px] font-extrabold text-[#2563eb] transition-colors hover:bg-[#dbeafe]"
+                  onClick={clearFiltersExceptKeyword}
+                  className="mt-2 text-[12px] font-extrabold text-[#2563eb] hover:text-[#174ea6]"
                 >
-                  {quickFilter}
-                  <X className="h-3 w-3" />
+                  只保留关键词搜索
                 </button>
               )}
             </div>
             <div className="text-[#8b96a8]">
-              点击企业行查看线索详情，点击眼睛图标关注
+              点击企业行查看线索详情，点击星标关注
             </div>
           </div>
 
@@ -578,9 +694,42 @@ export default function DeepMineExplore({
               scroll={{ x: 820, y: 520 }}
               onRow={(company) => ({
                 onClick: () => setSelectedCompany(company),
+                className:
+                  selectedCompany?.name === company.name
+                    ? styles.selectedRow
+                    : undefined,
               })}
               locale={{
-                emptyText: "当前筛选条件下暂无结果，请调整筛选条件。",
+                emptyText: (
+                  <div className="py-8 text-center">
+                    <div className="text-[14px] font-black text-[#172033]">
+                      当前筛选条件下暂无结果
+                    </div>
+                    <p className="mx-auto mt-2 max-w-[320px] text-[13px] leading-[1.6] text-[#7b879b]">
+                      可以清空筛选恢复全部候选；如果已输入关键词，也可以只保留关键词继续搜索。
+                    </p>
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={handleEmptyReset}
+                        className="h-[36px] rounded-[10px] px-4 font-extrabold"
+                      >
+                        {keyword.trim() !== ""
+                          ? "只保留关键词"
+                          : "清空筛选"}
+                      </Button>
+                      {keyword.trim() !== "" && (
+                        <Button
+                          variant="outline"
+                          onClick={clearKeywordOnly}
+                          className="h-[36px] rounded-[10px] px-4 font-extrabold"
+                        >
+                          清除关键词
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ),
               }}
             />
             <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px] px-[22px] pb-[22px]">
@@ -604,7 +753,7 @@ export default function DeepMineExplore({
           <button
             aria-label="关闭企业详情"
             className="fixed inset-0 bg-[rgba(7,18,38,0.28)] z-40"
-            onClick={() => setSelectedCompany(null)}
+            onClick={closeSelectedCompany}
           ></button>
           <aside className="fixed right-0 top-0 bottom-0 z-50 flex w-full max-w-[460px] flex-col bg-white shadow-[-18px_0_44px_rgba(15,30,60,0.18)]">
             <div className="p-[22px] flex justify-between gap-4">
@@ -627,7 +776,7 @@ export default function DeepMineExplore({
                 </div>
               </div>
               <button
-                onClick={() => setSelectedCompany(null)}
+                onClick={closeSelectedCompany}
                 className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-[12px] border border-[#e3ebf6] bg-[#f7f9fd] text-[#6d7890]"
               >
                 <X className="w-4 h-4" />

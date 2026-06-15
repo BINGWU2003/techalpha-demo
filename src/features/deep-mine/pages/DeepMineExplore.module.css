@@ -23,6 +23,10 @@
   background: #f7faff;
 }
 
+.selectedRow :global(td) {
+  background: #f1f6ff !important;
+}
+
 .table :global(.ant-table) {
   color: #13213a;
 }

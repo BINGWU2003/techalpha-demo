@@ -123,9 +123,7 @@ export default function App() {
                 element={
                   <DeepMineExplore
                     onBack={() => navigate("/deep-mine/analysis")}
-                    onGenerateReport={() =>
-                      navigate("/auto-report/generating?from=deep-mine")
-                    }
+                    onGenerateReport={() => navigate("/report-view")}
                     onOpenReport={openReportInNewTab}
                   />
                 }

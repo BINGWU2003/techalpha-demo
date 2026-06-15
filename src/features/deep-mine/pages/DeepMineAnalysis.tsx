@@ -979,18 +979,12 @@ export default function DeepMineAnalysis({
                 {onExplore && (
                   <Button
                     onClick={onExplore}
-                    className="h-[44px] px-[20px] rounded-[13px] bg-[#0f766e] text-white font-extrabold hover:bg-[#0f5f59] shadow-[0_10px_18px_rgba(15,118,110,0.18)]"
+                    className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:-translate-y-px"
                   >
                     进入企业探索
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 )}
-                <Button
-                  onClick={onNextStep}
-                  className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:translate-y-[-1px]"
-                >
-                  确认目标，发现企业
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
               </div>
             </div>
           </section>

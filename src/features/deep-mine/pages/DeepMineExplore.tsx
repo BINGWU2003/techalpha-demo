@@ -223,9 +223,11 @@ const getMetricNumber = (metrics: string[], keyword: string) => {
 export default function DeepMineExplore({
   onBack,
   onGenerateReport,
+  onOpenReport,
 }: {
   onBack?: () => void;
   onGenerateReport?: () => void;
+  onOpenReport?: () => void;
 }) {
   const [quickFilter, setQuickFilter] = useState("全部");
   const [route, setRoute] = useState("全部路线");
@@ -316,7 +318,7 @@ export default function DeepMineExplore({
     }
 
     if (currentStatus === "ready") {
-      onGenerateReport?.();
+      onOpenReport?.();
       return;
     }
 

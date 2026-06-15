@@ -126,6 +126,7 @@ export default function App() {
                     onGenerateReport={() =>
                       navigate("/auto-report/generating?from=deep-mine")
                     }
+                    onOpenReport={openReportInNewTab}
                   />
                 }
               />

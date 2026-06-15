@@ -267,7 +267,7 @@ export default function DeepMineAnalysis({
             <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h2 className="text-[24px] font-black m-0 text-[#102039]">
-                  产业线索分析
+                  线索分析
                 </h2>
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#d7e4ff] bg-white/80 px-3 py-1.5 text-[13px] font-extrabold text-[#2563eb] shadow-sm">
                   <span className="relative flex h-2.5 w-2.5 shrink-0">
@@ -360,249 +360,249 @@ export default function DeepMineAnalysis({
                   </div>
                 </div>
 
-              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                <h3 className="text-[22px] font-black text-[#0f1f3d] mb-1">
-                  技术路线线索统计
-                </h3>
-                <p className="text-[13px] leading-[1.7] text-[#64748b] mb-5">
-                  注：同一企业可能覆盖多个技术路线，因此各路线企业数为非去重统计。
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                  {TECH_ROUTE_DATA.map((route) => (
-                    <div
-                      key={route.name}
-                      className="border border-[#e5eaf3] rounded-[18px] p-5 bg-white hover:border-[#bfdbfe] transition-colors"
-                    >
-                      <h4 className="text-[17px] font-black text-[#0f1f3d] mb-5">
-                        {route.name}
-                      </h4>
-                      <div className="grid gap-2.5">
-                        <div className="flex items-center justify-between rounded-[12px] bg-[#f8fafc] px-3 py-2">
-                          <span className="text-[12px] text-[#64748b] whitespace-nowrap">
-                            主体数
-                          </span>
-                          <strong className="text-[20px] leading-none text-[#2563eb]">
-                            {route.subjectCount}
-                          </strong>
-                        </div>
-                        <div className="flex items-center justify-between rounded-[12px] bg-[#f8fafc] px-3 py-2">
-                          <span className="text-[12px] text-[#64748b] whitespace-nowrap">
-                            近三年活跃
-                          </span>
-                          <strong className="text-[20px] leading-none text-[#10b981]">
-                            {route.activeCount}
-                          </strong>
-                        </div>
-                        <div className="flex items-center justify-between rounded-[12px] bg-[#f8fafc] px-3 py-2">
-                          <span className="text-[12px] text-[#64748b] whitespace-nowrap">
-                            相关专利
-                          </span>
-                          <strong className="text-[20px] leading-none text-[#f59e0b]">
-                            {route.patentCount}
-                          </strong>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-4">
                 <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                  <div className="flex items-center gap-2 mb-5">
-                    <div className="w-1.5 h-5 bg-[#2563eb] rounded-full"></div>
-                    <h3 className="text-[18px] font-black text-[#0f1f3d]">
-                      专利趋势统计
-                    </h3>
-                  </div>
-                  <div className="h-[280px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={ROUTE_PATENT_TREND_DATA}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  <h3 className="text-[22px] font-black text-[#0f1f3d] mb-1">
+                    技术路线线索统计
+                  </h3>
+                  <p className="text-[13px] leading-[1.7] text-[#64748b] mb-5">
+                    注：同一企业可能覆盖多个技术路线，因此各路线企业数为非去重统计。
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    {TECH_ROUTE_DATA.map((route) => (
+                      <div
+                        key={route.name}
+                        className="border border-[#e5eaf3] rounded-[18px] p-5 bg-white hover:border-[#bfdbfe] transition-colors"
                       >
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          vertical={false}
-                          stroke="#eef2f7"
-                        />
-                        <XAxis
-                          dataKey="year"
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#94a3b8", fontSize: 11 }}
-                        />
-                        <YAxis
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#94a3b8", fontSize: 11 }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            borderRadius: "12px",
-                            border: "none",
-                            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                          }}
-                        />
-                        <Line
-                          name="存算一体架构"
-                          type="monotone"
-                          dataKey="compute"
-                          stroke="#2563eb"
-                          strokeWidth={4}
-                          dot={false}
-                        />
-                        <Line
-                          name="SNN 异步事件驱动"
-                          type="monotone"
-                          dataKey="snn"
-                          stroke="#10b981"
-                          strokeWidth={4}
-                          dot={false}
-                        />
-                        <Line
-                          name="忆阻器交叉阵列"
-                          type="monotone"
-                          dataKey="memristor"
-                          stroke="#f59e0b"
-                          strokeWidth={4}
-                          dot={false}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                  <div className="flex items-center gap-2 mb-7">
-                    <div className="w-1.5 h-5 bg-[#10b981] rounded-full"></div>
-                    <h3 className="text-[18px] font-black text-[#0f1f3d]">
-                      技术路线专利占比
-                    </h3>
-                  </div>
-                  <div className="space-y-5">
-                    {ROUTE_PATENT_SHARE_DATA.map((item) => (
-                      <div key={item.name}>
-                        <div className="grid grid-cols-[12px_1fr_auto] items-center gap-3 text-[14px] mb-2">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ backgroundColor: item.color }}
-                          ></span>
-                          <span className="text-[#172033]">{item.name}</span>
-                          <b className="text-[#0f1f3d]">{item.value}%</b>
-                        </div>
-                        <div className="h-2 rounded-full bg-[#eef2f7] overflow-hidden">
-                          <div
-                            className="h-full rounded-full"
-                            style={{
-                              width: `${item.value}%`,
-                              backgroundColor: item.color,
-                            }}
-                          ></div>
+                        <h4 className="text-[17px] font-black text-[#0f1f3d] mb-5">
+                          {route.name}
+                        </h4>
+                        <div className="grid gap-2.5">
+                          <div className="flex items-center justify-between rounded-[12px] bg-[#f8fafc] px-3 py-2">
+                            <span className="text-[12px] text-[#64748b] whitespace-nowrap">
+                              主体数
+                            </span>
+                            <strong className="text-[20px] leading-none text-[#2563eb]">
+                              {route.subjectCount}
+                            </strong>
+                          </div>
+                          <div className="flex items-center justify-between rounded-[12px] bg-[#f8fafc] px-3 py-2">
+                            <span className="text-[12px] text-[#64748b] whitespace-nowrap">
+                              近三年活跃
+                            </span>
+                            <strong className="text-[20px] leading-none text-[#10b981]">
+                              {route.activeCount}
+                            </strong>
+                          </div>
+                          <div className="flex items-center justify-between rounded-[12px] bg-[#f8fafc] px-3 py-2">
+                            <span className="text-[12px] text-[#64748b] whitespace-nowrap">
+                              相关专利
+                            </span>
+                            <strong className="text-[20px] leading-none text-[#f59e0b]">
+                              {route.patentCount}
+                            </strong>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                  <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
-                    专利类型分布
-                  </h3>
-                  <p className="text-[13px] text-[#64748b] mb-5">
-                    展示当前方向下的专利类型结构。
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-5 items-center">
-                    <div className="relative w-[140px] h-[140px] mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-4">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                    <div className="flex items-center gap-2 mb-5">
+                      <div className="w-1.5 h-5 bg-[#2563eb] rounded-full"></div>
+                      <h3 className="text-[18px] font-black text-[#0f1f3d]">
+                        专利趋势统计
+                      </h3>
+                    </div>
+                    <div className="h-[280px]">
                       <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={PATENT_TYPE_DATA}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={44}
-                            outerRadius={70}
-                            dataKey="value"
-                          >
-                            {PATENT_TYPE_DATA.map((entry, index) => (
-                              <Cell
-                                key={`patent-type-${index}`}
-                                fill={entry.color}
-                              />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
+                        <LineChart
+                          data={ROUTE_PATENT_TREND_DATA}
+                          margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                        >
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            vertical={false}
+                            stroke="#eef2f7"
+                          />
+                          <XAxis
+                            dataKey="year"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: "#94a3b8", fontSize: 11 }}
+                          />
+                          <YAxis
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: "#94a3b8", fontSize: 11 }}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              borderRadius: "12px",
+                              border: "none",
+                              boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                            }}
+                          />
+                          <Line
+                            name="存算一体架构"
+                            type="monotone"
+                            dataKey="compute"
+                            stroke="#2563eb"
+                            strokeWidth={4}
+                            dot={false}
+                          />
+                          <Line
+                            name="SNN 异步事件驱动"
+                            type="monotone"
+                            dataKey="snn"
+                            stroke="#10b981"
+                            strokeWidth={4}
+                            dot={false}
+                          />
+                          <Line
+                            name="忆阻器交叉阵列"
+                            type="monotone"
+                            dataKey="memristor"
+                            stroke="#f59e0b"
+                            strokeWidth={4}
+                            dot={false}
+                          />
+                        </LineChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className="space-y-4">
-                      {PATENT_TYPE_DATA.map((item) => (
-                        <div
-                          key={item.name}
-                          className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
-                        >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ backgroundColor: item.color }}
-                          ></span>
-                          <span className="text-[#172033]">{item.name}</span>
-                          <b className="text-[#0f1f3d]">{item.value}</b>
+                  </div>
+
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                    <div className="flex items-center gap-2 mb-7">
+                      <div className="w-1.5 h-5 bg-[#10b981] rounded-full"></div>
+                      <h3 className="text-[18px] font-black text-[#0f1f3d]">
+                        技术路线专利占比
+                      </h3>
+                    </div>
+                    <div className="space-y-5">
+                      {ROUTE_PATENT_SHARE_DATA.map((item) => (
+                        <div key={item.name}>
+                          <div className="grid grid-cols-[12px_1fr_auto] items-center gap-3 text-[14px] mb-2">
+                            <span
+                              className="w-2.5 h-2.5 rounded-full"
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                            <span className="text-[#172033]">{item.name}</span>
+                            <b className="text-[#0f1f3d]">{item.value}%</b>
+                          </div>
+                          <div className="h-2 rounded-full bg-[#eef2f7] overflow-hidden">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${item.value}%`,
+                                backgroundColor: item.color,
+                              }}
+                            ></div>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                  <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
-                    专利有效性分布
-                  </h3>
-                  <p className="text-[13px] text-[#64748b] mb-5">
-                    展示当前专利权处于受法律保护状态的比例。
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-5 items-center">
-                    <div className="relative w-[140px] h-[140px] mx-auto">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={PATENT_VALIDITY_DATA}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={44}
-                            outerRadius={70}
-                            dataKey="value"
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                    <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
+                      专利类型分布
+                    </h3>
+                    <p className="text-[13px] text-[#64748b] mb-5">
+                      展示当前方向下的专利类型结构。
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-5 items-center">
+                      <div className="relative w-[140px] h-[140px] mx-auto">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={PATENT_TYPE_DATA}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={44}
+                              outerRadius={70}
+                              dataKey="value"
+                            >
+                              {PATENT_TYPE_DATA.map((entry, index) => (
+                                <Cell
+                                  key={`patent-type-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="space-y-4">
+                        {PATENT_TYPE_DATA.map((item) => (
+                          <div
+                            key={item.name}
+                            className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
                           >
-                            {PATENT_VALIDITY_DATA.map((entry, index) => (
-                              <Cell
-                                key={`patent-validity-${index}`}
-                                fill={entry.color}
-                              />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
+                            <span
+                              className="w-2.5 h-2.5 rounded-full"
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                            <span className="text-[#172033]">{item.name}</span>
+                            <b className="text-[#0f1f3d]">{item.value}</b>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="space-y-4">
-                      {PATENT_VALIDITY_DATA.map((item) => (
-                        <div
-                          key={item.name}
-                          className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
-                        >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ backgroundColor: item.color }}
-                          ></span>
-                          <span className="text-[#172033]">{item.name}</span>
-                          <b className="text-[#0f1f3d]">{item.value}</b>
-                        </div>
-                      ))}
+                  </div>
+
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                    <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
+                      专利有效性分布
+                    </h3>
+                    <p className="text-[13px] text-[#64748b] mb-5">
+                      展示当前专利权处于受法律保护状态的比例。
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-5 items-center">
+                      <div className="relative w-[140px] h-[140px] mx-auto">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={PATENT_VALIDITY_DATA}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={44}
+                              outerRadius={70}
+                              dataKey="value"
+                            >
+                              {PATENT_VALIDITY_DATA.map((entry, index) => (
+                                <Cell
+                                  key={`patent-validity-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="space-y-4">
+                        {PATENT_VALIDITY_DATA.map((item) => (
+                          <div
+                            key={item.name}
+                            className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
+                          >
+                            <span
+                              className="w-2.5 h-2.5 rounded-full"
+                              style={{ backgroundColor: item.color }}
+                            ></span>
+                            <span className="text-[#172033]">{item.name}</span>
+                            <b className="text-[#0f1f3d]">{item.value}</b>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               </div>
               {/* Stat Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -943,7 +943,7 @@ export default function DeepMineAnalysis({
                     className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    返回拆解目标
+                    返回目标拆解
                   </Button>
                 )}
                 <div className="flex flex-col md:flex-row gap-[12px] md:justify-end">

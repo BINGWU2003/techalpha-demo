@@ -23,6 +23,7 @@ import SectorScan from "./features/sector-scan/pages/SectorScan";
 import SectorScanPhase2 from "./features/sector-scan/pages/SectorScanPhase2";
 import SectorScanPhase3 from "./features/sector-scan/pages/SectorScanPhase3";
 import SectorScanPhase4 from "./features/sector-scan/pages/SectorScanPhase4";
+import AccountEntitlements from "./features/account/pages/AccountEntitlements";
 import { authService } from "./services/auth";
 
 export default function App() {
@@ -212,6 +213,7 @@ export default function App() {
                   />
                 }
               />
+              <Route path="/account" element={<AccountEntitlements />} />
 
               {/* Sector Scan */}
               <Route

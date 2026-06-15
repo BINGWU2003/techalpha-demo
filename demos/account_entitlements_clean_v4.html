@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechAlpha - 账户与权益</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#0b1f3a;
+      --muted:#66758e;
+      --line:#e3ebf6;
+      --blue:#2f6df6;
+      --blue-50:#eef4ff;
+      --green:#16b978;
+      --purple:#8057ff;
+    }
+
+    body{
+      margin:0;
+      font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:240px 1fr;
+      transition:.2s ease;
+    }
+
+    .app.collapsed{
+      grid-template-columns:72px 1fr;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:0;
+      height:100vh;
+      background:linear-gradient(180deg,#07172f,#081327);
+      color:#fff;
+      padding:16px 12px;
+      display:grid;
+      grid-template-rows:auto auto minmax(0,1fr) auto;
+      overflow:visible;
+      z-index:10;
+    }
+
+    .sidebar-top{
+      position:relative;
+      display:flex;
+      align-items:center;
+      min-height:40px;
+      padding-bottom:16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      margin-bottom:18px;
+    }
+
+    .brand{
+      min-width:0;
+      transition:.2s ease;
+    }
+
+    .brand .name{
+      font-size:22px;
+      font-weight:800;
+      line-height:1;
+      white-space:nowrap;
+    }
+
+    .brand .sub{
+      margin-top:5px;
+      font-size:12px;
+      color:#82a7ff;
+      letter-spacing:.8px;
+      white-space:nowrap;
+    }
+
+    .mini-logo{
+      width:40px;
+      height:40px;
+      border-radius:13px;
+      background:linear-gradient(135deg,#2f6df6,#8057ff);
+      color:#fff;
+      font-size:14px;
+      font-weight:900;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      letter-spacing:.2px;
+      box-shadow:0 10px 24px rgba(47,109,246,.24);
+      margin:0 auto;
+    }
+
+    .collapse-btn{
+      position:absolute;
+      right:2px;
+      top:2px;
+      width:34px;
+      height:34px;
+      border:0;
+      background:rgba(255,255,255,.06);
+      color:#cdd6e7;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      z-index:20;
+    }
+
+    .collapse-btn:hover{
+      background:rgba(255,255,255,.12);
+      color:#fff;
+    }
+
+    .collapse-btn svg{
+      width:18px;
+      height:18px;
+      stroke:currentColor;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+
+    .app.collapsed .collapse-btn{
+      display:none;
+    }
+
+    .app.collapsed .brand,
+    .app.collapsed .nav-label,
+    .app.collapsed .recent-title,
+    .app.collapsed .recent,
+    .app.collapsed .user-meta{
+      display:none;
+    }
+
+    .app.collapsed .mini-logo{
+      display:flex;
+    }
+
+    .app.collapsed .sidebar{
+      cursor:pointer;
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .nav a{
+      color:#cdd6e7;
+      text-decoration:none;
+      height:44px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:0 12px;
+      border-radius:10px;
+      font-size:14px;
+      font-weight:600;
+      white-space:nowrap;
+    }
+
+    .app.collapsed .nav a{
+      justify-content:center;
+      padding:0;
+    }
+
+    .nav a:hover{
+      background:rgba(255,255,255,.06);
+    }
+
+    .nav a.active{
+      color:#fff;
+      background:var(--blue);
+      box-shadow:0 8px 22px rgba(47,109,246,.28);
+    }
+
+    .nav-icon{
+      width:18px;
+      height:18px;
+      flex:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .nav-icon svg{
+      width:18px;
+      height:18px;
+      stroke:currentColor;
+      stroke-width:2;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      fill:none;
+    }
+
+    .recent-section{
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .recent-title{
+      margin:24px 8px 10px;
+      color:#61708c;
+      font-size:12px;
+      font-weight:700;
+      flex:none;
+    }
+
+    .recent{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-height:0;
+      overflow:auto;
+      padding-bottom:12px;
+    }
+
+    .recent div{
+      color:#8fa0bd;
+      font-size:12px;
+      line-height:1.45;
+      padding:8px 10px;
+      border-radius:8px;
+    }
+
+    .recent div.active{
+      color:#dce7ff;
+      background:rgba(255,255,255,.06);
+    }
+
+    .account-entry{
+      position:relative;
+      border-top:1px solid rgba(255,255,255,.08);
+      padding-top:14px;
+      align-self:end;
+    }
+
+    .account-card{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      border-radius:14px;
+      cursor:pointer;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .app.collapsed .account-card{
+      justify-content:center;
+      padding:8px;
+    }
+
+    .avatar{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#2f6df6,#8057ff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:900;
+      flex:none;
+    }
+
+    .user-meta{
+      min-width:0;
+      flex:1;
+    }
+
+    .user-name{
+      color:#fff;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .user-plan{
+      margin-top:4px;
+      color:#a9b9d4;
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .menu{
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:70px;
+      background:#ffffff;
+      color:var(--text);
+      border-radius:16px;
+      box-shadow:0 16px 40px rgba(0,0,0,.24);
+      padding:14px;
+      display:none;
+      z-index:30;
+      width:216px;
+    }
+
+    .app.collapsed .menu{
+      left:58px;
+      right:auto;
+      bottom:6px;
+    }
+
+    .account-entry:hover .menu{
+      display:block;
+    }
+
+    .menu-name{
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .menu-email{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+      word-break:break-all;
+    }
+
+    .menu-quota{
+      margin-top:12px;
+      background:#f5f8ff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px;
+      font-size:12px;
+      color:#31415d;
+      line-height:1.7;
+    }
+
+    .menu-link{
+      margin-top:10px;
+      border-top:1px solid var(--line);
+      padding-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .menu-link div{
+      font-size:13px;
+      font-weight:800;
+      color:#18345d;
+      cursor:pointer;
+    }
+
+    main{
+      padding:28px 48px 56px;
+    }
+
+    .wrap{
+      max-width:1160px;
+      margin:0 auto;
+    }
+
+    .canvas{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:0 16px 40px rgba(23,39,70,.05);
+      padding:28px;
+    }
+
+    .head{
+      display:flex;
+      justify-content:space-between;
+      gap:24px;
+      align-items:flex-start;
+      margin-bottom:24px;
+    }
+
+    h1{
+      margin:0;
+      font-size:32px;
+      line-height:1.2;
+      letter-spacing:-.4px;
+    }
+
+    .subtitle{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      background:var(--blue-50);
+      color:var(--blue);
+      font-size:13px;
+      font-weight:900;
+      padding:9px 14px;
+      white-space:nowrap;
+    }
+
+    .section{
+      border-top:1px solid var(--line);
+      padding-top:24px;
+      margin-top:24px;
+    }
+
+    .section:first-of-type{
+      margin-top:0;
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:900;
+      margin-bottom:16px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:14px;
+    }
+
+    .info-card{
+      border:1px solid var(--line);
+      background:#f9fbfe;
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .info-label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .info-value{
+      font-size:18px;
+      font-weight:900;
+      line-height:1.35;
+    }
+
+    .info-value.small{
+      font-size:15px;
+      word-break:break-word;
+    }
+
+    .quota-card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:20px;
+      background:#fff;
+    }
+
+    .quota-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .quota-title{
+      font-size:18px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .quota-desc{
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .quota-num{
+      font-size:30px;
+      font-weight:900;
+      color:var(--blue);
+      line-height:1;
+      white-space:nowrap;
+    }
+
+    .progress-item{
+      margin-top:15px;
+    }
+
+    .progress-label{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:13px;
+      color:#31415d;
+      margin-bottom:8px;
+    }
+
+    .bar{
+      height:9px;
+      background:#edf2f8;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .bar span{
+      display:block;
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#2f6df6,#8057ff);
+    }
+
+    .bar.green span{
+      background:linear-gradient(90deg,#16b978,#39d391);
+    }
+
+    .plan-card{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:20px;
+      padding:20px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .plan-card.current{
+      border-color:rgba(47,109,246,.45);
+      box-shadow:0 12px 30px rgba(47,109,246,.08);
+    }
+
+    .plan-name{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-size:20px;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    .plan-note{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+      margin-bottom:16px;
+    }
+
+    .current-tag{
+      font-size:12px;
+      color:#fff;
+      background:var(--blue);
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .benefits{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .benefit{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:#31415d;
+      font-size:14px;
+      padding:10px 0;
+      border-top:1px solid #edf2f8;
+    }
+
+    .benefit b{
+      color:var(--text);
+    }
+
+    .note-card{
+      border:1px solid var(--line);
+      background:#f9fbfe;
+      border-radius:18px;
+      padding:18px;
+      color:#31415d;
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .note-card b{
+      color:var(--text);
+    }
+
+    .record-list{
+      border:1px solid var(--line);
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    .record{
+      display:grid;
+      grid-template-columns:160px minmax(0,1fr) 120px;
+      gap:14px;
+      align-items:center;
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      font-size:14px;
+    }
+
+    .record:last-child{
+      border-bottom:0;
+    }
+
+    .record-time{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .record-action{
+      font-weight:800;
+      color:#18345d;
+    }
+
+    .record-tag{
+      justify-self:end;
+      color:var(--blue);
+      background:var(--blue-50);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:900;
+    }
+
+    @media(max-width:1100px){
+      .app,.app.collapsed{grid-template-columns:1fr;}
+      .sidebar{display:none;}
+      main{padding:20px;}
+      .head{flex-direction:column;}
+      .grid-2,.grid-3{grid-template-columns:1fr;}
+      .record{grid-template-columns:1fr;}
+      .record-tag{justify-self:start;}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" onclick="expandFromCollapsed(event)">
+      <div class="sidebar-top">
+        <div class="brand">
+          <div class="name">TechAlpha</div>
+          <div class="sub">AI INVESTMENT OS</div>
+        </div>
+        <div class="mini-logo">TA</div>
+        <button class="collapse-btn" onclick="toggleSidebar(event)" title="收起侧边栏">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="5" width="16" height="14" rx="3"></rect>
+            <path d="M9 5v14"></path>
+            <path d="M14 9l-3 3 3 3"></path>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="nav">
+        <a href="#">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 5v14"></path>
+              <path d="M5 12h14"></path>
+              <path d="M17 7.5c1.8.8 3 2.6 3 4.5s-1.2 3.7-3 4.5"></path>
+            </svg>
+          </span>
+          <span class="nav-label">新建任务</span>
+        </a>
+        <a href="#">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 7h16M6 7v12h12V7M9 11h6"></path>
+            </svg>
+          </span>
+          <span class="nav-label">企业库</span>
+        </a>
+        <a href="#">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 4h8l3 3v13H7z"></path>
+              <path d="M15 4v4h4M9 12h6M9 16h6"></path>
+            </svg>
+          </span>
+          <span class="nav-label">报告库</span>
+        </a>
+        <a href="#">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 12a7 7 0 0112-5l2 2"></path>
+              <path d="M19 5v4h-4"></path>
+              <path d="M19 12a7 7 0 01-12 5l-2-2"></path>
+              <path d="M5 19v-4h4"></path>
+            </svg>
+          </span>
+          <span class="nav-label">事件跟踪</span>
+        </a>
+      </nav>
+
+      <div class="recent-section">
+        <div class="recent-title">最近任务记录</div>
+        <div class="recent">
+          <div>分析钠电池正极材料赛道机会</div>
+          <div>挖掘钠电池正极材料核心企业</div>
+          <div>生成浙江钠创新能源报告</div>
+          <div class="active">跟踪机器人灵巧手企业动态</div>
+        </div>
+      </div>
+
+      <div class="account-entry">
+        <div class="menu" onclick="event.stopPropagation()">
+          <div class="menu-name">王巍</div>
+          <div class="menu-email">wangwei@suwen.ai</div>
+          <div class="menu-quota">
+            当前套餐：试用版<br/>
+            有效期至：2026-07-15<br/>
+            初筛报告：7 / 10
+          </div>
+          <div class="menu-link">
+            <div>账户与权益</div>
+            <div>退出登录</div>
+          </div>
+        </div>
+
+        <div class="account-card">
+          <div class="avatar">W</div>
+          <div class="user-meta">
+            <div class="user-name">王巍 · 试用版</div>
+            <div class="user-plan">初筛 7/10</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="wrap">
+        <section class="canvas">
+          <div class="head">
+            <div>
+              <h1>账户与权益</h1>
+              <p class="subtitle">管理当前账户、套餐和关键使用额度。</p>
+            </div>
+            <div class="badge">当前套餐：试用版</div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">账户信息</div>
+            <div class="grid-3">
+              <div class="info-card">
+                <div class="info-label">用户</div>
+                <div class="info-value">王巍</div>
+              </div>
+              <div class="info-card">
+                <div class="info-label">登录邮箱</div>
+                <div class="info-value small">wangwei@suwen.ai</div>
+              </div>
+              <div class="info-card">
+                <div class="info-label">有效期</div>
+                <div class="info-value small">2026-06-15 至 2026-07-15</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">当前额度</div>
+            <div class="grid-2">
+              <div class="quota-card">
+                <div class="quota-head">
+                  <div>
+                    <div class="quota-title">AI分析次数</div>
+                    <div class="quota-desc">用于目标拆解、线索分析、结果刷新等主动分析动作。</div>
+                  </div>
+                  <div class="quota-num">420</div>
+                </div>
+
+                <div class="progress-item">
+                  <div class="progress-label">
+                    <span>每5小时</span>
+                    <b>68 / 100</b>
+                  </div>
+                  <div class="bar"><span style="width:68%"></span></div>
+                </div>
+
+                <div class="progress-item">
+                  <div class="progress-label">
+                    <span>本周</span>
+                    <b>220 / 500</b>
+                  </div>
+                  <div class="bar"><span style="width:44%"></span></div>
+                </div>
+
+                <div class="progress-item">
+                  <div class="progress-label">
+                    <span>本周期</span>
+                    <b>420 / 1000</b>
+                  </div>
+                  <div class="bar"><span style="width:42%"></span></div>
+                </div>
+              </div>
+
+              <div class="quota-card">
+                <div class="quota-head">
+                  <div>
+                    <div class="quota-title">初筛报告额度</div>
+                    <div class="quota-desc">生成企业初筛报告时消耗，查看报告不消耗额度。</div>
+                  </div>
+                  <div class="quota-num">7</div>
+                </div>
+
+                <div class="progress-item">
+                  <div class="progress-label">
+                    <span>总额度</span>
+                    <b>10 次</b>
+                  </div>
+                  <div class="bar green"><span style="width:100%"></span></div>
+                </div>
+
+                <div class="progress-item">
+                  <div class="progress-label">
+                    <span>已使用</span>
+                    <b>3 次</b>
+                  </div>
+                  <div class="bar green"><span style="width:30%"></span></div>
+                </div>
+
+                <div class="progress-item">
+                  <div class="progress-label">
+                    <span>剩余</span>
+                    <b>7 次</b>
+                  </div>
+                  <div class="bar green"><span style="width:70%"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">套餐规则</div>
+            <div class="grid-2">
+              <div class="plan-card current">
+                <div class="plan-name">
+                  <span>试用版</span>
+                  <span class="current-tag">当前套餐</span>
+                </div>
+                <div class="plan-note">适合新客户试用完整流程，支持多次任务尝试和少量企业初筛。</div>
+                <div class="benefits">
+                  <div class="benefit"><span>有效期</span><b>30天</b></div>
+                  <div class="benefit"><span>AI分析次数</span><b>每5小时100次</b></div>
+                  <div class="benefit"><span>AI分析次数</span><b>每周500次</b></div>
+                  <div class="benefit"><span>AI分析次数</span><b>本周期1000次</b></div>
+                  <div class="benefit"><span>初筛报告额度</span><b>10次</b></div>
+                </div>
+              </div>
+
+              <div class="plan-card">
+                <div class="plan-name">
+                  <span>标准版</span>
+                </div>
+                <div class="plan-note">适合正式投研团队持续使用，按月提供更高分析频次和初筛报告额度。</div>
+                <div class="benefits">
+                  <div class="benefit"><span>服务周期</span><b>按年开通</b></div>
+                  <div class="benefit"><span>AI分析次数</span><b>每5小时200次</b></div>
+                  <div class="benefit"><span>AI分析次数</span><b>每周1000次</b></div>
+                  <div class="benefit"><span>AI分析次数</span><b>每月3000次</b></div>
+                  <div class="benefit"><span>初筛报告额度</span><b>30次 / 月</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">权益说明</div>
+            <div class="note-card">
+              基础功能默认开放，包括<b>企业挖掘、企业库、报告库、事件跟踪和报告查看</b>。当前主要限制为两类：<b>AI分析次数</b>用于控制目标拆解、线索分析、结果刷新等主动分析动作；<b>初筛报告额度</b>用于控制企业初筛报告生成次数。查看企业、筛选企业、关注企业、打开报告和查看事件不消耗额度。
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">最近使用记录</div>
+            <div class="record-list">
+              <div class="record">
+                <div class="record-time">2026-06-15 14:20</div>
+                <div class="record-action">生成初筛报告：浙江钠创新能源</div>
+                <div class="record-tag">初筛报告</div>
+              </div>
+              <div class="record">
+                <div class="record-time">2026-06-15 11:10</div>
+                <div class="record-action">运行线索分析：钠电池正极材料</div>
+                <div class="record-tag">AI分析</div>
+              </div>
+              <div class="record">
+                <div class="record-time">2026-06-14 17:42</div>
+                <div class="record-action">重新生成目标拆解：存算一体芯片</div>
+                <div class="record-tag">AI分析</div>
+              </div>
+              <div class="record">
+                <div class="record-time">2026-06-14 10:15</div>
+                <div class="record-action">生成初筛报告：深圳时识科技</div>
+                <div class="record-tag">初筛报告</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function toggleSidebar(event){
+      event.stopPropagation();
+      document.getElementById('app').classList.toggle('collapsed');
+    }
+
+    function expandFromCollapsed(event){
+      const app = document.getElementById('app');
+      if(app.classList.contains('collapsed')){
+        app.classList.remove('collapsed');
+      }
+    }
+  </script>
+</body>
+</html>

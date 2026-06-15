@@ -17,6 +17,7 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
   if (path.startsWith('/companies')) activeNav = 'companies';
   if (path.startsWith('/reports')) activeNav = 'reports';
   if (path.startsWith('/alerts')) activeNav = 'alerts';
+  if (path.startsWith('/account')) activeNav = 'account';
 
   let activeHistory = '';
   if (path.startsWith('/sector-scan')) activeHistory = 'sector-scan';
@@ -68,14 +69,14 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
           </Link>
         </div>
 
-        <div className="p-[16px_18px] border-t border-[#94a3b823] text-xs text-[#cbd5e1] flex items-center justify-between">
-          <div className="flex items-center">
+        <div className={`p-[16px_18px] border-t border-[#94a3b823] text-xs flex items-center justify-between transition-colors ${activeNav === 'account' ? 'bg-white/5 text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
+          <Link to="/account" className="min-w-0 flex flex-1 items-center rounded-lg cursor-pointer">
             {currentUser && currentUser.username ? (
-              <span className="font-bold flex items-center gap-2">
+              <span className="min-w-0 font-bold flex items-center gap-2">
                 <div className="w-[20px] h-[20px] rounded-full bg-[#1e293b] flex items-center justify-center text-[10px]">
                   {currentUser.username[0].toUpperCase()}
                 </div>
-                {currentUser.username}
+                <span className="truncate">{currentUser.username}</span>
               </span>
             ) : (
               <>
@@ -83,7 +84,7 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
                 AI 引擎已就绪
               </>
             )}
-          </div>
+          </Link>
           {onLogout && (
             <button
               onClick={onLogout}

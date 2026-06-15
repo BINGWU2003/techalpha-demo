@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>深圳时识科技有限公司初筛报告</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#0f1f3d;
+      --muted:#6b7890;
+      --border:#e2eaf5;
+      --blue:#2f6df6;
+      --blue-weak:#edf4ff;
+      --green:#18b979;
+      --green-weak:#ecfbf4;
+      --orange:#f59e0b;
+      --orange-weak:#fff7e8;
+      --red:#ef4444;
+      --red-weak:#fff1f1;
+      --purple:#7c5cff;
+      --shadow:0 12px 32px rgba(16,32,64,.06);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    .page {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 28px 28px 60px;
+      display: grid;
+      grid-template-columns: 240px minmax(720px, 1fr) 300px;
+      gap: 22px;
+      align-items: start;
+    }
+    .left, .right {
+      position: sticky;
+      top: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .report {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 40px 46px 48px;
+      min-height: 1200px;
+    }
+    .toc-title, .side-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+    .toc { display: grid; gap: 4px; }
+    .toc a {
+      text-decoration: none;
+      color: #51627c;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 9px 10px;
+      border-radius: 12px;
+    }
+    .toc a:hover, .toc a.active { background: var(--blue-weak); color: var(--blue); }
+    .report-type {
+      display: inline-flex;
+      align-items: center;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--blue-weak);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.22;
+      letter-spacing: -.4px;
+    }
+    .subtitle {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 880px;
+    }
+    .summary {
+      margin-top: 28px;
+      border: 1px solid #cfe0ff;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f7faff 0%, #fff 70%);
+      padding: 22px;
+    }
+    .summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .summary h2,
+    section h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.35;
+    }
+    .verdict {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--green-weak);
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .summary p { margin: 0; color:#2e3b55; }
+    .tags { display:flex; flex-wrap:wrap; gap:8px; margin-top: 14px; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--blue);
+      background: var(--blue-weak);
+    }
+    .tag.green { color:var(--green); background:var(--green-weak); }
+    .tag.orange { color:#b96800; background:var(--orange-weak); }
+    .tag.purple { color:var(--purple); background:#f1edff; }
+    section {
+      margin-top: 30px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+    .section-note {
+      margin: 6px 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      font-size: 14px;
+      background: #fff;
+    }
+    .info-table th,
+    .info-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+    }
+    .info-table tr:last-child th,
+    .info-table tr:last-child td { border-bottom: none; }
+    .info-table th {
+      width: 128px;
+      color: var(--muted);
+      background: #f7f9fd;
+      font-weight: 700;
+    }
+    .metric-grid {
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .metric {
+      background:#fbfcff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 15px;
+    }
+    .metric .k { color:var(--muted); font-size:13px; margin-bottom: 8px; }
+    .metric .v { font-size:28px; line-height:1; font-weight:900; color:var(--blue); }
+    .metric .unit { font-size:13px; margin-left: 3px; color:var(--muted); font-weight:600; }
+    .text-card, .chart-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      background:#fff;
+    }
+    .card-title {
+      margin: 0 0 12px;
+      font-size: 17px;
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .text-card p, .chart-card p { margin: 0; color:#33425b; }
+    .bar-list { display:grid; gap:12px; }
+    .bar-line {
+      display:grid;
+      grid-template-columns: 120px 1fr 46px;
+      gap: 12px;
+      align-items:center;
+      font-size: 13px;
+      color: #33425b;
+    }
+    .bar-bg { height: 9px; background:#eef3fa; border-radius:999px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:999px; background:var(--blue); }
+    .bar-fill.green { background:var(--green); }
+    .bar-fill.orange { background:var(--orange); }
+    .evidence-list, .risk-list, .action-list { display:grid; gap:12px; }
+    .evidence, .risk, .action {
+      border:1px solid var(--border);
+      background:#fbfcff;
+      border-radius:16px;
+      padding:14px 15px;
+    }
+    .evidence strong, .risk strong, .action strong { display:block; margin-bottom:5px; }
+    .evidence p, .risk p, .action p { margin:0; color:var(--muted); font-size:14px; }
+    .risk.mid { border-color:#ffe2ac; background:var(--orange-weak); }
+    .actions-grid {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .info-list { display: grid; gap: 10px; }
+    .info-item {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: 13px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-item:last-child { border-bottom: none; }
+    .info-k { color: var(--muted); }
+    .info-v { font-weight: 800; color: var(--text); }
+    .info-v.green { color: var(--green); }
+    .info-v.orange { color: #b96800; }
+    .actions { display: grid; gap: 10px; }
+    .btn {
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      text-align:center;
+      display:block;
+    }
+    .btn.primary { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 10px 20px rgba(47,109,246,.16); }
+    .btn.green { background:var(--green); border-color:var(--green); color:#fff; box-shadow:0 10px 20px rgba(24,185,121,.14); }
+    .btn.light { color:var(--blue); border-color:#cfe0ff; background:#fff; }
+    .side-note { margin: 12px 0 0; color:var(--muted); font-size:12px; line-height:1.6; }
+    @media (max-width: 1280px) {
+      .page { grid-template-columns: 220px minmax(640px, 1fr); }
+      .right { grid-column: 1 / -1; position: static; grid-template-columns: 1fr 1fr; }
+      .metric-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 920px) {
+      .page { grid-template-columns: 1fr; padding: 16px; }
+      .left, .right { position: static; grid-template-columns: 1fr; }
+      .report { padding: 28px 20px; }
+      h1 { font-size: 28px; }
+      .grid-2, .actions-grid, .metric-grid { grid-template-columns: 1fr; }
+      .info-table th, .info-table td { display: block; width: 100%; }
+      .info-table th { border-bottom: none; }
+    }
+    @media print {
+      body { background:#fff; }
+      .page { display:block; max-width:none; padding:0; }
+      .left, .right { display:none; }
+      .report { border:none; box-shadow:none; border-radius:0; padding:0; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <aside class="left">
+      <div class="panel">
+        <h3 class="toc-title">报告目录</h3>
+        <nav class="toc">
+          <a class="active" href="#summary">一、初筛摘要</a>
+          <a href="#profile">二、企业基础画像</a>
+          <a href="#match">三、方向匹配</a>
+          <a href="#patent">四、技术与专利</a>
+          <a href="#external">五、产业化信号</a>
+          <a href="#risk">六、风险与问题</a>
+          <a href="#conclusion">七、结论与动作</a>
+          <a href="#appendix">附录：代表证据</a>
+        </nav>
+      </div>
+    </aside>
+
+    <article class="report">
+      <header>
+        <div class="report-type">初筛报告</div>
+        <h1>深圳时识科技有限公司初筛报告</h1>
+        <p class="subtitle">基于“存算一体神经形态芯片”企业探索任务生成，用于判断该企业是否值得进一步关注与跟踪。</p>
+      </header>
+
+      <section class="summary" id="summary">
+        <div class="summary-head">
+          <h2>一、初筛摘要</h2>
+          <div class="verdict">建议关注</div>
+        </div>
+        <p>深圳时识科技有限公司在SNN异步事件驱动、存算一体和低功耗类脑计算方向存在较明确的公开技术线索。当前可验证证据主要来自相关专利，近三年仍有新增布局，适合先纳入关注，并继续补充产品、客户、融资和产业化进展信息。</p>
+        <div class="tags">
+          <span class="tag">SNN</span>
+          <span class="tag">存算一体</span>
+          <span class="tag green">非上市企业</span>
+          <span class="tag orange">专利信号</span>
+          <span class="tag purple">近三年活跃</span>
+        </div>
+      </section>
+
+      <section id="profile">
+        <h2>二、企业基础画像</h2>
+        <p class="section-note">只保留初筛必要字段，避免将报告做成冗长工商信息页。</p>
+        <table class="info-table">
+          <tr><th>企业名称</th><td>深圳时识科技有限公司</td><th>企业类型</th><td>非上市企业</td></tr>
+          <tr><th>所属方向</th><td>神经形态芯片、类脑计算</td><th>线索来源</th><td>专利检索与技术路线识别</td></tr>
+          <tr><th>技术标签</th><td colspan="3">SNN异步事件驱动、存算一体、低功耗类脑计算、事件驱动计算架构</td></tr>
+          <tr><th>AI摘要</th><td colspan="3">该企业与本次任务目标具有较高技术相关性，当前主要证据来自公开专利线索，尚需补充产业化、客户合作和融资信息。</td></tr>
+        </table>
+      </section>
+
+      <section id="match">
+        <h2>三、方向匹配与发现原因</h2>
+        <p class="section-note">回答“为什么这家公司出现在本次企业探索结果中”。</p>
+        <div class="grid-2">
+          <div class="text-card">
+            <h3 class="card-title">匹配方向</h3>
+            <p>本次任务目标为“存算一体神经形态芯片”，系统识别该企业在SNN、事件驱动计算、脉冲神经网络和低功耗类脑计算方向存在相关线索。</p>
+          </div>
+          <div class="text-card">
+            <h3 class="card-title">发现原因</h3>
+            <p>企业命中多项相关专利，且部分专利为近三年新增，说明其在目标技术路线下仍有持续布局，适合进入关注名单。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="patent">
+        <h2>四、技术与专利线索</h2>
+        <p class="section-note">本章节复用当前已打通的专利统计、相关性识别和代表证据抽取能力。</p>
+        <div class="metric-grid">
+          <div class="metric"><div class="k">相关专利</div><div class="v">12<span class="unit">件</span></div></div>
+          <div class="metric"><div class="k">近三年新增</div><div class="v">3<span class="unit">件</span></div></div>
+          <div class="metric"><div class="k">核心技术路线</div><div class="v">2<span class="unit">条</span></div></div>
+          <div class="metric"><div class="k">代表证据</div><div class="v">3<span class="unit">条</span></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="chart-card">
+            <h3 class="card-title">技术路线相关性</h3>
+            <div class="bar-list">
+              <div class="bar-line"><span>SNN</span><div class="bar-bg"><div class="bar-fill" style="width:88%"></div></div><b>高</b></div>
+              <div class="bar-line"><span>存算一体</span><div class="bar-bg"><div class="bar-fill green" style="width:76%"></div></div><b>高</b></div>
+              <div class="bar-line"><span>类脑芯片</span><div class="bar-bg"><div class="bar-fill orange" style="width:62%"></div></div><b>中</b></div>
+            </div>
+          </div>
+          <div class="text-card">
+            <h3 class="card-title">AI技术摘要</h3>
+            <p>相关专利集中在事件驱动计算、脉冲神经网络和低功耗架构方向，与本次任务中的“神经形态芯片”和“存算一体”目标具有较强关联。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="external">
+        <h2>五、产业化与外部信号</h2>
+        <p class="section-note">当前仅展示可观察到的公开线索，不强行生成产业化结论。</p>
+        <div class="grid-2">
+          <div class="text-card">
+            <h3 class="card-title">已观察到的信号</h3>
+            <p>当前主要外部信号来自专利布局。暂未在本样例中展示明确融资、客户、产能或产品交付信号。</p>
+          </div>
+          <div class="text-card">
+            <h3 class="card-title">产业化判断</h3>
+            <p>该企业具备技术线索，但商业化状态仍需进一步验证。建议后续补充官网、融资、客户合作、产品发布和团队背景等信息。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="risk">
+        <h2>六、风险点与待验证问题</h2>
+        <div class="risk-list">
+          <div class="risk mid"><strong>产业化证据不足</strong><p>当前公开线索主要集中在专利层面，尚缺少明确客户、产品、产能或收入信息。</p></div>
+          <div class="risk"><strong>技术落地路径待验证</strong><p>SNN和存算一体方向技术壁垒较高，需确认其方案是否具备工程化、量产化和成本优势。</p></div>
+          <div class="risk"><strong>竞争格局待补充</strong><p>需要与同方向芯片企业、高校转化主体和平台型企业进行任务内对比。</p></div>
+        </div>
+      </section>
+
+      <section id="conclusion">
+        <h2>七、初筛结论与建议动作</h2>
+        <p class="section-note">本报告不直接给出投资建议，只判断是否值得进入下一层关注与验证。</p>
+        <div class="actions-grid">
+          <div class="action"><strong>建议关注</strong><p>加入企业库关注，持续跟踪专利、融资、产品和客户动态。</p></div>
+          <div class="action"><strong>补充验证</strong><p>优先补充官网产品、团队背景、客户合作和融资信息。</p></div>
+          <div class="action"><strong>暂不入池</strong><p>当前证据仍以技术线索为主，入池前建议完成产业化信息核验。</p></div>
+        </div>
+      </section>
+
+      <section id="appendix">
+        <h2>附录：代表性证据</h2>
+        <div class="evidence-list">
+          <div class="evidence"><strong>代表专利1</strong><p>一种面向事件驱动计算的神经形态芯片结构。</p></div>
+          <div class="evidence"><strong>代表专利2</strong><p>一种低功耗脉冲神经网络计算架构。</p></div>
+          <div class="evidence"><strong>代表专利3</strong><p>一种面向边缘智能的异步事件驱动处理方法。</p></div>
+        </div>
+      </section>
+    </article>
+
+    <aside class="right">
+      <div class="panel">
+        <h3 class="side-title">报告信息</h3>
+        <div class="info-list">
+          <div class="info-item"><div class="info-k">生成时间</div><div class="info-v">2026-04-29</div></div>
+          <div class="info-item"><div class="info-k">企业类型</div><div class="info-v">非上市企业</div></div>
+          <div class="info-item"><div class="info-k">发现来源</div><div class="info-v">专利线索</div></div>
+          <div class="info-item"><div class="info-k">初筛结论</div><div class="info-v green">建议关注</div></div>
+          <div class="info-item"><div class="info-k">企业状态</div><div class="info-v orange">未关注</div></div>
+          <div class="info-item"><div class="info-k">入库状态</div><div class="info-v orange">未保存</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 class="side-title">报告操作</h3>
+        <div class="actions">
+          <button class="btn green">关注企业</button>
+          <button class="btn light">保存到报告库</button>
+          <button class="btn primary" onclick="window.print()">导出PDF</button>
+        </div>
+        <p class="side-note">本阶段为独立报告阅读页，暂不支持在线编辑；报告可保存到报告库后统一管理。</p>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>

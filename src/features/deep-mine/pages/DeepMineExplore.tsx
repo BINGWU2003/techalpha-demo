@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, Eye, X } from "lucide-react";
+import { ArrowLeft, Star, X } from "lucide-react";
 import {
   Input as AntInput,
   Select as AntSelect,
@@ -23,6 +23,8 @@ type Company = {
     signals: string[];
   };
 };
+
+type ReportStatus = "none" | "running" | "ready";
 
 const QUICK_FILTERS = [
   { name: "全部", count: 350 },
@@ -189,6 +191,30 @@ const tagClasses = {
   purple: "bg-[#f1edff] text-[#7c5cff]",
 };
 
+const reportStatusConfig: Record<
+  ReportStatus,
+  { label: string; desc: string; action: string; badgeClass: string }
+> = {
+  none: {
+    label: "尚未生成",
+    desc: "查看线索证据后，可生成企业初筛报告。",
+    action: "生成初筛报告",
+    badgeClass: "bg-[#f2f5fa] text-[#69758a]",
+  },
+  running: {
+    label: "生成中",
+    desc: "初筛报告正在生成中，完成后可进入独立报告页查看。",
+    action: "初筛报告生成中",
+    badgeClass: "bg-[#fff7e6] text-[#bd6b00]",
+  },
+  ready: {
+    label: "已生成",
+    desc: "初筛报告已生成，可进入独立报告页查看。",
+    action: "查看初筛报告",
+    badgeClass: "bg-[#eaf8f0] text-[#18a957]",
+  },
+};
+
 const getMetricNumber = (metrics: string[], keyword: string) => {
   const value = metrics.find((metric) => metric.includes(keyword));
   return value ? Number(value.replace(/\D/g, "")) : 0;
@@ -196,6 +222,7 @@ const getMetricNumber = (metrics: string[], keyword: string) => {
 
 export default function DeepMineExplore({
   onBack,
+  onGenerateReport,
 }: {
   onBack?: () => void;
   onGenerateReport?: () => void;
@@ -207,9 +234,15 @@ export default function DeepMineExplore({
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("默认排序");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [watchedCompanies, setWatchedCompanies] = useState<Record<string, boolean>>({
-    "深圳时识科技有限公司": true,
+  const [watchedCompanies, setWatchedCompanies] = useState<
+    Record<string, boolean>
+  >({
+    深圳时识科技有限公司: true,
     "北方集成电路技术创新中心（北京）有限公司": true,
+  });
+  const [reportStatuses, setReportStatuses] = useState<Record<string, ReportStatus>>({
+    "北京灵汐科技有限公司": "ready",
+    "北方集成电路技术创新中心（北京）有限公司": "running",
   });
 
   const hasActiveFilters =
@@ -274,6 +307,44 @@ export default function DeepMineExplore({
       [company.name]: !prev[company.name],
     }));
   };
+
+  const handleReportAction = (company: Company) => {
+    const currentStatus = reportStatuses[company.name] ?? "none";
+
+    if (currentStatus === "running") {
+      return;
+    }
+
+    if (currentStatus === "ready") {
+      onGenerateReport?.();
+      return;
+    }
+
+    const shouldGenerate = window.confirm(
+      "将为该企业生成初筛报告，消耗1个初筛额度。是否继续？",
+    );
+
+    if (!shouldGenerate) {
+      return;
+    }
+
+    setReportStatuses((prev) => ({
+      ...prev,
+      [company.name]: "running",
+    }));
+
+    window.setTimeout(() => {
+      setReportStatuses((prev) => ({
+        ...prev,
+        [company.name]: "ready",
+      }));
+    }, 1200);
+  };
+
+  const selectedReportStatus: ReportStatus = selectedCompany
+    ? (reportStatuses[selectedCompany.name] ?? "none")
+    : "none";
+  const selectedReportConfig = reportStatusConfig[selectedReportStatus];
 
   const companyColumns = [
     {
@@ -355,7 +426,10 @@ export default function DeepMineExplore({
                 : "border-[#dce6f6] bg-white text-[#9aa6ba] hover:border-[#a8bff5] hover:bg-[#f7faff] hover:text-[#2563eb]"
             }`}
           >
-            <Eye className="h-[18px] w-[18px]" />
+            <Star
+              className="h-[18px] w-[18px]"
+              fill={watchedCompanies[company.name] ? "currentColor" : "none"}
+            />
           </button>
         </div>
       ),
@@ -470,7 +544,9 @@ export default function DeepMineExplore({
 
           <div className="flex items-center justify-between gap-[18px] border-b border-[#e3ebf6] bg-[#fbfdff] px-6 py-[13px] text-[13px] text-[#536177] max-md:flex-col max-md:items-start max-md:gap-2 max-md:px-5">
             <div>
-              <strong className="text-[#13213a]">当前结果：{resultCount}家</strong>
+              <strong className="text-[#13213a]">
+                当前结果：{resultCount}家
+              </strong>
               <span className="mx-2 text-[#c4cfdd]">|</span>
               <span>筛选条件：{filterSummary}</span>
               {quickFilter !== "全部" && (
@@ -484,7 +560,9 @@ export default function DeepMineExplore({
                 </button>
               )}
             </div>
-            <div className="text-[#8b96a8]">点击企业行查看线索详情，点击眼睛图标关注</div>
+            <div className="text-[#8b96a8]">
+              点击企业行查看线索详情，点击眼睛图标关注
+            </div>
           </div>
 
           <div className="min-h-[610px] bg-white">
@@ -566,9 +644,7 @@ export default function DeepMineExplore({
                     key={label}
                     className="grid grid-cols-[94px_1fr] gap-[10px] border-b border-dashed border-[#edf1f7] py-[7px] text-[13px] last:border-b-0"
                   >
-                    <div className="text-[#7b879b]">
-                      {label}
-                    </div>
+                    <div className="text-[#7b879b]">{label}</div>
                     <div className="font-bold text-[#243149]">{value}</div>
                   </div>
                 ))}
@@ -577,39 +653,39 @@ export default function DeepMineExplore({
               <section className="mt-[14px] rounded-[18px] border border-[#e3ebf6] bg-white p-4">
                 <h3 className="text-[15px] font-black mb-3">线索信号</h3>
                 <div className="grid gap-[10px]">
-                {selectedCompany.detail.signals.map((signal, index) => (
-                  <div
-                    key={signal}
-                    className="relative pl-4 text-[13px] leading-[1.65] text-[#43506a] before:absolute before:left-0 before:top-[0.75em] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#2f6df6]"
-                  >
-                    <strong className="mb-1 block text-[#172033]">
-                      {index === 0
-                        ? "专利信号"
-                        : index === 1
-                          ? "代表性证据"
-                          : "轻量判断"}
-                    </strong>
-                    <p className="m-0">
-                      {signal}
-                    </p>
-                  </div>
-                ))}
+                  {selectedCompany.detail.signals.map((signal, index) => (
+                    <div
+                      key={signal}
+                      className="relative pl-4 text-[13px] leading-[1.65] text-[#43506a] before:absolute before:left-0 before:top-[0.75em] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#2f6df6]"
+                    >
+                      <strong className="mb-1 block text-[#172033]">
+                        {index === 0
+                          ? "专利信号"
+                          : index === 1
+                            ? "代表性证据"
+                            : "轻量判断"}
+                      </strong>
+                      <p className="m-0">{signal}</p>
+                    </div>
+                  ))}
                 </div>
               </section>
 
               <div className="mt-[14px] rounded-[18px] border border-[#e3ebf6] bg-white p-[15px]">
                 <div className="mb-[10px] flex items-center justify-between gap-3">
                   <div className="text-[15px] font-black">初筛报告</div>
-                  <span className="rounded-full bg-[#f2f5fa] px-2 py-1 text-[12px] font-extrabold text-[#69758a]">
-                    尚未生成
+                  <span
+                    className={`rounded-full px-2 py-1 text-[12px] font-extrabold ${selectedReportConfig.badgeClass}`}
+                  >
+                    {selectedReportConfig.label}
                   </span>
                 </div>
                 <p className="m-0 text-[13px] leading-[1.65] text-[#7b879b]">
-                  查看线索证据后，可生成企业初筛报告。
+                  {selectedReportConfig.desc}
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-[10px] p-[0_22px_22px]">
+            <div className="grid grid-cols-[1fr_1.35fr] gap-[10px] p-[0_22px_22px] max-sm:grid-cols-1">
               <Button
                 variant="outline"
                 onClick={() => toggleWatch(selectedCompany)}
@@ -620,6 +696,13 @@ export default function DeepMineExplore({
                 }`}
               >
                 {watchedCompanies[selectedCompany.name] ? "已关注" : "关注"}
+              </Button>
+              <Button
+                onClick={() => handleReportAction(selectedCompany)}
+                disabled={selectedReportStatus === "running"}
+                className="rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {selectedReportConfig.action}
               </Button>
             </div>
           </aside>

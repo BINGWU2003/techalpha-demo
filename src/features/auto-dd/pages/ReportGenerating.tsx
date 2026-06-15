@@ -18,11 +18,9 @@ import {
 export default function ReportGenerating({
   onBack,
   onViewReport,
-  onBackToEnterpriseResults,
 }: {
   onBack?: () => void;
   onViewReport?: () => void;
-  onBackToEnterpriseResults?: () => void;
 }) {
   const [activeTab, setActiveTab] = useState<
     "generating" | "ready" | "failed" | "archived"
@@ -518,11 +516,11 @@ export default function ReportGenerating({
             <div className="mx-[-22px] mb-[-22px]  flex justify-end  bg-white p-[16px_22px] rounded-b-[20px]">
               <button
                 type="button"
-                onClick={() => onBackToEnterpriseResults?.()}
+                onClick={() => onBack?.()}
                 className="inline-flex items-center justify-center h-[44px] px-[20px] rounded-[13px] border border-[#e4ebf5] bg-white text-[14px] text-[#14213d] font-extrabold shadow-sm hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                返回企业发现结果
+                返回企业探索
               </button>
             </div>
           </div>

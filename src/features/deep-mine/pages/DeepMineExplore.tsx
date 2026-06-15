@@ -189,7 +189,13 @@ const tagClasses = {
   purple: "bg-[#f1edff] text-[#7c5cff]",
 };
 
-export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
+export default function DeepMineExplore({
+  onBack,
+  onGenerateReport,
+}: {
+  onBack?: () => void;
+  onGenerateReport?: () => void;
+}) {
   const [quickFilter, setQuickFilter] = useState("全部");
   const [route, setRoute] = useState("全部路线");
   const [type, setType] = useState("全部类型");
@@ -296,14 +302,22 @@ export default function DeepMineExplore({ onBack }: { onBack?: () => void }) {
     {
       title: "操作",
       key: "action",
-      align: "right" as const,
       render: (_: unknown, company: Company) => (
-        <Button
-          onClick={() => setSelectedCompany(company)}
-          className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
-        >
-          查看
-        </Button>
+        <div className="flex gap-2 justify-end">
+          <Button
+            variant="outline"
+            onClick={() => setSelectedCompany(company)}
+            className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold"
+          >
+            查看
+          </Button>
+          <Button
+            onClick={onGenerateReport}
+            className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+          >
+            出报告
+          </Button>
+        </div>
       ),
     },
   ];

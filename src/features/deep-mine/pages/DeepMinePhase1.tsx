@@ -183,7 +183,7 @@ export default function DeepMinePhase1({
       <div className="mx-auto w-full">
         <main className="space-y-[18px]">
           <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
+            <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px]">
               <h1 className="text-[30px] leading-[1.2] m-0 tracking-[-0.04em] font-black text-[#102039]">
                 目标拆解
               </h1>
@@ -192,7 +192,7 @@ export default function DeepMinePhase1({
               </p>
             </div>
 
-            <div className="p-[22px]">
+            <div className="p-[14px_22px_22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-4">
                 <div>
                   <h2 className="text-[22px] font-black m-0 text-[#102039]">

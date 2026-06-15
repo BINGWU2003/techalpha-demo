@@ -535,11 +535,6 @@ export default function DeepMineExplore({
               }}
             />
             <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
-              <div className="text-[13px] text-[#64748b]">
-                当前展示
-                <strong className="mx-1 text-[#2563eb]">{resultCount}</strong>
-                家候选主体
-              </div>
               <Button
                 type="button"
                 onClick={() => onBack?.()}
@@ -549,6 +544,11 @@ export default function DeepMineExplore({
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 返回线索分析
               </Button>
+              <div className="text-[13px] text-[#64748b]">
+                当前展示
+                <strong className="mx-1 text-[#2563eb]">{resultCount}</strong>
+                家候选主体
+              </div>
             </div>
           </section>
         </main>

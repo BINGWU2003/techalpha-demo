@@ -359,7 +359,6 @@ export default function DeepMineAnalysis({
                     </div>
                   </div>
                 </div>
-              </div>
 
               <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
                 <h3 className="text-[22px] font-black text-[#0f1f3d] mb-1">
@@ -604,356 +603,361 @@ export default function DeepMineAnalysis({
                   </div>
                 </div>
               </div>
-            {/* Stat Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
-                <span className="block text-[#64748b] text-[13px] mb-2">
-                  检索专利总数
-                </span>
-                <div className="flex items-baseline gap-1">
-                  <strong className="text-[28px] font-bold text-[#172033]">
-                    850
-                  </strong>
-                  <span className="text-[#64748b] text-[13px]">件</span>
-                </div>
               </div>
-              <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
-                <span className="block text-[#64748b] text-[13px] mb-2">
-                  高价值专利 (发明)
-                </span>
-                <div className="flex items-baseline gap-1">
-                  <strong className="text-[28px] font-bold text-[#2563eb]">
-                    330
-                  </strong>
-                  <span className="text-[#64748b] text-[13px]">件</span>
-                </div>
-              </div>
-              <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
-                <span className="block text-[#64748b] text-[13px] mb-2">
-                  高相关性专利
-                </span>
-                <div className="flex items-baseline gap-1">
-                  <strong className="text-[28px] font-bold text-[#16a34a]">
-                    297
-                  </strong>
-                  <span className="text-[#64748b] text-[13px]">件</span>
-                </div>
-              </div>
-              <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
-                <span className="block text-[#64748b] text-[13px] mb-2">
-                  近三年新增专利
-                </span>
-                <div className="flex items-baseline gap-1">
-                  <strong className="text-[28px] font-bold text-[#f59e0b]">
-                    429
-                  </strong>
-                  <span className="text-[#64748b] text-[13px]">件</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Line Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
-              {/* All Patents Line Chart */}
-              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-1.5 h-4 bg-[#2563eb] rounded-full"></div>
-                  <h3 className="text-[15px] font-bold">
-                    钠电池正极材料相关全部专利统计
-                  </h3>
-                </div>
-                <div className="h-[280px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                      data={ALL_PATENT_DATA}
-                      margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
-                    >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="#f1f5f9"
-                      />
-                      <XAxis
-                        dataKey="year"
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fill: "#94a3b8", fontSize: 11 }}
-                      />
-                      <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fill: "#94a3b8", fontSize: 11 }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          borderRadius: "12px",
-                          border: "none",
-                          boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="count"
-                        stroke="#3b82f6"
-                        strokeWidth={3}
-                        dot={{
-                          fill: "#3b82f6",
-                          strokeWidth: 2,
-                          r: 4,
-                          stroke: "#fff",
-                        }}
-                        activeDot={{ r: 6 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Tech Patents Multi-Line Chart */}
-              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-1.5 h-4 bg-[#10b981] rounded-full"></div>
-                  <h3 className="text-[15px] font-bold">
-                    产业投资重点技术相关专利统计
-                  </h3>
-                </div>
-                <div className="h-[280px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                      data={TECH_PATENT_DATA}
-                      margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
-                    >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        vertical={false}
-                        stroke="#f1f5f9"
-                      />
-                      <XAxis
-                        dataKey="year"
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fill: "#94a3b8", fontSize: 11 }}
-                      />
-                      <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        tick={{ fill: "#94a3b8", fontSize: 11 }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          borderRadius: "12px",
-                          border: "none",
-                          boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                        }}
-                      />
-                      <Line
-                        name="层状氧化物"
-                        type="monotone"
-                        dataKey="layered"
-                        stroke="#f59e0b"
-                        strokeWidth={3}
-                        dot={false}
-                      />
-                      <Line
-                        name="聚阴离子"
-                        type="monotone"
-                        dataKey="polyAnion"
-                        stroke="#ef4444"
-                        strokeWidth={3}
-                        dot={false}
-                      />
-                      <Line
-                        name="普鲁士蓝"
-                        type="monotone"
-                        dataKey="prussian"
-                        stroke="#10b981"
-                        strokeWidth={3}
-                        dot={false}
-                      />
-                      <Legend
-                        iconType="circle"
-                        wrapperStyle={{ paddingTop: "10px" }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-
-            {/* Pie Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
-              {/* Patent Type Pie Chart */}
-              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-1.5 h-4 bg-[#f59e0b] rounded-full"></div>
-                  <h3 className="text-[15px] font-bold">专利类型分布</h3>
-                </div>
-                <div className="flex flex-col items-center gap-6">
-                  <div className="w-[180px] h-[180px] relative shrink-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart
-                        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-                      >
-                        <Pie
-                          data={PATENT_TYPE_DATA}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={55}
-                          outerRadius={75}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {PATENT_TYPE_DATA.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <span className="text-[10px] text-[#64748b]">总量</span>
-                      <strong className="text-[16px] font-black">850件</strong>
-                    </div>
-                  </div>
-                  <div className="w-full flex flex-col gap-3">
-                    <div className="flex text-[#64748b] text-[12px] pb-2 border-b border-[#f1f5f9]">
-                      <span className="w-20">类别</span>
-                      <span className="flex-1 text-right">数量</span>
-                      <span className="w-16 text-right">占比</span>
-                    </div>
-                    {PATENT_TYPE_DATA.map((item, i) => (
-                      <div key={i} className="flex items-center text-[13px]">
-                        <div className="w-20 flex items-center gap-2">
-                          <div
-                            className="w-2.5 h-2.5 rounded-sm"
-                            style={{ backgroundColor: item.color }}
-                          ></div>
-                          <span>{item.name}</span>
-                        </div>
-                        <span className="flex-1 text-right font-bold">
-                          {item.value}
-                        </span>
-                        <span className="w-16 text-right text-[#64748b]">
-                          {item.percentage}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Patent Validity Pie Chart */}
-              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-1.5 h-4 bg-[#8b5cf6] rounded-full"></div>
-                  <h3 className="text-[15px] font-bold">专利有效性分布</h3>
-                </div>
-                <div className="flex flex-col items-center gap-6">
-                  <div className="w-[180px] h-[180px] relative shrink-0">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart
-                        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-                      >
-                        <Pie
-                          data={PATENT_VALIDITY_DATA}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={55}
-                          outerRadius={75}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {PATENT_VALIDITY_DATA.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                      <span className="text-[10px] text-[#64748b]">总量</span>
-                      <strong className="text-[16px] font-black">850件</strong>
-                    </div>
-                  </div>
-                  <div className="w-full flex flex-col gap-3">
-                    <div className="flex text-[#64748b] text-[12px] pb-2 border-b border-[#f1f5f9]">
-                      <span className="w-20">类别</span>
-                      <span className="flex-1 text-right">数量</span>
-                      <span className="w-16 text-right">占比</span>
-                    </div>
-                    {PATENT_VALIDITY_DATA.map((item, i) => (
-                      <div key={i} className="flex items-center text-[13px]">
-                        <div className="w-20 flex items-center gap-2">
-                          <div
-                            className="w-2.5 h-2.5 rounded-sm"
-                            style={{ backgroundColor: item.color }}
-                          ></div>
-                          <span>{item.name}</span>
-                        </div>
-                        <span className="flex-1 text-right font-bold">
-                          {item.value}
-                        </span>
-                        <span className="w-16 text-right text-[#64748b]">
-                          {item.percentage}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Word Cloud Row */}
-            <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm mt-4">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-1.5 h-4 bg-[#f43f5e] rounded-full"></div>
-                <h3 className="text-[15px] font-bold">技术创新词云</h3>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 p-4">
-                {WORDS.map((word, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      fontSize: word.size,
-                      color: word.color,
-                      fontWeight: word.bold ? "bold" : "normal",
-                    }}
-                    className="cursor-default hover:opacity-80 transition-opacity"
-                  >
-                    {word.text}
+              {/* Stat Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                  <span className="block text-[#64748b] text-[13px] mb-2">
+                    检索专利总数
                   </span>
-                ))}
+                  <div className="flex items-baseline gap-1">
+                    <strong className="text-[28px] font-bold text-[#172033]">
+                      850
+                    </strong>
+                    <span className="text-[#64748b] text-[13px]">件</span>
+                  </div>
+                </div>
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                  <span className="block text-[#64748b] text-[13px] mb-2">
+                    高价值专利 (发明)
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <strong className="text-[28px] font-bold text-[#2563eb]">
+                      330
+                    </strong>
+                    <span className="text-[#64748b] text-[13px]">件</span>
+                  </div>
+                </div>
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                  <span className="block text-[#64748b] text-[13px] mb-2">
+                    高相关性专利
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <strong className="text-[28px] font-bold text-[#16a34a]">
+                      297
+                    </strong>
+                    <span className="text-[#64748b] text-[13px]">件</span>
+                  </div>
+                </div>
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                  <span className="block text-[#64748b] text-[13px] mb-2">
+                    近三年新增专利
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <strong className="text-[28px] font-bold text-[#f59e0b]">
+                      429
+                    </strong>
+                    <span className="text-[#64748b] text-[13px]">件</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-center gap-4 mt-4 text-[11px] text-[#94a3b8]">
-                <span>固态电解质</span>
-                <span>隔膜材料</span>
-              </div>
-            </div>
 
-            {/* Action Buttons Row */}
-            <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
-              {onBack && (
-                <Button
-                  variant="outline"
-                  onClick={onBack}
-                  className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  返回拆解目标
-                </Button>
-              )}
-              <div className="flex flex-col md:flex-row gap-[12px] md:justify-end">
-                {onExplore && (
+              {/* Line Charts Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
+                {/* All Patents Line Chart */}
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-1.5 h-4 bg-[#2563eb] rounded-full"></div>
+                    <h3 className="text-[15px] font-bold">
+                      钠电池正极材料相关全部专利统计
+                    </h3>
+                  </div>
+                  <div className="h-[280px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={ALL_PATENT_DATA}
+                        margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#f1f5f9"
+                        />
+                        <XAxis
+                          dataKey="year"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#94a3b8", fontSize: 11 }}
+                        />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#94a3b8", fontSize: 11 }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            borderRadius: "12px",
+                            border: "none",
+                            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="count"
+                          stroke="#3b82f6"
+                          strokeWidth={3}
+                          dot={{
+                            fill: "#3b82f6",
+                            strokeWidth: 2,
+                            r: 4,
+                            stroke: "#fff",
+                          }}
+                          activeDot={{ r: 6 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Tech Patents Multi-Line Chart */}
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-1.5 h-4 bg-[#10b981] rounded-full"></div>
+                    <h3 className="text-[15px] font-bold">
+                      产业投资重点技术相关专利统计
+                    </h3>
+                  </div>
+                  <div className="h-[280px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={TECH_PATENT_DATA}
+                        margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                      >
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#f1f5f9"
+                        />
+                        <XAxis
+                          dataKey="year"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#94a3b8", fontSize: 11 }}
+                        />
+                        <YAxis
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fill: "#94a3b8", fontSize: 11 }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            borderRadius: "12px",
+                            border: "none",
+                            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                          }}
+                        />
+                        <Line
+                          name="层状氧化物"
+                          type="monotone"
+                          dataKey="layered"
+                          stroke="#f59e0b"
+                          strokeWidth={3}
+                          dot={false}
+                        />
+                        <Line
+                          name="聚阴离子"
+                          type="monotone"
+                          dataKey="polyAnion"
+                          stroke="#ef4444"
+                          strokeWidth={3}
+                          dot={false}
+                        />
+                        <Line
+                          name="普鲁士蓝"
+                          type="monotone"
+                          dataKey="prussian"
+                          stroke="#10b981"
+                          strokeWidth={3}
+                          dot={false}
+                        />
+                        <Legend
+                          iconType="circle"
+                          wrapperStyle={{ paddingTop: "10px" }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pie Charts Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
+                {/* Patent Type Pie Chart */}
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-1.5 h-4 bg-[#f59e0b] rounded-full"></div>
+                    <h3 className="text-[15px] font-bold">专利类型分布</h3>
+                  </div>
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="w-[180px] h-[180px] relative shrink-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart
+                          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                        >
+                          <Pie
+                            data={PATENT_TYPE_DATA}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={55}
+                            outerRadius={75}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {PATENT_TYPE_DATA.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span className="text-[10px] text-[#64748b]">总量</span>
+                        <strong className="text-[16px] font-black">
+                          850件
+                        </strong>
+                      </div>
+                    </div>
+                    <div className="w-full flex flex-col gap-3">
+                      <div className="flex text-[#64748b] text-[12px] pb-2 border-b border-[#f1f5f9]">
+                        <span className="w-20">类别</span>
+                        <span className="flex-1 text-right">数量</span>
+                        <span className="w-16 text-right">占比</span>
+                      </div>
+                      {PATENT_TYPE_DATA.map((item, i) => (
+                        <div key={i} className="flex items-center text-[13px]">
+                          <div className="w-20 flex items-center gap-2">
+                            <div
+                              className="w-2.5 h-2.5 rounded-sm"
+                              style={{ backgroundColor: item.color }}
+                            ></div>
+                            <span>{item.name}</span>
+                          </div>
+                          <span className="flex-1 text-right font-bold">
+                            {item.value}
+                          </span>
+                          <span className="w-16 text-right text-[#64748b]">
+                            {item.percentage}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Patent Validity Pie Chart */}
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-1.5 h-4 bg-[#8b5cf6] rounded-full"></div>
+                    <h3 className="text-[15px] font-bold">专利有效性分布</h3>
+                  </div>
+                  <div className="flex flex-col items-center gap-6">
+                    <div className="w-[180px] h-[180px] relative shrink-0">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart
+                          margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                        >
+                          <Pie
+                            data={PATENT_VALIDITY_DATA}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={55}
+                            outerRadius={75}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {PATENT_VALIDITY_DATA.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span className="text-[10px] text-[#64748b]">总量</span>
+                        <strong className="text-[16px] font-black">
+                          850件
+                        </strong>
+                      </div>
+                    </div>
+                    <div className="w-full flex flex-col gap-3">
+                      <div className="flex text-[#64748b] text-[12px] pb-2 border-b border-[#f1f5f9]">
+                        <span className="w-20">类别</span>
+                        <span className="flex-1 text-right">数量</span>
+                        <span className="w-16 text-right">占比</span>
+                      </div>
+                      {PATENT_VALIDITY_DATA.map((item, i) => (
+                        <div key={i} className="flex items-center text-[13px]">
+                          <div className="w-20 flex items-center gap-2">
+                            <div
+                              className="w-2.5 h-2.5 rounded-sm"
+                              style={{ backgroundColor: item.color }}
+                            ></div>
+                            <span>{item.name}</span>
+                          </div>
+                          <span className="flex-1 text-right font-bold">
+                            {item.value}
+                          </span>
+                          <span className="w-16 text-right text-[#64748b]">
+                            {item.percentage}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Word Cloud Row */}
+              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm mt-4">
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="w-1.5 h-4 bg-[#f43f5e] rounded-full"></div>
+                  <h3 className="text-[15px] font-bold">技术创新词云</h3>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 p-4">
+                  {WORDS.map((word, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        fontSize: word.size,
+                        color: word.color,
+                        fontWeight: word.bold ? "bold" : "normal",
+                      }}
+                      className="cursor-default hover:opacity-80 transition-opacity"
+                    >
+                      {word.text}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex justify-center gap-4 mt-4 text-[11px] text-[#94a3b8]">
+                  <span>固态电解质</span>
+                  <span>隔膜材料</span>
+                </div>
+              </div>
+
+              {/* Action Buttons Row */}
+              <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
+                {onBack && (
                   <Button
-                    onClick={onExplore}
-                    className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:-translate-y-px"
+                    variant="outline"
+                    onClick={onBack}
+                    className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
                   >
-                    进入企业探索
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    返回拆解目标
                   </Button>
                 )}
+                <div className="flex flex-col md:flex-row gap-[12px] md:justify-end">
+                  {onExplore && (
+                    <Button
+                      onClick={onExplore}
+                      className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:-translate-y-px"
+                    >
+                      进入企业探索
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
             </div>
           </section>
         </main>

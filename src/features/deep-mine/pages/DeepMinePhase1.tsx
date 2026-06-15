@@ -183,11 +183,11 @@ export default function DeepMinePhase1({
       <div className="mx-auto w-full">
         <main className="space-y-[18px]">
           <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="flex items-center gap-3 border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px]">
+            <div className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px]">
               <h1 className="text-[24px] font-black m-0 text-[#102039]">
                 目标拆解
               </h1>
-              <p className="m-0 text-[#64748b] text-[14px] leading-[1.65]">
+              <p className="m-0 text-right text-[#64748b] text-[14px] leading-[1.65]">
                 {taskName}
               </p>
             </div>

@@ -842,8 +842,8 @@ export default function DeepMineExplore({
                 onClick={() => toggleWatch(selectedCompany)}
                 className={`rounded-[12px] font-extrabold ${
                   watchedCompanies[selectedCompany.name]
-                    ? "border-[#eaf8f0] bg-[#18a957] text-white hover:bg-[#15934c]"
-                    : "border-[#d3e1ff] text-[#2563eb]"
+                    ? "border-[#18a957] bg-[#18a957] text-white hover:border-[#18a957] hover:bg-[#18a957] hover:text-white"
+                    : "border-[#d3e1ff] bg-white text-[#2f6df6] hover:border-[#d3e1ff] hover:bg-white hover:text-[#2f6df6]"
                 }`}
               >
                 {watchedCompanies[selectedCompany.name] ? "已关注" : "关注"}
@@ -851,7 +851,7 @@ export default function DeepMineExplore({
               <Button
                 onClick={() => handleReportAction(selectedCompany)}
                 disabled={selectedReportStatus === "running"}
-                className="rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-[12px] border-[#2f6df6] bg-[#2f6df6] text-white font-extrabold shadow-[0_10px_20px_rgba(47,109,246,0.16)] hover:border-[#2f6df6] hover:bg-[#2f6df6] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {selectedReportConfig.action}
               </Button>

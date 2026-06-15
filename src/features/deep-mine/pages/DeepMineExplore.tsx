@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, Eye, X } from "lucide-react";
 import {
   Input as AntInput,
   Select as AntSelect,
@@ -189,9 +189,13 @@ const tagClasses = {
   purple: "bg-[#f1edff] text-[#7c5cff]",
 };
 
+const getMetricNumber = (metrics: string[], keyword: string) => {
+  const value = metrics.find((metric) => metric.includes(keyword));
+  return value ? Number(value.replace(/\D/g, "")) : 0;
+};
+
 export default function DeepMineExplore({
   onBack,
-  onGenerateReport,
 }: {
   onBack?: () => void;
   onGenerateReport?: () => void;
@@ -203,6 +207,10 @@ export default function DeepMineExplore({
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("默认排序");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [watchedCompanies, setWatchedCompanies] = useState<Record<string, boolean>>({
+    "深圳时识科技有限公司": true,
+    "北方集成电路技术创新中心（北京）有限公司": true,
+  });
 
   const hasActiveFilters =
     quickFilter !== "全部" ||
@@ -227,21 +235,45 @@ export default function DeepMineExplore({
         route === "全部路线" || company.route.includes(route);
       const matchesType = type === "全部类型" || company.type.includes(type);
       const matchesSource = source === "全部来源" || company.source === source;
+      const matchesQuick =
+        quickFilter === "全部" ||
+        (quickFilter === "强技术布局" &&
+          getMetricNumber(company.metrics, "相关专利") >= 12) ||
+        (quickFilter === "近三年活跃" &&
+          getMetricNumber(company.metrics, "近三年新增") >= 3) ||
+        (quickFilter === "创赛/展会出现" &&
+          (company.summary.includes("展会") ||
+            company.metrics.some(
+              (metric) => metric.includes("展会") || metric.includes("创赛"),
+            ))) ||
+        (quickFilter === "高校院所转化" &&
+          company.type.includes("高校/科研院所"));
       const matchesKeyword =
         keyword.trim() === "" ||
         company.name.includes(keyword.trim()) ||
         company.summary.includes(keyword.trim()) ||
         company.tags.some((tag) => tag.text.includes(keyword.trim()));
 
-      return matchesRoute && matchesType && matchesSource && matchesKeyword;
+      return (
+        matchesRoute &&
+        matchesType &&
+        matchesSource &&
+        matchesQuick &&
+        matchesKeyword
+      );
     });
-  }, [keyword, route, source, type]);
+  }, [keyword, quickFilter, route, source, type]);
 
-  const resultCount =
-    quickFilter === "全部"
-      ? visibleCompanies.length
-      : (QUICK_FILTERS.find((filter) => filter.name === quickFilter)?.count ??
-        visibleCompanies.length);
+  const resultCount = visibleCompanies.length;
+
+  const filterSummary = [route, type, source].join("、");
+
+  const toggleWatch = (company: Company) => {
+    setWatchedCompanies((prev) => ({
+      ...prev,
+      [company.name]: !prev[company.name],
+    }));
+  };
 
   const companyColumns = [
     {
@@ -250,7 +282,10 @@ export default function DeepMineExplore({
       key: "name",
       render: (_: string, company: Company) => (
         <>
-          <div className="font-black text-[#172033]">{company.name}</div>
+          <div className="font-black text-[#172033]">
+            {company.name}
+            <span className="ml-2 text-[#a0aabc]">›</span>
+          </div>
           <div className="text-[12px] text-[#64748b] mt-1">{company.type}</div>
         </>
       ),
@@ -300,218 +335,121 @@ export default function DeepMineExplore({
       ),
     },
     {
-      title: "操作",
+      title: "关注",
       key: "action",
+      width: 82,
+      align: "right" as const,
       render: (_: unknown, company: Company) => (
-        <div className="flex gap-2 justify-end">
-          <Button
-            variant="outline"
-            onClick={() => setSelectedCompany(company)}
-            className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold"
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            title={watchedCompanies[company.name] ? "已关注" : "关注"}
+            aria-label={watchedCompanies[company.name] ? "已关注" : "关注"}
+            onClick={(event) => {
+              event.stopPropagation();
+              toggleWatch(company);
+            }}
+            className={`inline-flex h-[34px] w-[34px] items-center justify-center rounded-[12px] border transition-colors ${
+              watchedCompanies[company.name]
+                ? "border-[#bdd1ff] bg-[#edf4ff] text-[#2563eb]"
+                : "border-[#dce6f6] bg-white text-[#9aa6ba] hover:border-[#a8bff5] hover:bg-[#f7faff] hover:text-[#2563eb]"
+            }`}
           >
-            查看
-          </Button>
-          <Button
-            onClick={onGenerateReport}
-            className="h-[32px] px-[10px] rounded-[10px] text-[12px] font-extrabold bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
-          >
-            出报告
-          </Button>
+            <Eye className="h-[18px] w-[18px]" />
+          </button>
         </div>
       ),
     },
   ];
 
   return (
-    <div className="max-w-[1280px] mx-auto p-[28px] max-md:p-[22px_16px]">
-      <div className="grid grid-cols-1 gap-[18px] items-start">
-        <main className="space-y-4">
-          <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="min-w-0 flex-1">
-                  <h1 className="text-[26px] leading-tight m-0 font-bold">
-                    企业探索
-                  </h1>
-                  <p className="mt-2 text-[#64748b] text-[14px] leading-[1.65]">
-                    当前目标：存算一体神经形态芯片。这里用于查看线索分析后的候选企业、筛选条件和轻量证据。
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+    <div className="mx-auto max-w-[1440px] p-[34px_36px_42px] max-xl:p-[24px_18px_36px] max-md:p-[22px_14px_34px]">
+      <main>
+        <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
+          <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[28px] py-[30px_22px] max-md:px-5 max-md:py-6">
+            <h1 className="m-0 text-[34px] font-black leading-[1.2] tracking-[-0.03em] text-[#13213a] max-md:text-[30px]">
+              企业探索
+            </h1>
+            <p className="mt-[10px] text-[14px] leading-[1.65] text-[#6d7890]">
+              当前目标：
+              <strong className="text-[#13213a]">存算一体神经形态芯片</strong>
+              。查看线索分析后的候选企业、筛选条件和轻量证据。
+            </p>
+          </header>
 
-          <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <h2 className="text-[18px] font-black mb-4">快速筛选</h2>
-            <div className="flex flex-wrap gap-2">
+          <div className="border-b border-[#e3ebf6] bg-white px-6 py-[20px_16px] max-md:px-5">
+            <div className="mb-4 flex flex-wrap gap-[10px]">
               {QUICK_FILTERS.map((filter) => (
                 <button
                   key={filter.name}
+                  type="button"
                   onClick={() => setQuickFilter(filter.name)}
-                  className={`rounded-full px-4 h-[38px] text-[13px] font-extrabold border transition-colors ${
+                  className={`rounded-full border px-[13px] py-[9px] text-[13px] font-extrabold transition-colors ${
                     quickFilter === filter.name
-                      ? "bg-[#2563eb] border-[#2563eb] text-white shadow-[0_8px_18px_rgba(37,99,235,0.2)]"
-                      : "bg-white border-[#dbe4f1] text-[#40506d] hover:border-[#bfdbfe]"
+                      ? "border-[#bdd1ff] bg-[#edf4ff] text-[#2f6df6]"
+                      : "border-[#dce6f6] bg-white text-[#4d5b73] hover:border-[#b9cdf8] hover:text-[#2f6df6]"
                   }`}
                 >
-                  {filter.name} {filter.count}
+                  {filter.name}
+                  <span className="ml-1 text-[#8a96aa]">{filter.count}</span>
                 </button>
               ))}
             </div>
-          </section>
 
-          <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h2 className="text-[18px] font-black m-0">属性筛选</h2>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={resetFilters}
-                disabled={!hasActiveFilters}
-                className="rounded-[10px] font-extrabold text-[#334155] border-[#dbe4f1] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                重置筛选
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-              <label className="grid gap-1.5 text-[12px] text-[#64748b]">
-                技术路线
-                <AntSelect
-                  value={route}
-                  onChange={setRoute}
-                  size="large"
-                  className="w-full"
-                  options={[
-                    { value: "全部路线", label: "全部路线" },
-                    { value: "SNN", label: "SNN" },
-                    { value: "忆阻器", label: "忆阻器" },
-                    { value: "3D 混合", label: "3D 混合" },
-                    { value: "存算一体", label: "存算一体" },
-                    { value: "其他路线", label: "其他路线" },
-                  ]}
-                />
-              </label>
-              <label className="grid gap-1.5 text-[12px] text-[#64748b]">
-                企业类型
-                <AntSelect
-                  value={type}
-                  onChange={setType}
-                  size="large"
-                  className="w-full"
-                  options={[
-                    { value: "全部类型", label: "全部类型" },
-                    { value: "上市企业", label: "上市企业" },
-                    { value: "非上市企业", label: "非上市企业" },
-                    { value: "高校/科研院所", label: "高校/科研院所" },
-                  ]}
-                />
-              </label>
-              <label className="grid gap-1.5 text-[12px] text-[#64748b]">
-                信号来源
-                <AntSelect
-                  value={source}
-                  onChange={setSource}
-                  size="large"
-                  className="w-full"
-                  options={[
-                    { value: "全部来源", label: "全部来源" },
-                    { value: "专利", label: "专利" },
-                    { value: "创赛", label: "创赛" },
-                    { value: "展会", label: "展会" },
-                    { value: "融资", label: "融资" },
-                    { value: "新闻", label: "新闻" },
-                  ]}
-                />
-              </label>
-              <label className="grid gap-1.5 text-[12px] text-[#64748b]">
-                关键词搜索
-                <AntInput
-                  value={keyword}
-                  onChange={(event) => setKeyword(event.target.value)}
-                  placeholder="企业名称 / 关键词"
-                  size="large"
-                  allowClear
-                  className="w-full"
-                />
-              </label>
-            </div>
-
-            <div className="mt-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3 rounded-[16px] border border-[#e5eaf3] bg-[#f9fbff] px-4 py-3">
-              <div className="text-[14px] text-[#334155]">
-                当前结果：
-                <strong className="text-[#2563eb]">{resultCount}</strong> 家
-              </div>
-              <div className="flex flex-wrap gap-2 flex-1">
-                {!hasActiveFilters && (
-                  <span className="rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#94a3b8]">
-                    未选择额外条件
-                  </span>
-                )}
-                {quickFilter !== "全部" && (
-                  <button
-                    type="button"
-                    onClick={() => setQuickFilter("全部")}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-3 py-1.5 text-[12px] font-extrabold text-[#2563eb] hover:bg-[#dbeafe] transition-colors"
-                  >
-                    {quickFilter}
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {route !== "全部路线" && (
-                  <button
-                    type="button"
-                    onClick={() => setRoute("全部路线")}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
-                  >
-                    {route}
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {type !== "全部类型" && (
-                  <button
-                    type="button"
-                    onClick={() => setType("全部类型")}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
-                  >
-                    {type}
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {source !== "全部来源" && (
-                  <button
-                    type="button"
-                    onClick={() => setSource("全部来源")}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
-                  >
-                    {source}
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {keyword && (
-                  <button
-                    type="button"
-                    onClick={() => setKeyword("")}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
-                  >
-                    关键词：{keyword}
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-                {sort !== "默认排序" && (
-                  <button
-                    type="button"
-                    onClick={() => setSort("默认排序")}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#eef2f7] px-3 py-1.5 text-[12px] font-extrabold text-[#64748b] hover:bg-[#e2e8f0] transition-colors"
-                  >
-                    {sort}
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
+            <div className="grid grid-cols-1 gap-[10px] lg:grid-cols-[minmax(150px,1fr)_minmax(150px,1fr)_minmax(150px,1fr)_minmax(220px,1.35fr)_150px_auto]">
+              <AntSelect
+                value={route}
+                onChange={setRoute}
+                size="large"
+                className="w-full"
+                options={[
+                  { value: "全部路线", label: "全部路线" },
+                  { value: "SNN", label: "SNN" },
+                  { value: "忆阻器", label: "忆阻器" },
+                  { value: "3D 混合", label: "3D 混合" },
+                  { value: "存算一体", label: "存算一体" },
+                  { value: "其他路线", label: "其他路线" },
+                ]}
+              />
+              <AntSelect
+                value={type}
+                onChange={setType}
+                size="large"
+                className="w-full"
+                options={[
+                  { value: "全部类型", label: "全部类型" },
+                  { value: "上市企业", label: "上市企业" },
+                  { value: "非上市企业", label: "非上市企业" },
+                  { value: "高校/科研院所", label: "高校/科研院所" },
+                ]}
+              />
+              <AntSelect
+                value={source}
+                onChange={setSource}
+                size="large"
+                className="w-full"
+                options={[
+                  { value: "全部来源", label: "全部来源" },
+                  { value: "专利", label: "专利" },
+                  { value: "创赛", label: "创赛" },
+                  { value: "展会", label: "展会" },
+                  { value: "融资", label: "融资" },
+                  { value: "新闻", label: "新闻" },
+                ]}
+              />
+              <AntInput
+                value={keyword}
+                onChange={(event) => setKeyword(event.target.value)}
+                placeholder="搜索企业名称或关键词"
+                size="large"
+                allowClear
+                className="w-full"
+              />
               <AntSelect
                 value={sort}
                 onChange={setSort}
-                className="w-full lg:w-[168px]!"
+                size="large"
+                className="w-full"
                 options={[
                   { value: "默认排序", label: "默认排序" },
                   { value: "最近活跃优先", label: "最近活跃优先" },
@@ -519,40 +457,67 @@ export default function DeepMineExplore({
                   { value: "创赛/展会命中优先", label: "创赛/展会命中优先" },
                 ]}
               />
+              <Button
+                variant="outline"
+                onClick={resetFilters}
+                disabled={!hasActiveFilters}
+                className="h-[40px] rounded-[12px] border-[#dce6f6] px-4 font-extrabold text-[#334155] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                重置
+              </Button>
             </div>
-          </section>
+          </div>
 
-          <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
+          <div className="flex items-center justify-between gap-[18px] border-b border-[#e3ebf6] bg-[#fbfdff] px-6 py-[13px] text-[13px] text-[#536177] max-md:flex-col max-md:items-start max-md:gap-2 max-md:px-5">
+            <div>
+              <strong className="text-[#13213a]">当前结果：{resultCount}家</strong>
+              <span className="mx-2 text-[#c4cfdd]">|</span>
+              <span>筛选条件：{filterSummary}</span>
+              {quickFilter !== "全部" && (
+                <button
+                  type="button"
+                  onClick={() => setQuickFilter("全部")}
+                  className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#eaf1ff] px-2.5 py-1 text-[12px] font-extrabold text-[#2563eb] transition-colors hover:bg-[#dbeafe]"
+                >
+                  {quickFilter}
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+            <div className="text-[#8b96a8]">点击企业行查看线索详情，点击眼睛图标关注</div>
+          </div>
+
+          <div className="min-h-[610px] bg-white">
             <AntTable<Company>
               className={styles.table}
               columns={companyColumns}
               dataSource={visibleCompanies}
               rowKey="name"
               pagination={false}
-              scroll={{ x: 820 }}
+              style={{ minHeight: 520 }}
+              scroll={{ x: 820, y: 520 }}
+              onRow={(company) => ({
+                onClick: () => setSelectedCompany(company),
+              })}
               locale={{
                 emptyText: "当前筛选条件下暂无结果，请调整筛选条件。",
               }}
             />
-            <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
-              <Button
-                type="button"
-                onClick={() => onBack?.()}
-                variant="outline"
-                className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                返回线索分析
-              </Button>
-              <div className="text-[13px] text-[#64748b]">
-                当前展示
-                <strong className="mx-1 text-[#2563eb]">{resultCount}</strong>
-                家候选主体
-              </div>
+            <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px] px-[22px] pb-[22px]">
+              {onBack && (
+                <Button
+                  variant="outline"
+                  onClick={onBack}
+                  className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  返回线索分析
+                </Button>
+              )}
             </div>
-          </section>
-        </main>
-      </div>
+          </div>
+        </section>
+      </main>
 
       {selectedCompany && (
         <>
@@ -561,12 +526,15 @@ export default function DeepMineExplore({
             className="fixed inset-0 bg-[rgba(7,18,38,0.28)] z-40"
             onClick={() => setSelectedCompany(null)}
           ></button>
-          <aside className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-[520px] bg-white shadow-[-18px_0_40px_rgba(10,30,70,0.16)] flex flex-col">
-            <div className="p-6 border-b border-[#e5eaf3] flex justify-between gap-4">
+          <aside className="fixed right-0 top-0 bottom-0 z-50 flex w-full max-w-[460px] flex-col bg-white shadow-[-18px_0_44px_rgba(15,30,60,0.18)]">
+            <div className="p-[22px] flex justify-between gap-4">
               <div>
                 <h2 className="text-[24px] font-black text-[#172033] m-0">
                   {selectedCompany.name}
                 </h2>
+                <p className="mt-2 mb-0 text-[13px] text-[#7b879b]">
+                  {selectedCompany.detail.techRoutes}｜{selectedCompany.type}
+                </p>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {selectedCompany.tags.slice(0, 3).map((tag) => (
                     <span
@@ -580,14 +548,14 @@ export default function DeepMineExplore({
               </div>
               <button
                 onClick={() => setSelectedCompany(null)}
-                className="w-9 h-9 rounded-[10px] bg-[#f1f4f9] inline-flex items-center justify-center"
+                className="inline-flex h-[34px] w-[34px] items-center justify-center rounded-[12px] border border-[#e3ebf6] bg-[#f7f9fd] text-[#6d7890]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="p-6 overflow-auto flex-1">
-              <h3 className="text-[16px] font-black mb-3">企业基础信息</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            <div className="overflow-auto px-[22px] pb-[22px] flex-1">
+              <section className="mt-[14px] rounded-[18px] border border-[#e3ebf6] bg-white p-4">
+                <h3 className="text-[15px] font-black mb-3">企业基础信息</h3>
                 {[
                   ["企业类型", selectedCompany.type],
                   ["技术路线覆盖", selectedCompany.detail.techRoutes],
@@ -596,51 +564,62 @@ export default function DeepMineExplore({
                 ].map(([label, value]) => (
                   <div
                     key={label}
-                    className="rounded-[14px] border border-[#e5eaf3] bg-[#fbfcff] p-3"
+                    className="grid grid-cols-[94px_1fr] gap-[10px] border-b border-dashed border-[#edf1f7] py-[7px] text-[13px] last:border-b-0"
                   >
-                    <div className="text-[12px] text-[#64748b] mb-1">
+                    <div className="text-[#7b879b]">
                       {label}
                     </div>
-                    <div className="font-black text-[#172033]">{value}</div>
+                    <div className="font-bold text-[#243149]">{value}</div>
                   </div>
                 ))}
-              </div>
-              <h3 className="text-[16px] font-black mb-3">线索信号</h3>
-              <div className="grid gap-3">
+              </section>
+
+              <section className="mt-[14px] rounded-[18px] border border-[#e3ebf6] bg-white p-4">
+                <h3 className="text-[15px] font-black mb-3">线索信号</h3>
+                <div className="grid gap-[10px]">
                 {selectedCompany.detail.signals.map((signal, index) => (
                   <div
                     key={signal}
-                    className="rounded-[14px] border border-[#e5eaf3] bg-white p-3"
+                    className="relative pl-4 text-[13px] leading-[1.65] text-[#43506a] before:absolute before:left-0 before:top-[0.75em] before:h-[6px] before:w-[6px] before:rounded-full before:bg-[#2f6df6]"
                   >
-                    <strong className="block mb-1 text-[#172033]">
+                    <strong className="mb-1 block text-[#172033]">
                       {index === 0
                         ? "专利信号"
                         : index === 1
                           ? "代表性证据"
                           : "轻量判断"}
                     </strong>
-                    <p className="m-0 text-[13px] leading-[1.6] text-[#64748b]">
+                    <p className="m-0">
                       {signal}
                     </p>
                   </div>
                 ))}
+                </div>
+              </section>
+
+              <div className="mt-[14px] rounded-[18px] border border-[#e3ebf6] bg-white p-[15px]">
+                <div className="mb-[10px] flex items-center justify-between gap-3">
+                  <div className="text-[15px] font-black">初筛报告</div>
+                  <span className="rounded-full bg-[#f2f5fa] px-2 py-1 text-[12px] font-extrabold text-[#69758a]">
+                    尚未生成
+                  </span>
+                </div>
+                <p className="m-0 text-[13px] leading-[1.65] text-[#7b879b]">
+                  查看线索证据后，可生成企业初筛报告。
+                </p>
               </div>
             </div>
-            <div className="p-5 border-t border-[#e5eaf3] flex flex-wrap gap-2">
-              <Button className="rounded-[12px] bg-[#2563eb] text-white font-extrabold hover:bg-[#1d4ed8]">
-                关注
-              </Button>
+            <div className="grid grid-cols-1 gap-[10px] p-[0_22px_22px]">
               <Button
                 variant="outline"
-                className="rounded-[12px] font-extrabold"
+                onClick={() => toggleWatch(selectedCompany)}
+                className={`rounded-[12px] font-extrabold ${
+                  watchedCompanies[selectedCompany.name]
+                    ? "border-[#eaf8f0] bg-[#18a957] text-white hover:bg-[#15934c]"
+                    : "border-[#d3e1ff] text-[#2563eb]"
+                }`}
               >
-                入池
-              </Button>
-              <Button
-                variant="outline"
-                className="rounded-[12px] font-extrabold"
-              >
-                初筛分析
+                {watchedCompanies[selectedCompany.name] ? "已关注" : "关注"}
               </Button>
             </div>
           </aside>

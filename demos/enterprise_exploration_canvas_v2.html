@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>企业探索</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#f4f7fb;
+      --card:#fff;
+      --text:#13213a;
+      --muted:#6d7890;
+      --line:#e3ebf6;
+      --blue:#2f6df6;
+      --blue-2:#edf4ff;
+      --green:#18a957;
+      --green-2:#eaf8f0;
+      --orange:#f59e0b;
+      --orange-2:#fff7e6;
+      --shadow:0 12px 34px rgba(18,39,80,.06);
+      --radius:24px;
+    }
+    body{
+      margin:0;
+      font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .page{
+      min-height:100vh;
+      padding:34px 36px 42px;
+    }
+    .shell{
+      max-width:1440px;
+      margin:0 auto;
+    }
+    .canvas{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .canvas-head{
+      padding:30px 28px 22px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
+    }
+    h1{
+      margin:0;
+      font-size:34px;
+      letter-spacing:-.5px;
+      line-height:1.2;
+    }
+    .target{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .target strong{color:var(--text)}
+    .canvas-tools{
+      padding:20px 24px 16px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .quick{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:16px;
+    }
+    .chip{
+      border:1px solid #dce6f6;
+      background:#fff;
+      color:#4d5b73;
+      padding:9px 13px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+    .chip:hover{border-color:#b9cdf8;color:var(--blue)}
+    .chip.active{background:var(--blue-2);border-color:#bdd1ff;color:var(--blue)}
+    .chip span{color:#8a96aa;margin-left:3px;font-weight:800}
+    .filters{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(150px,1fr)) minmax(220px,1.35fr) 150px;
+      gap:10px;
+      align-items:center;
+    }
+    select,.search{
+      width:100%;
+      height:42px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      padding:0 12px;
+      color:#3f4d65;
+      font-size:13px;
+      outline:none;
+      font-family:inherit;
+    }
+    .search{padding:0 14px}
+    select:focus,.search:focus{border-color:#a9c2ff;box-shadow:0 0 0 4px rgba(47,109,246,.08)}
+    .result-line{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      padding:13px 24px;
+      border-bottom:1px solid var(--line);
+      color:#536177;
+      font-size:13px;
+      background:#fbfdff;
+    }
+    .result-line strong{color:var(--text)}
+    .hint{color:#8b96a8}
+    .list-wrap{background:#fff;min-height:610px}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+    }
+    th{
+      text-align:left;
+      font-size:12px;
+      color:#7a8699;
+      font-weight:800;
+      padding:14px 18px;
+      border-bottom:1px solid var(--line);
+      background:#fbfcff;
+    }
+    td{
+      padding:18px;
+      border-bottom:1px solid #eef3fa;
+      vertical-align:middle;
+      font-size:14px;
+    }
+    tr.company-row{cursor:pointer;transition:.16s ease}
+    tr.company-row:hover{background:#f7faff}
+    tr.company-row.selected{background:#f3f7ff}
+    .company-name{
+      font-weight:900;
+      font-size:15px;
+      color:#14213d;
+      line-height:1.4;
+    }
+    .company-sub{margin-top:5px;color:#8a96a8;font-size:12px}
+    .tags{display:flex;flex-wrap:wrap;gap:7px}
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      border-radius:999px;
+      padding:6px 9px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--blue);
+      background:var(--blue-2);
+    }
+    .tag.gray{background:#f2f5fa;color:#5d687b}
+    .tag.green{background:var(--green-2);color:var(--green)}
+    .tag.orange{background:var(--orange-2);color:#bd6b00}
+    .summary{color:#3f4d65;line-height:1.65;font-size:13px}
+    .metrics{display:flex;flex-wrap:wrap;gap:8px}
+    .metric{
+      background:#f7f9fd;
+      border:1px solid #e7eef8;
+      color:#526078;
+      border-radius:10px;
+      padding:7px 9px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .watch-cell{text-align:right;width:80px}
+    .eye-btn{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      border:1px solid #dce6f6;
+      background:#fff;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition:.16s ease;
+      color:#9aa6ba;
+    }
+    .eye-btn:hover{border-color:#a8bff5;color:var(--blue);background:#f7faff}
+    .eye-btn.active{color:var(--blue);background:var(--blue-2);border-color:#bdd1ff}
+    .eye-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .eye-btn.active svg .pupil{fill:var(--blue);stroke:var(--blue)}
+    .row-arrow{color:#a0aabc;margin-left:8px;font-weight:900}
+
+    .bottom-nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:20px;
+      min-height:48px;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.16s ease;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .btn:hover{border-color:#cbd8eb;transform:translateY(-1px)}
+    .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 10px 20px rgba(47,109,246,.16)}
+    .btn.ghost{color:var(--blue);border-color:#d3e1ff;background:#fff}
+    .btn.green{background:var(--green);border-color:var(--green);color:#fff}
+    .btn.small{padding:8px 10px;font-size:12px;border-radius:10px}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(12,25,48,.42);
+      opacity:0;
+      pointer-events:none;
+      transition:.18s ease;
+      z-index:20;
+    }
+    .overlay.open{opacity:1;pointer-events:auto}
+    .drawer{
+      position:fixed;
+      right:0;
+      top:0;
+      height:100vh;
+      width:460px;
+      max-width:92vw;
+      background:#fff;
+      box-shadow:-18px 0 44px rgba(15,30,60,.18);
+      transform:translateX(104%);
+      transition:.22s ease;
+      z-index:30;
+      display:flex;
+      flex-direction:column;
+    }
+    .drawer.open{transform:translateX(0)}
+    .drawer-inner{
+      padding:22px;
+      overflow:auto;
+      height:100%;
+    }
+    .drawer-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .drawer h2{margin:0;font-size:24px;line-height:1.35}
+    .drawer .sub{margin-top:8px;color:#7b879b;font-size:13px}
+    .close-icon{
+      width:34px;height:34px;border-radius:12px;border:1px solid var(--line);background:#f7f9fd;color:#6d7890;cursor:pointer;font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center;
+    }
+    .section{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+    }
+    .section h3{margin:0 0 12px;font-size:15px}
+    .kv{display:grid;grid-template-columns:94px 1fr;gap:10px;font-size:13px;line-height:1.6;padding:7px 0;border-bottom:1px dashed #edf1f7}
+    .kv:last-child{border-bottom:none}
+    .k{color:#7b879b}.v{color:#243149;font-weight:700}
+    .signal-list,.evidence-list{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+    .signal-list li,.evidence-list li{position:relative;padding-left:16px;color:#43506a;font-size:13px;line-height:1.65}
+    .signal-list li::before,.evidence-list li::before{content:"";position:absolute;left:0;top:.72em;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+    .judgement{color:#43506a;font-size:13px;line-height:1.75;margin:0}
+    .report-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;margin-top:14px}
+    .report-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .report-title{font-size:15px;font-weight:900}
+    .report-status{border-radius:999px;padding:5px 8px;font-size:12px;font-weight:800;background:#f2f5fa;color:#69758a}
+    .report-status.ready{background:var(--green-2);color:var(--green)}
+    .report-status.running{background:var(--orange-2);color:#bd6b00}
+    .report-desc{margin:0;color:#7b879b;font-size:13px;line-height:1.65}
+    .drawer-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:10px;margin-top:16px}
+
+    @media(max-width:1180px){
+      .page{padding:24px 18px 36px}
+      .filters{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:760px){
+      h1{font-size:30px}
+      .canvas-head{padding:24px 20px 18px}
+      .filters{grid-template-columns:1fr}
+      .result-line{align-items:flex-start;flex-direction:column;gap:6px}
+      table,thead,tbody,tr,td{display:block;width:100%}
+      thead{display:none}
+      tr.company-row{padding:14px 16px;border-bottom:1px solid #eef3fa}
+      td{padding:7px 0;border-bottom:none}
+      .watch-cell{text-align:left}
+      .drawer-actions{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <section class="canvas">
+        <header class="canvas-head">
+          <h1>企业探索</h1>
+          <div class="target">当前目标：<strong>存算一体神经形态芯片</strong></div>
+        </header>
+
+        <div class="canvas-tools">
+          <div class="quick" id="quickFilters">
+            <button class="chip active" data-filter="全部">全部<span>350</span></button>
+            <button class="chip" data-filter="强技术布局">强技术布局<span>86</span></button>
+            <button class="chip" data-filter="近三年活跃">近三年活跃<span>128</span></button>
+            <button class="chip" data-filter="创赛/展会出现">创赛/展会出现<span>24</span></button>
+            <button class="chip" data-filter="高校院所转化">高校院所转化<span>79</span></button>
+          </div>
+
+          <div class="filters">
+            <select id="routeSelect">
+              <option>全部路线</option>
+              <option>SNN</option>
+              <option>存算一体</option>
+              <option>类脑芯片</option>
+              <option>3D混合</option>
+              <option>忆阻器</option>
+            </select>
+            <select id="typeSelect">
+              <option>全部类型</option>
+              <option>上市企业</option>
+              <option>非上市企业</option>
+              <option>高校/科研院所</option>
+            </select>
+            <select id="sourceSelect">
+              <option>全部来源</option>
+              <option>专利</option>
+              <option>创赛</option>
+              <option>展会</option>
+              <option>融资</option>
+              <option>新闻</option>
+            </select>
+            <input class="search" id="searchInput" placeholder="搜索企业名称或关键词" />
+            <select id="sortSelect">
+              <option>默认排序</option>
+              <option>近三年活跃优先</option>
+              <option>相关专利数优先</option>
+              <option>活动命中优先</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="result-line">
+          <div><strong id="resultCount">当前结果：6家</strong>｜<span id="filterSummary">筛选条件：全部路线、全部类型、全部来源</span></div>
+          <div class="hint">点击企业行查看线索详情，点击眼睛图标关注</div>
+        </div>
+
+        <div class="list-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:23%">企业</th>
+                <th style="width:18%">技术路线</th>
+                <th>线索摘要</th>
+                <th style="width:20%">关键指标</th>
+                <th style="width:82px;text-align:right">关注</th>
+              </tr>
+            </thead>
+            <tbody id="companyList"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="bottom-nav">
+        <a class="btn ghost" href="./leads_analysis_clean_v2.html">← 返回线索分析</a>
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-inner">
+      <div class="drawer-title">
+        <div>
+          <h2 id="drawerName">深圳时识科技有限公司</h2>
+          <div class="sub" id="drawerSub">SNN｜存算一体｜非上市企业</div>
+        </div>
+        <button class="close-icon" id="closeDrawer" aria-label="关闭">×</button>
+      </div>
+
+      <div class="tags" id="drawerTags"></div>
+
+      <div class="section">
+        <h3>企业基础信息</h3>
+        <div class="kv"><div class="k">企业类型</div><div class="v" id="drawerType">非上市企业</div></div>
+        <div class="kv"><div class="k">技术路线</div><div class="v" id="drawerRoutes">SNN、存算一体</div></div>
+        <div class="kv"><div class="k">相关专利</div><div class="v" id="drawerPatents">12件</div></div>
+        <div class="kv"><div class="k">近三年新增</div><div class="v" id="drawerRecent">3件</div></div>
+      </div>
+
+      <div class="section">
+        <h3>线索信号</h3>
+        <ul class="signal-list" id="drawerSignals"></ul>
+      </div>
+
+      <div class="section">
+        <h3>代表性证据</h3>
+        <ul class="evidence-list" id="drawerEvidence"></ul>
+      </div>
+
+      <div class="section">
+        <h3>轻量判断</h3>
+        <p class="judgement" id="drawerJudgement"></p>
+      </div>
+
+      <div class="report-card">
+        <div class="report-head">
+          <div class="report-title">初筛报告</div>
+          <div class="report-status" id="reportStatus">尚未生成</div>
+        </div>
+        <p class="report-desc" id="reportDesc">查看线索证据后，可生成企业初筛报告。</p>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn ghost" id="watchAction">关注</button>
+        <button class="btn primary" id="reportAction">生成初筛报告</button>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    const eyeIcon = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path>
+        <circle class="pupil" cx="12" cy="12" r="3"></circle>
+      </svg>`;
+
+    const companies = [
+      {id:1,name:"深圳时识科技有限公司",type:"非上市企业",routes:["SNN","存算一体"],sources:["专利","展会"],summary:"近三年新增3件相关专利，覆盖SNN异步事件驱动与低功耗类脑计算方向。",metrics:["相关专利12","近三年新增3","展会1"],watched:true,report:"none",signals:["专利信号：识别到事件驱动计算、脉冲神经网络、低功耗架构相关线索。","活动信号：出现于相关行业展会名单。"],evidence:["一种面向事件驱动计算的神经形态芯片结构","一种低功耗脉冲神经网络计算架构","2025年某行业展会参展记录"],judgement:"当前建议先关注，后续补充更多企业动态后再决定是否生成初筛报告。"},
+      {id:2,name:"北京灵汐科技有限公司",type:"非上市企业",routes:["类脑芯片","SNN"],sources:["专利","新闻"],summary:"围绕类脑计算芯片与神经形态处理器持续布局，近三年有新增专利。",metrics:["相关专利9","近三年新增2","新闻2"],watched:false,report:"ready",signals:["专利信号：命中类脑芯片、神经形态处理器相关技术关键词。","新闻信号：近期出现于产业报道。"],evidence:["一种神经形态处理器及其数据处理方法","类脑计算芯片相关产品动态报道"],judgement:"已有初筛报告，可先查看报告结论，再决定是否进入企业库后续管理。"},
+      {id:3,name:"中科类脑智能研究院",type:"高校/科研院所",routes:["类脑芯片","存算一体"],sources:["专利"],summary:"院所主体拥有相关专利布局，存在潜在成果转化线索。",metrics:["相关专利18","近三年新增5","转化待确认"],watched:false,report:"none",signals:["专利信号：相关专利数量较多，覆盖类脑计算与存算架构。","转化线索：主体为科研机构，需要进一步识别关联企业。"],evidence:["一种面向类脑计算的存储计算一体化阵列","类脑智能芯片相关联合申请专利"],judgement:"当前更适合作为高校院所转化线索，建议后续继续识别关联企业主体。"},
+      {id:4,name:"上海后摩智能科技有限公司",type:"非上市企业",routes:["存算一体","3D混合"],sources:["专利","融资"],summary:"存算一体方向信号较集中，同时存在融资与产品化相关公开信息。",metrics:["相关专利15","近三年新增4","融资1"],watched:true,report:"running",signals:["专利信号：存算一体与芯片架构相关专利较集中。","融资信号：命中公开融资信息。"],evidence:["一种存算一体芯片结构及计算方法","公开融资事件记录"],judgement:"该企业具备继续跟踪价值，初筛报告正在生成中。"},
+      {id:5,name:"苏州存算芯微电子有限公司",type:"非上市企业",routes:["存算一体","忆阻器"],sources:["专利","创赛"],summary:"命中存算一体与忆阻器方向专利，并出现于创新创业赛事名单。",metrics:["相关专利7","近三年新增3","创赛1"],watched:false,report:"none",signals:["专利信号：命中忆阻器交叉阵列、存算一体相关关键词。","创赛信号：出现于创新创业赛事名单。"],evidence:["一种基于忆阻器阵列的存算一体计算结构","某创新创业赛事企业名单记录"],judgement:"信号较轻但具备新兴企业特征，建议先关注后续变化。"},
+      {id:6,name:"华中科技大学集成电路学院",type:"高校/科研院所",routes:["3D混合","异构集成"],sources:["专利"],summary:"高校主体在3D混合键合与异构集成方向存在专利积累。",metrics:["相关专利22","近三年新增6","转化待确认"],watched:false,report:"none",signals:["专利信号：命中3D混合键合、异构集成相关技术。","转化线索：需继续识别关联转化公司。"],evidence:["一种面向高密度互连的3D混合键合方法","异构集成芯片结构相关专利"],judgement:"适合作为高校院所转化线索，后续重点在于找到关联产业化主体。"}
+    ];
+
+    let selectedId = null;
+    let activeQuick = "全部";
+    const companyList = document.getElementById('companyList');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const routeSelect = document.getElementById('routeSelect');
+    const typeSelect = document.getElementById('typeSelect');
+    const sourceSelect = document.getElementById('sourceSelect');
+    const searchInput = document.getElementById('searchInput');
+    const filterSummary = document.getElementById('filterSummary');
+    const resultCount = document.getElementById('resultCount');
+
+    function filteredCompanies(){
+      const route = routeSelect.value;
+      const type = typeSelect.value;
+      const source = sourceSelect.value;
+      const q = searchInput.value.trim();
+      return companies.filter(c=>{
+        const byRoute = route === '全部路线' || c.routes.includes(route);
+        const byType = type === '全部类型' || c.type === type;
+        const bySource = source === '全部来源' || c.sources.includes(source);
+        const byQuery = !q || c.name.includes(q) || c.summary.includes(q) || c.routes.join('').includes(q);
+        const byQuick = activeQuick === '全部' ||
+          (activeQuick === '强技术布局' && parseInt(c.metrics[0].replace(/\D/g,'')) >= 12) ||
+          (activeQuick === '近三年活跃' && parseInt(c.metrics[1].replace(/\D/g,'')) >= 3) ||
+          (activeQuick === '创赛/展会出现' && (c.sources.includes('创赛') || c.sources.includes('展会'))) ||
+          (activeQuick === '高校院所转化' && c.type === '高校/科研院所');
+        return byRoute && byType && bySource && byQuery && byQuick;
+      });
+    }
+
+    function renderList(){
+      const list = filteredCompanies();
+      resultCount.textContent = `当前结果：${list.length}家`;
+      filterSummary.textContent = `筛选条件：${routeSelect.value}、${typeSelect.value}、${sourceSelect.value}`;
+      companyList.innerHTML = list.map(c=>`
+        <tr class="company-row ${c.id===selectedId?'selected':''}" data-id="${c.id}">
+          <td>
+            <div class="company-name">${c.name}<span class="row-arrow">›</span></div>
+            <div class="company-sub">${c.type}</div>
+          </td>
+          <td><div class="tags">${c.routes.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join('')}</div></td>
+          <td><div class="summary">${c.summary}</div></td>
+          <td><div class="metrics">${c.metrics.map(m=>`<span class="metric">${m}</span>`).join('')}</div></td>
+          <td class="watch-cell">
+            <button class="eye-btn ${c.watched?'active':''}" data-eye="${c.id}" title="${c.watched?'已关注':'关注'}">${eyeIcon}</button>
+          </td>
+        </tr>
+      `).join('') || `<tr><td colspan="5" style="padding:40px;text-align:center;color:#8792a6">当前筛选条件下暂无结果</td></tr>`;
+
+      document.querySelectorAll('.company-row').forEach(row=>{
+        row.addEventListener('click',()=>{
+          selectedId = Number(row.dataset.id);
+          renderDrawer();
+          openDrawer();
+          renderList();
+        });
+      });
+      document.querySelectorAll('.eye-btn').forEach(btn=>{
+        btn.addEventListener('click',(e)=>{
+          e.stopPropagation();
+          const c = companies.find(item=>item.id===Number(btn.dataset.eye));
+          c.watched = !c.watched;
+          renderList();
+          if(c.id===selectedId) renderDrawer();
+        });
+      });
+    }
+
+    function openDrawer(){
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+    }
+    function closeDrawer(){
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+
+    function renderDrawer(){
+      const c = companies.find(item=>item.id===selectedId) || filteredCompanies()[0];
+      if(!c) return;
+      selectedId = c.id;
+      document.getElementById('drawerName').textContent = c.name;
+      document.getElementById('drawerSub').textContent = `${c.routes.join('｜')}｜${c.type}`;
+      document.getElementById('drawerTags').innerHTML = [
+        ...c.routes.map(t=>`<span class="tag">${t}</span>`),
+        `<span class="tag gray">${c.type}</span>`,
+        ...c.sources.map(s=>`<span class="tag green">${s}</span>`)
+      ].join('');
+      document.getElementById('drawerType').textContent = c.type;
+      document.getElementById('drawerRoutes').textContent = c.routes.join('、');
+      document.getElementById('drawerPatents').textContent = c.metrics[0].replace('相关专利','') + '件';
+      document.getElementById('drawerRecent').textContent = c.metrics[1].replace('近三年新增','') + '件';
+      document.getElementById('drawerSignals').innerHTML = c.signals.map(s=>`<li>${s}</li>`).join('');
+      document.getElementById('drawerEvidence').innerHTML = c.evidence.map(s=>`<li>${s}</li>`).join('');
+      document.getElementById('drawerJudgement').textContent = c.judgement;
+      const watchAction = document.getElementById('watchAction');
+      watchAction.textContent = c.watched ? '已关注' : '关注';
+      watchAction.className = c.watched ? 'btn green' : 'btn ghost';
+      const reportStatus = document.getElementById('reportStatus');
+      const reportDesc = document.getElementById('reportDesc');
+      const reportAction = document.getElementById('reportAction');
+      reportStatus.className = 'report-status';
+      reportAction.disabled = false;
+      if(c.report === 'none'){
+        reportStatus.textContent = '尚未生成';
+        reportDesc.textContent = '查看线索证据后，可生成企业初筛报告。';
+        reportAction.textContent = '生成初筛报告';
+        reportAction.className = 'btn primary';
+      }else if(c.report === 'running'){
+        reportStatus.textContent = '生成中';
+        reportStatus.classList.add('running');
+        reportDesc.textContent = '初筛报告正在生成中，完成后可进入独立报告页查看。';
+        reportAction.textContent = '初筛报告生成中';
+        reportAction.className = 'btn primary';
+        reportAction.disabled = true;
+      }else{
+        reportStatus.textContent = '已生成';
+        reportStatus.classList.add('ready');
+        reportDesc.textContent = '初筛报告已生成，可进入独立报告页查看。';
+        reportAction.textContent = '查看初筛报告';
+        reportAction.className = 'btn primary';
+      }
+    }
+
+    document.getElementById('watchAction').addEventListener('click',()=>{
+      const c = companies.find(item=>item.id===selectedId);
+      c.watched = !c.watched;
+      renderDrawer();
+      renderList();
+    });
+    document.getElementById('reportAction').addEventListener('click',()=>{
+      const c = companies.find(item=>item.id===selectedId);
+      if(c.report === 'ready'){
+        alert('打开独立初筛报告页面：/reports/screening_rpt_' + c.id);
+        return;
+      }
+      if(c.report === 'none'){
+        const ok = confirm('将为该企业生成初筛报告，消耗1个初筛额度。是否继续？');
+        if(!ok) return;
+        c.report = 'running';
+        renderDrawer();
+        setTimeout(()=>{c.report='ready';renderDrawer();},1200);
+      }
+    });
+    document.getElementById('quickFilters').addEventListener('click',(e)=>{
+      const chip = e.target.closest('.chip');
+      if(!chip) return;
+      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      activeQuick = chip.dataset.filter;
+      renderList();
+    });
+    [routeSelect,typeSelect,sourceSelect,searchInput,document.getElementById('sortSelect')].forEach(el=>{
+      el.addEventListener('input',renderList);
+      el.addEventListener('change',renderList);
+    });
+    document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
+    overlay.addEventListener('click',closeDrawer);
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeDrawer(); });
+    renderList();
+  </script>
+</body>
+</html>

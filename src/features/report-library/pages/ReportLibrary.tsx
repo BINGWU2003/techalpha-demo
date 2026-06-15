@@ -1,222 +1,196 @@
-import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export default function ReportLibrary({ onBack, onCreateReport, onOpenReport, onEditReport }: { onBack?: () => void; onCreateReport?: () => void; onOpenReport?: () => void; onEditReport?: () => void; }) {
-  const [activeTab, setActiveTab] = useState('全部报告');
-  
-  const tabs = ['全部报告', '待复核', '已定稿', '已导出', '有更新'];
+type Report = {
+  id: number;
+  title: string;
+  company: string;
+  direction: string;
+  source: string;
+  time: string;
+  weekly: boolean;
+};
+
+const reports: Report[] = [
+  { id: 1, title: '深圳时识科技有限公司初筛报告', company: '深圳时识科技有限公司', direction: '存算一体', source: '企业探索生成', time: '今天', weekly: true },
+  { id: 2, title: '浙江钠创新能源初筛报告', company: '浙江钠创新能源', direction: '钠电池正极材料', source: '企业探索生成', time: '今天', weekly: true },
+  { id: 3, title: '中科海钠初筛报告', company: '中科海钠', direction: '钠电池正极材料', source: '企业库生成', time: '昨天', weekly: true },
+  { id: 4, title: '某新材料科技公司初筛报告', company: '某新材料科技公司', direction: '钠电池正极材料', source: '企业库生成', time: '3 天前', weekly: true },
+  { id: 5, title: '机器人灵巧手企业初筛报告', company: '灵巧手科技', direction: '机器人灵巧手', source: '企业探索生成', time: '上周', weekly: false },
+];
+
+const quickFilters = [
+  { label: '全部报告', value: '全部', count: 38 },
+  { label: '本周生成', value: '本周生成', count: 9 },
+  { label: '钠电池', value: '钠电池', count: 12 },
+  { label: '存算一体', value: '存算一体', count: 8 },
+];
+
+export default function ReportLibrary({ onCreateReport, onOpenReport }: { onBack?: () => void; onCreateReport?: () => void; onOpenReport?: () => void; onEditReport?: () => void; }) {
+  const [activeFilter, setActiveFilter] = useState('全部');
+  const [query, setQuery] = useState('');
+  const [direction, setDirection] = useState('全部方向');
+  const [source, setSource] = useState('全部来源');
+  const [sort, setSort] = useState('最近生成');
+
+  const filteredReports = useMemo(() => {
+    const normalizedQuery = query.trim();
+    const rows = reports.filter((report) => {
+      const matchesQuickFilter =
+        activeFilter === '全部' ||
+        (activeFilter === '本周生成' && report.weekly) ||
+        (activeFilter === '钠电池' && report.direction.includes('钠电池')) ||
+        (activeFilter === '存算一体' && report.direction.includes('存算一体'));
+
+      const matchesDirection = direction === '全部方向' || report.direction === direction;
+      const matchesSource = source === '全部来源' || report.source === source;
+      const matchesQuery =
+        !normalizedQuery ||
+        report.title.includes(normalizedQuery) ||
+        report.company.includes(normalizedQuery) ||
+        report.direction.includes(normalizedQuery);
+
+      return matchesQuickFilter && matchesDirection && matchesSource && matchesQuery;
+    });
+
+    if (sort === '企业名称') {
+      return [...rows].sort((a, b) => a.company.localeCompare(b.company, 'zh-Hans-CN'));
+    }
+
+    return rows;
+  }, [activeFilter, direction, query, sort, source]);
+
+  const openReport = () => {
+    onOpenReport?.();
+  };
 
   return (
-    <div className="max-w-[1180px] mx-auto p-[30px_28px_64px] max-md:p-[24px_16px_56px]">
-      <div className="text-[13px] text-[#64748b] mb-[16px]">
-        工作台 / <b className="text-[#334155] font-bold">报告库</b>
-      </div>
-
-      <section className="flex flex-col md:flex-row md:items-end justify-between gap-[16px] mb-[18px]">
-        <div>
-          <div className="flex items-center gap-3 mb-3">
-            {onBack && (
-              <Button 
-                variant="outline"
-                size="icon"
-                onClick={onBack}
-                className="w-8 h-8 rounded-[8px] text-[#334155] border-[#dbe4f1] hover:text-[#2563eb] hover:border-[#2563eb] transition-all"
-                title="返回"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            )}
-            <span className="text-[12px] font-black text-[#2563eb] bg-[#eaf1ff] rounded-full px-[10px] py-[7px] inline-flex">Report Library · 报告资产</span>
+    <div className="mx-auto max-w-[1440px] p-[34px_36px_54px] max-md:p-[24px_18px_46px]">
+      <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
+        <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[30px_28px_22px]">
+          <h1 className="m-0 text-[34px] font-bold leading-[1.2] tracking-[-0.04em] text-[#102039]">报告库</h1>
+          <p className="mt-[10px] max-w-[760px] text-[14px] leading-[1.65] text-[#718096]">管理已生成的企业初筛报告。点击报告行打开独立报告页，导出 PDF 等操作在报告页完成。</p>
+          <div className="mt-[18px] flex flex-wrap gap-[10px]">
+            <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">全部报告 <strong className="ml-1 text-[16px] text-[#2f6df6]">38</strong></span>
+            <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">关联企业 <strong className="ml-1 text-[16px] text-[#2f6df6]">24</strong></span>
+            <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">本周生成 <strong className="ml-1 text-[16px] text-[#2f6df6]">9</strong></span>
           </div>
-          <h1 className="text-[28px] leading-[1.25] m-0 tracking-[-0.04em] font-bold">报告库</h1>
-          <p className="mt-2 text-[#64748b] text-[13px] leading-[1.65]">报告库管理所有已生成的报告资产，包括报告正文、版本、状态、导出文件和关联对象。报告可以来自首页出报告、企业库出报告或企业发现任务后的出报告。</p>
-        </div>
-        <Button onClick={onCreateReport} className="h-[40px] px-[16px] rounded-[13px] font-extrabold shadow-[0_10px_18px_rgba(37,99,235,0.18)] text-white bg-[#2563eb] hover:bg-[#1d4ed8] shrink-0 w-full md:w-auto">新建报告任务</Button>
-      </section>
+        </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[12px] mb-[18px]">
-        <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
-          <span className="block text-[#64748b] text-[12px] mb-[5px]">全部报告</span>
-          <strong className="text-[26px] tracking-[-0.04em] font-normal">38</strong><small className="text-[#64748b] text-[12px]"> 份</small>
-        </div>
-        <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
-          <span className="block text-[#64748b] text-[12px] mb-[5px]">待复核</span>
-          <strong className="text-[26px] tracking-[-0.04em] font-normal text-[#f59e0b]">9</strong><small className="text-[#64748b] text-[12px]"> 份</small>
-        </div>
-        <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
-          <span className="block text-[#64748b] text-[12px] mb-[5px]">已定稿</span>
-          <strong className="text-[26px] tracking-[-0.04em] font-normal text-[#16a34a]">17</strong><small className="text-[#64748b] text-[12px]"> 份</small>
-        </div>
-        <div className="border border-[#e5eaf3] bg-white rounded-[16px] p-[16px] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
-          <span className="block text-[#64748b] text-[12px] mb-[5px]">已导出</span>
-          <strong className="text-[26px] tracking-[-0.04em] font-normal text-[#2563eb]">21</strong><small className="text-[#64748b] text-[12px]"> 份</small>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-[18px] mb-[18px]">
-        <div className="bg-[#f8fafc] border border-[#e5eaf3] rounded-[15px] p-[15px]">
-          <h3 className="text-[15px] m-0 mb-[8px] font-bold">报告库口径</h3>
-          <p className="text-[12px] text-[#64748b] leading-[1.7] m-0">只要报告生成，就进入报告库。报告可以关联企业、任务、标的池状态和导出文件，并支持版本管理。</p>
-        </div>
-        <div className="bg-[#f8fafc] border border-[#e5eaf3] rounded-[15px] p-[15px]">
-          <h3 className="text-[15px] m-0 mb-[8px] font-bold">与企业库关系</h3>
-          <p className="text-[12px] text-[#64748b] leading-[1.7] m-0">企业库管理“企业对象”，报告库管理“内容交付物”。一个企业可以关联多份报告，一份报告也可以反向同步结论到企业库或标的池。</p>
-        </div>
-      </section>
-
-      <section className="bg-white border border-[#e5eaf3] rounded-[20px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[20px]">
-        <div className="flex flex-col md:flex-row gap-[10px] items-stretch lg:items-center justify-between flex-wrap mb-[14px]">
-          <div className="flex gap-[10px] flex-wrap items-center w-full lg:w-auto">
-            <Input className="h-[40px] rounded-[12px] bg-[#f8fafc] w-full md:w-[260px]" placeholder="搜索报告名称、企业、方向..." />
-            <Select defaultValue="全部类型">
-              <SelectTrigger className="w-full md:w-[130px] h-[40px] rounded-[12px] bg-[#f8fafc]">
-                <SelectValue placeholder="报告类型" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="全部类型">全部类型</SelectItem>
-                <SelectItem value="企业初筛报告">企业初筛报告</SelectItem>
-                <SelectItem value="技术评估报告">技术评估报告</SelectItem>
-                <SelectItem value="深度尽调报告">深度尽调报告</SelectItem>
-                <SelectItem value="对比报告">对比报告</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="全部状态">
-              <SelectTrigger className="w-full md:w-[130px] h-[40px] rounded-[12px] bg-[#f8fafc]">
-                <SelectValue placeholder="状态过滤" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="全部状态">全部状态</SelectItem>
-                <SelectItem value="待复核">待复核</SelectItem>
-                <SelectItem value="已定稿">已定稿</SelectItem>
-                <SelectItem value="已导出">已导出</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex gap-[8px] flex-wrap mt-[10px] lg:mt-0">
-            {tabs.map(tab => (
-              <Button 
-                key={tab}
+        <div className="border-b border-[#e3ebf6] bg-white p-[20px_24px_16px]">
+          <div className="mb-4 flex flex-wrap gap-[10px]">
+            {quickFilters.map((filter) => (
+              <Button
+                key={filter.value}
                 variant="outline"
-                onClick={() => setActiveTab(tab)}
-                className={`rounded-full px-[12px] py-[8px] h-auto text-[12px] font-extrabold cursor-pointer transition-colors ${activeTab === tab ? 'bg-[#2563eb] text-white border-[#2563eb] hover:bg-[#1d4ed8] hover:text-white' : 'bg-white border-[#dbe4f1] text-[#64748b] hover:border-[#bfdbfe]'}`}
+                onClick={() => setActiveFilter(filter.value)}
+                className={`h-auto rounded-full px-[13px] py-[9px] text-[13px] font-extrabold transition-colors ${
+                  activeFilter === filter.value
+                    ? 'border-[#bdd1ff] bg-[#edf4ff] text-[#2f6df6] hover:bg-[#edf4ff] hover:text-[#2f6df6]'
+                    : 'border-[#dce6f6] bg-white text-[#4d5b73] hover:border-[#bdd1ff] hover:bg-[#f7faff]'
+                }`}
               >
-                {tab}
+                {filter.label}
+                <span className="ml-1 text-[#8a96aa]">{filter.count}</span>
               </Button>
             ))}
           </div>
+
+          <div className="grid grid-cols-[minmax(260px,1.6fr)_repeat(2,minmax(150px,1fr))_150px] gap-[10px] max-lg:grid-cols-2 max-sm:grid-cols-1">
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="h-[42px] rounded-[12px] border-[#e3ebf6] bg-white px-[14px] text-[13px] focus-visible:ring-[#2f6df6]/10"
+              placeholder="搜索报告名称、企业或方向"
+            />
+            <Select value={direction} onValueChange={setDirection}>
+              <SelectTrigger className="h-[42px] rounded-[12px] border-[#e3ebf6] bg-white text-[13px]">
+                <SelectValue placeholder="全部方向" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="全部方向">全部方向</SelectItem>
+                <SelectItem value="钠电池正极材料">钠电池正极材料</SelectItem>
+                <SelectItem value="存算一体">存算一体</SelectItem>
+                <SelectItem value="机器人灵巧手">机器人灵巧手</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={source} onValueChange={setSource}>
+              <SelectTrigger className="h-[42px] rounded-[12px] border-[#e3ebf6] bg-white text-[13px]">
+                <SelectValue placeholder="全部来源" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="全部来源">全部来源</SelectItem>
+                <SelectItem value="企业探索生成">企业探索生成</SelectItem>
+                <SelectItem value="企业库生成">企业库生成</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={sort} onValueChange={setSort}>
+              <SelectTrigger className="h-[42px] rounded-[12px] border-[#e3ebf6] bg-white text-[13px]">
+                <SelectValue placeholder="排序" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="最近生成">最近生成</SelectItem>
+                <SelectItem value="企业名称">企业名称</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-[18px] border-b border-[#e3ebf6] bg-[#fbfdff] px-[24px] py-[13px] text-[13px] text-[#536177] max-sm:flex-col max-sm:items-start">
+          <div><strong className="text-[#102039]">当前结果：{filteredReports.length} 份</strong>｜点击整行打开报告</div>
+          <div>当前仅展示初筛报告</div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[13px] min-w-[800px]">
+          <table className="w-full min-w-[860px] table-fixed border-collapse bg-white">
             <thead>
               <tr>
-                <th className="text-left text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">报告</th>
-                <th className="text-left text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">关联对象</th>
-                <th className="text-left text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">类型</th>
-                <th className="text-left text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">状态</th>
-                <th className="text-left text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">版本</th>
-                <th className="text-left text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">更新时间</th>
-                <th className="text-right text-[#64748b] text-[12px] pb-[10px] border-b border-[#e5eaf3]">操作</th>
+                <th className="w-[31%] border-b border-[#e3ebf6] bg-[#fbfcff] px-[18px] py-[14px] text-left text-[12px] font-black text-[#7a8699]">报告名称</th>
+                <th className="w-[20%] border-b border-[#e3ebf6] bg-[#fbfcff] px-[18px] py-[14px] text-left text-[12px] font-black text-[#7a8699]">关联企业</th>
+                <th className="w-[18%] border-b border-[#e3ebf6] bg-[#fbfcff] px-[18px] py-[14px] text-left text-[12px] font-black text-[#7a8699]">关注方向</th>
+                <th className="w-[17%] border-b border-[#e3ebf6] bg-[#fbfcff] px-[18px] py-[14px] text-left text-[12px] font-black text-[#7a8699]">生成来源</th>
+                <th className="w-[10%] border-b border-[#e3ebf6] bg-[#fbfcff] px-[18px] py-[14px] text-left text-[12px] font-black text-[#7a8699]">生成时间</th>
+                <th className="w-[54px] border-b border-[#e3ebf6] bg-[#fbfcff] px-[18px] py-[14px]" />
               </tr>
             </thead>
             <tbody>
-              {/* Row 1 */}
-              <tr>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <div className="font-black text-[#172033]">浙江钠创新能源</div>
-                  <div className="text-[12px] text-[#64748b] mt-[4px] leading-[1.45]">来源：钠电正极材料企业发现任务</div>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">浙江钠创新能源</span>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">企业初筛报告</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#fff7e8] text-[#d97706]">待复核</span>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">v1.0</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">刚刚</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle text-right">
-                  <div className="flex gap-[8px] justify-end flex-wrap">
-                    <Button size="sm" onClick={onOpenReport} className="rounded-[10px] font-extrabold text-[#ffffff] bg-[#2563eb] hover:bg-[#1d4ed8]">打开</Button>
-                    <Button size="sm" variant="outline" onClick={onEditReport} className="rounded-[10px] font-extrabold text-[#334155] hover:bg-gray-50 border-[#dbe4f1]">编辑</Button>
-                    <Button size="sm" variant="outline" className="rounded-[10px] font-extrabold text-[#334155] hover:bg-gray-50 border-[#dbe4f1]">导出</Button>
-                  </div>
-                </td>
-              </tr>
-              {/* Row 2 */}
-              <tr>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <div className="font-black text-[#172033]">中科海钠技术评估报告</div>
-                  <div className="text-[12px] text-[#64748b] mt-[4px] leading-[1.45]">来源：企业库出报告任务</div>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">中科海钠</span>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">技术评估报告</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eafaf1] text-[#16a34a]">已定稿</span>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">v2.1</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">今天</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle text-right">
-                  <div className="flex gap-[8px] justify-end flex-wrap">
-                    <button onClick={onOpenReport} className="border border-[#2563eb] bg-[#2563eb] rounded-[10px] px-[10px] py-[8px] text-[12px] font-extrabold text-white cursor-pointer hover:bg-[#1d4ed8]">打开</button>
-                    <button className="border border-[#dbe4f1] bg-white rounded-[10px] px-[10px] py-[8px] text-[12px] font-extrabold text-[#334155] cursor-pointer hover:bg-gray-50">下载</button>
-                  </div>
-                </td>
-              </tr>
-              {/* Row 3 */}
-              <tr>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <div className="font-black text-[#172033]">钠电正极材料企业对比摘要</div>
-                  <div className="text-[12px] text-[#64748b] mt-[4px] leading-[1.45]">来源：标的池企业集合</div>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#f1f5f9] text-[#64748b]">4 家企业</span>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">对比报告</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">已导出</span>
-                </td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">v1.3</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle">昨天</td>
-                <td className="py-[15px] border-b border-[#edf1f7] align-middle text-right">
-                  <div className="flex gap-[8px] justify-end flex-wrap">
-                    <button onClick={onOpenReport} className="border border-[#2563eb] bg-[#2563eb] rounded-[10px] px-[10px] py-[8px] text-[12px] font-extrabold text-white cursor-pointer hover:bg-[#1d4ed8]">打开</button>
-                    <button className="border border-[#dbe4f1] bg-white rounded-[10px] px-[10px] py-[8px] text-[12px] font-extrabold text-[#334155] cursor-pointer hover:bg-gray-50">下载</button>
-                  </div>
-                </td>
-              </tr>
-              {/* Row 4 */}
-              <tr>
-                <td className="py-[15px] border-0 align-middle">
-                  <div className="font-black text-[#172033]">某新材料科技公司初筛报告</div>
-                  <div className="text-[12px] text-[#64748b] mt-[4px] leading-[1.45]">来源：企业发现任务后出报告</div>
-                </td>
-                <td className="py-[15px] border-0 align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#eaf1ff] text-[#2563eb]">某新材料科技公司</span>
-                </td>
-                <td className="py-[15px] border-0 align-middle">企业初筛报告</td>
-                <td className="py-[15px] border-0 align-middle">
-                  <span className="inline-flex items-center rounded-full px-[9px] py-[6px] text-[12px] font-extrabold whitespace-nowrap bg-[#fff7e8] text-[#d97706]">待复核</span>
-                </td>
-                <td className="py-[15px] border-0 align-middle">v0.9</td>
-                <td className="py-[15px] border-0 align-middle">3 天前</td>
-                <td className="py-[15px] border-0 align-middle text-right">
-                  <div className="flex gap-[8px] justify-end flex-wrap">
-                    <Button size="sm" onClick={onOpenReport} className="rounded-[10px] font-extrabold text-[#ffffff] bg-[#2563eb] hover:bg-[#1d4ed8]">打开</Button>
-                    <Button size="sm" variant="outline" onClick={onEditReport} className="rounded-[10px] font-extrabold text-[#334155] hover:bg-gray-50 border-[#dbe4f1]">编辑</Button>
-                    <Button size="sm" variant="outline" className="rounded-[10px] font-extrabold text-[#334155] hover:bg-gray-50 border-[#dbe4f1]">导出</Button>
-                  </div>
-                </td>
-              </tr>
+              {filteredReports.length > 0 ? (
+                filteredReports.map((report) => (
+                  <tr key={report.id} onClick={openReport} className="group cursor-pointer transition-colors hover:bg-[#f7faff]">
+                    <td className="border-b border-[#eef3fa] px-[18px] py-[18px] align-middle">
+                      <div className="text-[15px] font-black leading-[1.45] text-[#102039]">{report.title}</div>
+                      <div className="mt-[5px] text-[12px] text-[#8a96a8]">独立报告页支持导出 PDF</div>
+                    </td>
+                    <td className="border-b border-[#eef3fa] px-[18px] py-[18px] align-middle">
+                      <span className="inline-flex items-center rounded-full bg-[#edf4ff] px-[9px] py-[6px] text-[12px] font-black text-[#2f6df6]">{report.company}</span>
+                    </td>
+                    <td className="border-b border-[#eef3fa] px-[18px] py-[18px] align-middle">
+                      <span className="inline-flex items-center rounded-full bg-[#eaf8f0] px-[9px] py-[6px] text-[12px] font-black text-[#18a957]">{report.direction}</span>
+                    </td>
+                    <td className="border-b border-[#eef3fa] px-[18px] py-[18px] align-middle text-[13px] leading-[1.6] text-[#43506a]">{report.source}</td>
+                    <td className="border-b border-[#eef3fa] px-[18px] py-[18px] align-middle text-[13px] leading-[1.6] text-[#43506a]">{report.time}</td>
+                    <td className="border-b border-[#eef3fa] px-[18px] py-[18px] text-right align-middle text-[#7e8aa0]">
+                      <span className="inline-flex h-[30px] w-[30px] translate-x-[-3px] items-center justify-center rounded-[10px] bg-[#edf4ff] text-[#2f6df6] opacity-60 transition-all group-hover:translate-x-0 group-hover:opacity-100">
+                        <ChevronRight className="h-4 w-4" />
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-[18px] py-[42px] text-center text-[14px] text-[#8792a6]">当前条件下暂无报告</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </section>
+      <Button onClick={onCreateReport} className="mt-4 hidden h-[40px] w-full rounded-[13px] bg-[#2563eb] font-extrabold text-white shadow-[0_10px_18px_rgba(37,99,235,0.18)] hover:bg-[#1d4ed8] max-sm:inline-flex">
+        新建报告任务
+      </Button>
     </div>
   );
 }

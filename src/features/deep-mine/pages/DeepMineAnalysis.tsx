@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ResponsiveContainer,
@@ -150,14 +149,6 @@ const ROUTE_PATENT_TREND_DATA = [
   { year: "2025", compute: 188, snn: 174, memristor: 166 },
 ];
 
-const ANALYSIS_PROGRESS_LINES = [
-  "正在获取深圳时识科技有限公司的相关专利…",
-  "正在分析 SNN 异步事件驱动方向的潜在企业…",
-  "正在识别忆阻器交叉阵列路线下的高校转化主体…",
-  "正在归并 Chiplet 相关企业主体…",
-  "正在更新近三年新增专利的企业主体…",
-];
-
 const PATENT_SCALE_DATA = [
   { name: ">100件 (超大)", value: 8 },
   { name: "50-100件 (大型)", value: 25 },
@@ -268,124 +259,102 @@ export default function DeepMineAnalysis({
   onExplore,
   onBack,
 }: DeepMineAnalysisProps) {
-  const [progressIndex, setProgressIndex] = useState(0);
-  const progressPercent =
-    ((progressIndex + 1) / ANALYSIS_PROGRESS_LINES.length) * 100;
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setProgressIndex(
-        (current) => (current + 1) % ANALYSIS_PROGRESS_LINES.length,
-      );
-    }, 2600);
-
-    return () => window.clearInterval(timer);
-  }, []);
-
   return (
     <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
         <main>
-          <section className="mt-[18px] bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex items-start gap-3 mb-5">
-              <div className="min-w-0 flex-1">
-                <h2 className="text-[24px] font-black m-0">产业线索分析</h2>
-              </div>
-            </div>
-
-            <div className="mb-5 rounded-[18px] border border-[#dbe8ff] bg-[#f8fbff] p-4">
+          <section className="mt-[18px] overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+            <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="relative flex h-3 w-3 shrink-0">
+                <h2 className="text-[24px] font-black m-0 text-[#102039]">
+                  产业线索分析
+                </h2>
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#d7e4ff] bg-white/80 px-3 py-1.5 text-[13px] font-extrabold text-[#2563eb] shadow-sm">
+                  <span className="relative flex h-2.5 w-2.5 shrink-0">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-30"></span>
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-[#2563eb]"></span>
+                    <span className="relative inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-[#2563eb]"></span>
                   </span>
-                  <span className="text-[13px] font-semibold text-[#334155] truncate">
-                    {ANALYSIS_PROGRESS_LINES[progressIndex]}
-                  </span>
+                  <span>正在分析中...</span>
                 </div>
-                <span className="text-[12px] font-black text-[#2563eb]">
-                  {Math.round(progressPercent)}%
-                </span>
-              </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#e5edf8]">
-                <div
-                  className="h-full rounded-full bg-[#2563eb] transition-all duration-700 ease-out"
-                  style={{ width: `${progressPercent}%` }}
-                ></div>
               </div>
             </div>
 
-            {/* Enterprise Statistics Section */}
-            <div className="space-y-5 mt-4 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
-              <div className="grid grid-cols-1 lg:grid-cols-[0.72fr_1.28fr] gap-4">
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-7 shadow-sm flex flex-col justify-center min-h-[220px]">
-                  <span className="text-[#64748b] text-[15px] mb-3">
-                    产业企业总数
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <strong className="text-[64px] leading-none font-black text-[#0f1f3d] tracking-tight">
-                      350
-                    </strong>
-                    <span className="text-xl font-bold text-[#64748b]">家</span>
-                  </div>
-                  <p className="mt-5 text-[13px] leading-[1.7] text-[#64748b]">
-                    基于当前专利线索识别出的产业相关主体，后续将随创赛、展会、融资等数据补充持续更新。
-                  </p>
-                </div>
-
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-7 shadow-sm">
-                  <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-center">
-                    <div className="relative w-[206px] h-[206px] mx-auto">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={ENTERPRISE_TYPE_DATA}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={58}
-                            outerRadius={100}
-                            dataKey="value"
-                            startAngle={90}
-                            endAngle={-270}
-                          >
-                            {ENTERPRISE_TYPE_DATA.map((entry, index) => (
-                              <Cell
-                                key={`enterprise-type-${index}`}
-                                fill={entry.color}
-                              />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span className="text-[12px] text-[#64748b]">
-                          主体总数
-                        </span>
-                        <strong className="text-[28px] text-[#0f1f3d]">
-                          350
-                        </strong>
-                      </div>
+            <div className="p-[22px]">
+              {/* Enterprise Statistics Section */}
+              <div className="space-y-5 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="grid grid-cols-1 lg:grid-cols-[0.72fr_1.28fr] gap-4">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-7 shadow-sm flex flex-col justify-center min-h-[220px]">
+                    <span className="text-[#64748b] text-[15px] mb-3">
+                      产业企业总数
+                    </span>
+                    <div className="flex items-baseline gap-2">
+                      <strong className="text-[64px] leading-none font-black text-[#0f1f3d] tracking-tight">
+                        350
+                      </strong>
+                      <span className="text-xl font-bold text-[#64748b]">
+                        家
+                      </span>
                     </div>
-                    <div>
-                      <h3 className="text-[24px] font-black text-[#0f1f3d] mb-5">
-                        企业类型分布
-                      </h3>
-                      <div className="space-y-4">
-                        {ENTERPRISE_TYPE_DATA.map((item) => (
-                          <div
-                            key={item.name}
-                            className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
-                          >
-                            <span
-                              className="w-2.5 h-2.5 rounded-full"
-                              style={{ backgroundColor: item.color }}
-                            ></span>
-                            <span className="text-[#172033]">{item.name}</span>
-                            <b className="text-[#0f1f3d]">{item.value} 家</b>
-                          </div>
-                        ))}
+                    <p className="mt-5 text-[13px] leading-[1.7] text-[#64748b]">
+                      基于当前专利线索识别出的产业相关主体，后续将随创赛、展会、融资等数据补充持续更新。
+                    </p>
+                  </div>
+
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-7 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-center">
+                      <div className="relative w-[206px] h-[206px] mx-auto">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={ENTERPRISE_TYPE_DATA}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={58}
+                              outerRadius={100}
+                              dataKey="value"
+                              startAngle={90}
+                              endAngle={-270}
+                            >
+                              {ENTERPRISE_TYPE_DATA.map((entry, index) => (
+                                <Cell
+                                  key={`enterprise-type-${index}`}
+                                  fill={entry.color}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                          <span className="text-[12px] text-[#64748b]">
+                            主体总数
+                          </span>
+                          <strong className="text-[28px] text-[#0f1f3d]">
+                            350
+                          </strong>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-[24px] font-black text-[#0f1f3d] mb-5">
+                          企业类型分布
+                        </h3>
+                        <div className="space-y-4">
+                          {ENTERPRISE_TYPE_DATA.map((item) => (
+                            <div
+                              key={item.name}
+                              className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
+                            >
+                              <span
+                                className="w-2.5 h-2.5 rounded-full"
+                                style={{ backgroundColor: item.color }}
+                              ></span>
+                              <span className="text-[#172033]">
+                                {item.name}
+                              </span>
+                              <b className="text-[#0f1f3d]">{item.value} 家</b>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -635,8 +604,6 @@ export default function DeepMineAnalysis({
                   </div>
                 </div>
               </div>
-            </div>
-
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
@@ -986,6 +953,7 @@ export default function DeepMineAnalysis({
                   </Button>
                 )}
               </div>
+            </div>
             </div>
           </section>
         </main>

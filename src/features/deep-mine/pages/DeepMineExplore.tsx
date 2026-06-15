@@ -545,14 +545,14 @@ export default function DeepMineExplore({
     <div className="mx-auto max-w-[1440px] p-[34px_36px_42px] max-xl:p-[24px_18px_36px] max-md:p-[22px_14px_34px]">
       <main>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
-          <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[28px] py-[30px_22px] max-md:px-5 max-md:py-6">
-            <h1 className="m-0 text-[34px] font-black leading-[1.2] tracking-[-0.03em] text-[#13213a] max-md:text-[30px]">
+          <header className="flex items-center justify-between gap-4 border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px] max-md:flex-wrap">
+            <h1 className="m-0 shrink-0 text-[24px] font-black text-[#102039]">
               企业探索
             </h1>
-            <p className="mt-[10px] text-[14px] leading-[1.65] text-[#6d7890]">
-              当前目标：
-              <strong className="text-[#13213a]">存算一体神经形态芯片</strong>
-              。查看线索分析后的候选企业、筛选条件和轻量证据。
+            <p className="m-0 min-w-0 text-right text-[14px] leading-[1.65] text-[#64748b] max-md:text-left">
+              目标：
+              <strong className="text-[#102039]">存算一体神经形态芯片</strong>
+              ，查看候选企业、筛选条件和轻量证据。
             </p>
           </header>
 

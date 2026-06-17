@@ -26,6 +26,28 @@ import SectorScanPhase4 from "./features/sector-scan/pages/SectorScanPhase4";
 import AccountEntitlements from "./features/account/pages/AccountEntitlements";
 import { authService } from "./services/auth";
 
+type RecentTask = {
+  id: string;
+  title: string;
+  to: string;
+};
+
+const initialRecentTasks: RecentTask[] = [
+  {
+    id: "sector-scan",
+    title: "分析钠电池正极材料赛道机会",
+    to: "/deep-mine?task=sector-scan",
+  },
+  {
+    id: "deep-mine",
+    title: "挖掘钠电正极材料核心企业",
+    to: "/deep-mine/analysis?task=deep-mine",
+  },
+];
+
+const createTaskTitle = (input: string) =>
+  input.length > 24 ? `${input.slice(0, 24)}...` : input;
+
 export default function App() {
   const navigate = useNavigate();
 
@@ -55,6 +77,9 @@ export default function App() {
       { type: "exclude" as const, text: "电解液" },
     ],
   });
+  const [recentTasks, setRecentTasks] =
+    useState<RecentTask[]>(initialRecentTasks);
+  const [activeTaskId, setActiveTaskId] = useState<string>("deep-mine");
 
   const updateDeepMineState = (newState: Partial<typeof deepMineState>) => {
     setDeepMineState((prev) => ({ ...prev, ...newState }));
@@ -62,13 +87,22 @@ export default function App() {
 
   const handleStartTask = (taskType: string, input: string) => {
     if (taskType === "DeepMine") {
+      const taskId = `deep-mine-${Date.now()}`;
+      const newTask = {
+        id: taskId,
+        title: createTaskTitle(input),
+        to: `/deep-mine?task=${taskId}`,
+      };
+
+      setRecentTasks((tasks) => [newTask, ...tasks]);
+      setActiveTaskId(taskId);
       updateDeepMineState({
         taskInput: input,
         isDeconstructed: true,
         isAnalyzing: false,
         showAnalysis: false,
       });
-      navigate("/deep-mine");
+      navigate(newTask.to);
     } else if (taskType === "AutoReport") {
       navigate("/auto-report");
     } else if (taskType === "SignalMonitor") {
@@ -89,7 +123,12 @@ export default function App() {
       <Route
         path="*"
         element={
-          <Layout onLogout={handleLogout}>
+          <Layout
+            onLogout={handleLogout}
+            recentTasks={recentTasks}
+            activeTaskId={activeTaskId}
+            onSelectTask={setActiveTaskId}
+          >
             <Routes>
               <Route
                 path="/"

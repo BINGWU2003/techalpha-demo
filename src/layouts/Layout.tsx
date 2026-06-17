@@ -14,27 +14,46 @@ interface LayoutProps {
   children: ReactNode;
   onLogout?: () => void;
   currentUser?: User | null;
+  recentTasks?: RecentTask[];
+  activeTaskId?: string;
+  onSelectTask?: (taskId: string) => void;
 }
 
-export function Layout({ children, onLogout, currentUser }: LayoutProps) {
+interface RecentTask {
+  id: string;
+  title: string;
+  to: string;
+}
+
+export function Layout({
+  children,
+  onLogout,
+  currentUser,
+  recentTasks = [],
+  activeTaskId,
+  onSelectTask,
+}: LayoutProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const location = useLocation();
   const path = location.pathname;
   const historyTask = new URLSearchParams(location.search).get("task");
 
-  let activeNav = "workbench";
+  let activeNav = "";
+  if (path === "/") activeNav = "workbench";
   if (path.startsWith("/companies")) activeNav = "companies";
   if (path.startsWith("/reports")) activeNav = "reports";
   if (path.startsWith("/alerts")) activeNav = "alerts";
   if (path.startsWith("/account")) activeNav = "account";
 
-  let activeHistory = "";
-  if (path.startsWith("/sector-scan")) activeHistory = "sector-scan";
-  else if (path.startsWith("/deep-mine") || path === "/direction-tuning")
-    activeHistory = "deep-mine";
-  else if (path.startsWith("/auto-report") || path.startsWith("/report"))
-    activeHistory = "auto-report";
-  else if (path.startsWith("/alerts")) activeHistory = "alerts-1";
+  let activeHistory = historyTask || "";
+  if (!activeHistory) {
+    if (path.startsWith("/sector-scan")) activeHistory = "sector-scan";
+    else if (path.startsWith("/deep-mine") || path === "/direction-tuning")
+      activeHistory = activeTaskId || "deep-mine";
+    else if (path.startsWith("/auto-report") || path.startsWith("/report"))
+      activeHistory = "auto-report";
+    else if (path.startsWith("/alerts")) activeHistory = "alerts-1";
+  }
 
   const displayName = currentUser?.username || "AI 引擎";
   const displayEmail = currentUser?.email || "系统服务已就绪";
@@ -150,20 +169,25 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
           <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">
             最近任务记录
           </div>
-          <Link
-            to="/deep-mine?task=sector-scan"
-            className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "sector-scan" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
-          >
-            <span className="text-[10px]">&#9649;</span>{" "}
-            分析钠电池正极材料赛道机会
-          </Link>
-          <Link
-            to="/deep-mine/analysis?task=deep-mine"
-            className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "deep-mine" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
-          >
-            <span className="text-[10px]">&#9649;</span>{" "}
-            挖掘钠电正极材料核心企业
-          </Link>
+          {recentTasks.map((task) => {
+            const isActive = activeHistory === task.id;
+
+            return (
+              <Link
+                key={task.id}
+                to={task.to}
+                onClick={() => onSelectTask?.(task.id)}
+                className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${isActive ? "bg-[#1d4ed814] text-[#dbeafe] font-extrabold shadow-[inset_3px_0_0_#60a5fa]" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+              >
+                <span
+                  className={`text-[10px] ${isActive ? "text-[#60a5fa]" : ""}`}
+                >
+                  &#9649;
+                </span>
+                <span className="min-w-0 truncate">{task.title}</span>
+              </Link>
+            );
+          })}
         </div>
 
         <div

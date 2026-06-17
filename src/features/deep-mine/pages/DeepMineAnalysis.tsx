@@ -510,7 +510,7 @@ export default function DeepMineAnalysis({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
                     <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
                       专利类型分布
@@ -606,7 +606,7 @@ export default function DeepMineAnalysis({
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               {/* Stat Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

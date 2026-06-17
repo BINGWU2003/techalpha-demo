@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { QuickScrollButton } from "@/components/QuickScrollButton";
 import {
   ResponsiveContainer,
   LineChart,
@@ -259,6 +261,8 @@ export default function DeepMineAnalysis({
   onExplore,
   onBack,
 }: DeepMineAnalysisProps) {
+  const bottomActionsRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
@@ -935,7 +939,10 @@ export default function DeepMineAnalysis({
               </div>
 
               {/* Action Buttons Row */}
-              <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]">
+              <div
+                ref={bottomActionsRef}
+                className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]"
+              >
                 {onBack && (
                   <Button
                     variant="outline"
@@ -962,6 +969,11 @@ export default function DeepMineAnalysis({
           </section>
         </main>
       </div>
+
+      <QuickScrollButton
+        targetRef={bottomActionsRef}
+        positionClassName="bottom-24 right-[18px] md:bottom-32 md:right-6 lg:bottom-40 lg:right-[30px]"
+      />
     </div>
   );
 }

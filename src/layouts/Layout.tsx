@@ -1,5 +1,12 @@
-import { ReactNode } from "react";
-import { LayoutGrid, Search, FileText, Flag, LogOut } from "lucide-react";
+import { ReactNode, MouseEvent, useState } from "react";
+import {
+  LayoutGrid,
+  Search,
+  FileText,
+  Flag,
+  LogOut,
+  PanelLeftClose,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { User } from "../services/auth";
 
@@ -10,6 +17,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children, onLogout, currentUser }: LayoutProps) {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const location = useLocation();
   const path = location.pathname;
   const historyTask = new URLSearchParams(location.search).get("task");
@@ -31,62 +39,113 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
   const displayName = currentUser?.username || "AI 引擎";
   const displayEmail = currentUser?.email || "系统服务已就绪";
   const avatarText = displayName.slice(0, 1).toUpperCase();
+  const toggleSidebar = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setIsSidebarCollapsed((collapsed) => !collapsed);
+  };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[236px_1fr] bg-[#f6f8fc] text-[#172033] font-sans">
-      <aside className="hidden lg:flex flex-col bg-[#0f172a] text-[#cbd5e1] h-screen sticky top-0">
-        <div className="h-[78px] px-[18px] flex items-center gap-[10px] border-b border-[rgba(148,163,184,0.14)] shrink-0">
-          <div className="brand-text">
-            <strong className="block text-[20px] leading-none tracking-[-0.045em] bg-gradient-to-br from-[#5fb4ff] via-[#d7ecff] to-white bg-clip-text text-transparent mb-[5px]">
+    <div
+      className={`min-h-screen grid grid-cols-1 bg-[#f6f8fc] text-[#172033] font-sans transition-[grid-template-columns] duration-200 ${
+        isSidebarCollapsed ? "lg:grid-cols-[72px_1fr]" : "lg:grid-cols-[236px_1fr]"
+      }`}
+    >
+      <aside
+        className={`hidden lg:flex flex-col bg-[#0f172a] text-[#cbd5e1] h-screen sticky top-0 z-10 transition-all duration-200 ${
+          isSidebarCollapsed ? "overflow-visible px-3" : "px-0"
+        }`}
+      >
+        <div
+          className={`group/logo relative flex h-[78px] shrink-0 items-center border-b border-[rgba(148,163,184,0.14)] ${
+            isSidebarCollapsed ? "justify-center px-0" : "gap-[10px] px-[18px]"
+          }`}
+        >
+          <div className={`${isSidebarCollapsed ? "hidden" : "brand-text"}`}>
+            <strong className="block text-[20px] leading-none tracking-[-0.045em] bg-linear-to-br from-[#5fb4ff] via-[#d7ecff] to-white bg-clip-text text-transparent mb-[5px]">
               TechAlpha
             </strong>
             <span className="block text-[11px] text-[#7ea6d8] tracking-[0.08em] uppercase">
               AI Investment OS
             </span>
           </div>
+          <button
+            type="button"
+            onClick={() => setIsSidebarCollapsed(false)}
+            className={`h-10 w-10 cursor-pointer items-center justify-center rounded-[13px] bg-linear-to-br from-[#2f6df6] to-[#8057ff] text-[14px] font-black text-white shadow-[0_10px_24px_rgba(47,109,246,0.24)] transition-transform hover:scale-105 ${
+              isSidebarCollapsed ? "flex" : "hidden"
+            }`}
+            title="展开侧边栏"
+          >
+            TA
+          </button>
+          {!isSidebarCollapsed && (
+            <button
+              onClick={toggleSidebar}
+              className="absolute right-[14px] top-[22px] flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-white/6 text-[#cdd6e7] transition-colors hover:bg-white/12 hover:text-white"
+              title="收起侧边栏"
+            >
+              <PanelLeftClose size={18} />
+            </button>
+          )}
         </div>
 
-        <nav className="p-[18px_12px_8px] grid gap-[7px]">
+        <nav className={`grid gap-[7px] ${isSidebarCollapsed ? "p-[18px_0_8px]" : "p-[18px_12px_8px]"}`}>
           <Link
             to="/"
-            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "workbench" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+            title="新建任务"
+            className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
+              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+            } ${activeNav === "workbench" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
-            <LayoutGrid size={16} /> 新建任务
+            <LayoutGrid size={16} />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>新建任务</span>
           </Link>
           <Link
             to="/companies"
-            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "companies" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+            title="企业库"
+            className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
+              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+            } ${activeNav === "companies" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
-            <Search size={16} /> 企业库
+            <Search size={16} />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>企业库</span>
           </Link>
           <Link
             to="/reports"
-            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "reports" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+            title="报告库"
+            className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
+              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+            } ${activeNav === "reports" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
-            <FileText size={16} /> 报告库
+            <FileText size={16} />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>报告库</span>
           </Link>
           <Link
             to="/alerts"
-            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "alerts" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+            title="跟踪预警"
+            className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
+              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+            } ${activeNav === "alerts" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
-            <Flag size={16} /> 跟踪预警
+            <Flag size={16} />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>跟踪预警</span>
           </Link>
         </nav>
 
-        <div className="px-3 flex-1 overflow-auto">
+        <div className={`${isSidebarCollapsed ? "hidden" : "px-3 flex-1 overflow-auto"}`}>
           <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">
             最近任务记录
           </div>
           <Link
             to="/deep-mine?task=sector-scan"
-            className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "sector-scan" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+            className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "sector-scan" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
           >
             <span className="text-[10px]">&#9649;</span>{" "}
             分析钠电池正极材料赛道机会
           </Link>
           <Link
             to="/deep-mine/analysis?task=deep-mine"
-            className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "deep-mine" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+            className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "deep-mine" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
           >
             <span className="text-[10px]">&#9649;</span>{" "}
             挖掘钠电正极材料核心企业
@@ -94,9 +153,17 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
         </div>
 
         <div
-          className={`group relative border-t border-[#94a3b823] p-[14px_12px_16px] transition-colors ${activeNav === "account" ? "bg-white/5" : ""}`}
+          className={`group relative mt-auto border-t border-[#94a3b823] transition-colors ${
+            isSidebarCollapsed ? "p-[14px_0_16px]" : "p-[14px_12px_16px]"
+          } ${activeNav === "account" ? "bg-white/5" : ""}`}
         >
-          <div className="pointer-events-none absolute bottom-[82px] left-3 right-3 z-20 translate-y-2 rounded-2xl bg-white p-3 text-[#102039] opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.28)] transition-all duration-150 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+          <div
+            className={`pointer-events-none absolute z-20 translate-y-2 rounded-2xl bg-white p-3 text-[#102039] opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.28)] transition-all duration-150 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 ${
+              isSidebarCollapsed
+                ? "bottom-4 left-[56px] w-[216px]"
+                : "bottom-[82px] left-3 right-3"
+            }`}
+          >
             <div className="text-[14px] font-black">{displayName}</div>
             <div className="mt-1 break-all text-[12px] leading-relaxed text-[#66758e]">
               {displayEmail}
@@ -125,7 +192,9 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
           </div>
 
           <div
-            className={`flex min-w-0 items-center gap-[10px] rounded-[14px] border p-[10px] transition-colors ${
+            className={`flex min-w-0 items-center rounded-[14px] border transition-colors ${
+              isSidebarCollapsed ? "justify-center p-2" : "gap-[10px] p-[10px]"
+            } ${
               activeNav === "account"
                 ? "border-white/15 bg-white/10 text-white"
                 : "border-white/10 bg-white/6 text-[#cbd5e1] hover:border-white/15 hover:bg-white/10 hover:text-white"
@@ -133,12 +202,15 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
           >
             <Link
               to="/account"
-              className="flex min-w-0 flex-1 items-center gap-[10px]"
+              title="账户与权益"
+              className={`flex min-w-0 items-center ${
+                isSidebarCollapsed ? "justify-center" : "flex-1 gap-[10px]"
+              }`}
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#2f6df6] to-[#8057ff] text-[13px] font-black text-white shadow-[0_10px_24px_rgba(47,109,246,0.24)]">
                 {avatarText}
               </div>
-              <div className="min-w-0 flex-1">
+              <div className={`${isSidebarCollapsed ? "hidden" : "min-w-0 flex-1"}`}>
                 <div className="truncate text-[13px] font-black text-white">
                   {displayName} · 试用版
                 </div>
@@ -148,7 +220,7 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
                 </div>
               </div>
             </Link>
-            {onLogout && (
+            {onLogout && !isSidebarCollapsed && (
               <button
                 onClick={onLogout}
                 className="shrink-0 rounded-lg p-1.5 text-[#94a3b8] transition-colors hover:bg-white/10 hover:text-white"

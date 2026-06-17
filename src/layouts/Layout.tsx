@@ -1,6 +1,6 @@
 import { ReactNode, MouseEvent, useState } from "react";
 import {
-  LayoutGrid,
+  SquarePen,
   Search,
   FileText,
   Flag,
@@ -47,7 +47,9 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
   return (
     <div
       className={`min-h-screen grid grid-cols-1 bg-[#f6f8fc] text-[#172033] font-sans transition-[grid-template-columns] duration-200 ${
-        isSidebarCollapsed ? "lg:grid-cols-[72px_1fr]" : "lg:grid-cols-[236px_1fr]"
+        isSidebarCollapsed
+          ? "lg:grid-cols-[72px_1fr]"
+          : "lg:grid-cols-[236px_1fr]"
       }`}
     >
       <aside
@@ -89,22 +91,28 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
           )}
         </div>
 
-        <nav className={`grid gap-[7px] ${isSidebarCollapsed ? "p-[18px_0_8px]" : "p-[18px_12px_8px]"}`}>
+        <nav
+          className={`grid gap-[7px] ${isSidebarCollapsed ? "p-[18px_0_8px]" : "p-[18px_12px_8px]"}`}
+        >
           <Link
             to="/"
             title="新建任务"
             className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
-              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+              isSidebarCollapsed
+                ? "justify-center px-0"
+                : "gap-[11px] px-[13px]"
             } ${activeNav === "workbench" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
-            <LayoutGrid size={16} />
+            <SquarePen size={16} />
             <span className={isSidebarCollapsed ? "hidden" : ""}>新建任务</span>
           </Link>
           <Link
             to="/companies"
             title="企业库"
             className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
-              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+              isSidebarCollapsed
+                ? "justify-center px-0"
+                : "gap-[11px] px-[13px]"
             } ${activeNav === "companies" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
             <Search size={16} />
@@ -114,7 +122,9 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
             to="/reports"
             title="报告库"
             className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
-              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+              isSidebarCollapsed
+                ? "justify-center px-0"
+                : "gap-[11px] px-[13px]"
             } ${activeNav === "reports" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
             <FileText size={16} />
@@ -122,17 +132,21 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
           </Link>
           <Link
             to="/alerts"
-            title="跟踪预警"
+            title="事件跟踪"
             className={`h-[42px] rounded-xl flex items-center text-[14px] cursor-pointer transition-colors ${
-              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+              isSidebarCollapsed
+                ? "justify-center px-0"
+                : "gap-[11px] px-[13px]"
             } ${activeNav === "alerts" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
           >
             <Flag size={16} />
-            <span className={isSidebarCollapsed ? "hidden" : ""}>跟踪预警</span>
+            <span className={isSidebarCollapsed ? "hidden" : ""}>事件跟踪</span>
           </Link>
         </nav>
 
-        <div className={`${isSidebarCollapsed ? "hidden" : "px-3 flex-1 overflow-auto"}`}>
+        <div
+          className={`${isSidebarCollapsed ? "hidden" : "px-3 flex-1 overflow-auto"}`}
+        >
           <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">
             最近任务记录
           </div>
@@ -210,7 +224,9 @@ export function Layout({ children, onLogout, currentUser }: LayoutProps) {
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#2f6df6] to-[#8057ff] text-[13px] font-black text-white shadow-[0_10px_24px_rgba(47,109,246,0.24)]">
                 {avatarText}
               </div>
-              <div className={`${isSidebarCollapsed ? "hidden" : "min-w-0 flex-1"}`}>
+              <div
+                className={`${isSidebarCollapsed ? "hidden" : "min-w-0 flex-1"}`}
+              >
                 <div className="truncate text-[13px] font-black text-white">
                   {displayName} · 试用版
                 </div>

@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { LayoutGrid, Search, FileText, Flag, LogOut } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import { User } from '../services/auth';
+import { ReactNode } from "react";
+import { LayoutGrid, Search, FileText, Flag, LogOut } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { User } from "../services/auth";
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,95 +12,157 @@ interface LayoutProps {
 export function Layout({ children, onLogout, currentUser }: LayoutProps) {
   const location = useLocation();
   const path = location.pathname;
+  const historyTask = new URLSearchParams(location.search).get("task");
 
-  let activeNav = 'workbench';
-  if (path.startsWith('/companies')) activeNav = 'companies';
-  if (path.startsWith('/reports')) activeNav = 'reports';
-  if (path.startsWith('/alerts')) activeNav = 'alerts';
-  if (path.startsWith('/account')) activeNav = 'account';
+  let activeNav = "workbench";
+  if (path.startsWith("/companies")) activeNav = "companies";
+  if (path.startsWith("/reports")) activeNav = "reports";
+  if (path.startsWith("/alerts")) activeNav = "alerts";
+  if (path.startsWith("/account")) activeNav = "account";
 
-  let activeHistory = '';
-  if (path.startsWith('/sector-scan')) activeHistory = 'sector-scan';
-  else if (path.startsWith('/deep-mine') || path === '/direction-tuning') activeHistory = 'deep-mine';
-  else if (path.startsWith('/auto-report') || path.startsWith('/report')) activeHistory = 'auto-report';
-  else if (path.startsWith('/alerts')) activeHistory = 'alerts-1';
+  let activeHistory = "";
+  if (path.startsWith("/sector-scan")) activeHistory = "sector-scan";
+  else if (path.startsWith("/deep-mine") || path === "/direction-tuning")
+    activeHistory = "deep-mine";
+  else if (path.startsWith("/auto-report") || path.startsWith("/report"))
+    activeHistory = "auto-report";
+  else if (path.startsWith("/alerts")) activeHistory = "alerts-1";
+
+  const displayName = currentUser?.username || "AI 引擎";
+  const displayEmail = currentUser?.email || "系统服务已就绪";
+  const avatarText = displayName.slice(0, 1).toUpperCase();
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[236px_1fr] bg-[#f6f8fc] text-[#172033] font-sans">
       <aside className="hidden lg:flex flex-col bg-[#0f172a] text-[#cbd5e1] h-screen sticky top-0">
         <div className="h-[78px] px-[18px] flex items-center gap-[10px] border-b border-[rgba(148,163,184,0.14)] shrink-0">
           <div className="brand-text">
-            <strong className="block text-[20px] leading-none tracking-[-0.045em] bg-gradient-to-br from-[#5fb4ff] via-[#d7ecff] to-white bg-clip-text text-transparent mb-[5px]">TechAlpha</strong>
-            <span className="block text-[11px] text-[#7ea6d8] tracking-[0.08em] uppercase">AI Investment OS</span>
+            <strong className="block text-[20px] leading-none tracking-[-0.045em] bg-gradient-to-br from-[#5fb4ff] via-[#d7ecff] to-white bg-clip-text text-transparent mb-[5px]">
+              TechAlpha
+            </strong>
+            <span className="block text-[11px] text-[#7ea6d8] tracking-[0.08em] uppercase">
+              AI Investment OS
+            </span>
           </div>
         </div>
 
         <nav className="p-[18px_12px_8px] grid gap-[7px]">
-          <Link to="/" className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === 'workbench' ? 'bg-[#2563eb] text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
+          <Link
+            to="/"
+            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "workbench" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+          >
             <LayoutGrid size={16} /> 新建任务
           </Link>
-          <Link to="/companies" className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === 'companies' ? 'bg-[#2563eb] text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
+          <Link
+            to="/companies"
+            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "companies" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+          >
             <Search size={16} /> 企业库
           </Link>
-          <Link to="/reports" className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === 'reports' ? 'bg-[#2563eb] text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
+          <Link
+            to="/reports"
+            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "reports" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+          >
             <FileText size={16} /> 报告库
           </Link>
-          <Link to="/alerts" className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === 'alerts' ? 'bg-[#2563eb] text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
+          <Link
+            to="/alerts"
+            className={`h-[42px] rounded-xl px-[13px] flex items-center gap-[11px] text-[14px] cursor-pointer transition-colors ${activeNav === "alerts" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+          >
             <Flag size={16} /> 跟踪预警
           </Link>
         </nav>
 
         <div className="px-3 flex-1 overflow-auto">
-          <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">最近任务记录</div>
-          <Link to="/sector-scan" className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === 'sector-scan' ? 'text-[#e2e8f0] bg-white/5' : 'text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]'}`}>
-            <span className="text-[10px]">&#9649;</span> 分析钠电池正极材料赛道机会
+          <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">
+            最近任务记录
+          </div>
+          <Link
+            to="/deep-mine?task=sector-scan"
+            className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "sector-scan" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+          >
+            <span className="text-[10px]">&#9649;</span>{" "}
+            分析钠电池正极材料赛道机会
           </Link>
-          <Link to="/deep-mine" className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === 'deep-mine' ? 'text-[#e2e8f0] bg-white/5' : 'text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]'}`}>
-            <span className="text-[10px]">&#9649;</span> 挖掘钠电正极材料核心企业
-          </Link>
-          <Link to="/auto-report/generating" className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === 'auto-report' ? 'text-[#e2e8f0] bg-white/5' : 'text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]'}`}>
-            <span className="text-[10px]">&#9649;</span> 生成浙江钠创新能源报告
-          </Link>
-          <Link to="/" className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === 'deep-mine-2' ? 'text-[#e2e8f0] bg-white/5' : 'text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]'}`}>
-            <span className="text-[10px]">&#9649;</span> 挖掘 Chiplet 方向潜力企业
-          </Link>
-          <Link to="/alerts" className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === 'alerts-1' ? 'text-[#e2e8f0] bg-white/5' : 'text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]'}`}>
-            <span className="text-[10px]">&#9649;</span> 跟踪机器人灵巧手企业动态
+          <Link
+            to="/deep-mine/analysis?task=deep-mine"
+            className={`block text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${activeHistory === "deep-mine" && historyTask === "deep-mine" ? "text-[#e2e8f0] bg-white/5" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+          >
+            <span className="text-[10px]">&#9649;</span>{" "}
+            挖掘钠电正极材料核心企业
           </Link>
         </div>
 
-        <div className={`p-[16px_18px] border-t border-[#94a3b823] text-xs flex items-center justify-between transition-colors ${activeNav === 'account' ? 'bg-white/5 text-white' : 'text-[#cbd5e1] hover:bg-white/5 hover:text-white'}`}>
-          <Link to="/account" className="min-w-0 flex flex-1 items-center rounded-lg cursor-pointer">
-            {currentUser && currentUser.username ? (
-              <span className="min-w-0 font-bold flex items-center gap-2">
-                <div className="w-[20px] h-[20px] rounded-full bg-[#1e293b] flex items-center justify-center text-[10px]">
-                  {currentUser.username[0].toUpperCase()}
-                </div>
-                <span className="truncate">{currentUser.username}</span>
-              </span>
-            ) : (
-              <>
-                <span className="inline-block w-[7px] h-[7px] bg-[#22c55e] rounded-full mr-2 shadow-[0_0_0_5px_rgba(34,197,94,0.12)]"></span>
-                AI 引擎已就绪
-              </>
-            )}
-          </Link>
-          {onLogout && (
-            <button
-              onClick={onLogout}
-              className="text-[#94a3b8] hover:text-white cursor-pointer transition-colors flex items-center"
-              title="退出登录"
+        <div
+          className={`group relative border-t border-[#94a3b823] p-[14px_12px_16px] transition-colors ${activeNav === "account" ? "bg-white/5" : ""}`}
+        >
+          <div className="pointer-events-none absolute bottom-[82px] left-3 right-3 z-20 translate-y-2 rounded-2xl bg-white p-3 text-[#102039] opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.28)] transition-all duration-150 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+            <div className="text-[14px] font-black">{displayName}</div>
+            <div className="mt-1 break-all text-[12px] leading-relaxed text-[#66758e]">
+              {displayEmail}
+            </div>
+            <div className="mt-3 rounded-xl border border-[#e3ebf6] bg-[#f5f8ff] p-3 text-[12px] leading-[1.75] text-[#31415d]">
+              <div>当前套餐：试用版</div>
+              <div>有效期至：2026-07-15</div>
+              <div>初筛报告：7 / 10</div>
+            </div>
+            <div className="mt-3 flex flex-col gap-2 border-t border-[#e3ebf6] pt-3 text-[13px] font-extrabold text-[#18345d]">
+              <Link
+                to="/account"
+                className="cursor-pointer rounded-lg px-1 py-0.5 hover:text-[#2f6df6]"
+              >
+                账户与权益
+              </Link>
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="cursor-pointer rounded-lg px-1 py-0.5 text-left font-extrabold text-[#18345d] transition-colors hover:text-[#2f6df6]"
+                >
+                  退出登录
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div
+            className={`flex min-w-0 items-center gap-[10px] rounded-[14px] border p-[10px] transition-colors ${
+              activeNav === "account"
+                ? "border-white/15 bg-white/10 text-white"
+                : "border-white/10 bg-white/6 text-[#cbd5e1] hover:border-white/15 hover:bg-white/10 hover:text-white"
+            }`}
+          >
+            <Link
+              to="/account"
+              className="flex min-w-0 flex-1 items-center gap-[10px]"
             >
-              <LogOut size={14} />
-            </button>
-          )}
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#2f6df6] to-[#8057ff] text-[13px] font-black text-white shadow-[0_10px_24px_rgba(47,109,246,0.24)]">
+                {avatarText}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[13px] font-black text-white">
+                  {displayName} · 试用版
+                </div>
+                <div className="mt-1 flex items-center gap-2 text-[12px] text-[#a9b9d4]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#16b978] shadow-[0_0_0_4px_rgba(22,185,120,0.12)]" />
+                  <span className="truncate">初筛 7/10</span>
+                </div>
+              </div>
+            </Link>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="shrink-0 rounded-lg p-1.5 text-[#94a3b8] transition-colors hover:bg-white/10 hover:text-white"
+                title="退出登录"
+              >
+                <LogOut size={14} />
+              </button>
+            )}
+          </div>
         </div>
       </aside>
 
       <main className="min-w-0 flex flex-col">
-        <div className="flex-1">
-          {children}
-        </div>
+        <div className="flex-1">{children}</div>
       </main>
     </div>
   );

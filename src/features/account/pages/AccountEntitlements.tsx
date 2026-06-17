@@ -1,4 +1,11 @@
-import { Activity, BadgeCheck, CalendarDays, FileText, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  Activity,
+  BadgeCheck,
+  CalendarDays,
+  FileText,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
 type InfoCard = {
   label: string;
@@ -84,10 +91,26 @@ const plans: Plan[] = [
 ];
 
 const usageRecords = [
-  { time: "2026-06-15 14:20", action: "生成初筛报告：浙江钠创新能源", type: "初筛报告" },
-  { time: "2026-06-15 11:10", action: "运行线索分析：钠电池正极材料", type: "AI 分析" },
-  { time: "2026-06-14 17:42", action: "重新生成目标拆解：存算一体芯片", type: "AI 分析" },
-  { time: "2026-06-14 10:15", action: "生成初筛报告：深圳时识科技", type: "初筛报告" },
+  {
+    time: "2026-06-15 14:20",
+    action: "生成初筛报告：浙江钠创新能源",
+    type: "初筛报告",
+  },
+  {
+    time: "2026-06-15 11:10",
+    action: "运行线索分析：钠电池正极材料",
+    type: "AI 分析",
+  },
+  {
+    time: "2026-06-14 17:42",
+    action: "重新生成目标拆解：存算一体芯片",
+    type: "AI 分析",
+  },
+  {
+    time: "2026-06-14 10:15",
+    action: "生成初筛报告：深圳时识科技",
+    type: "初筛报告",
+  },
 ];
 
 const quotaTone = {
@@ -119,7 +142,8 @@ export default function AccountEntitlements() {
                 账户与权益
               </h1>
               <p className="mt-[10px] max-w-[720px] text-[14px] leading-[1.7] text-[#66758e]">
-                管理当前账户、套餐和关键使用额度。基础功能默认开放，额度只在主动 AI 分析和初筛报告生成时消耗。
+                管理当前账户、套餐和关键使用额度。基础功能默认开放，额度只在主动
+                AI 分析和初筛报告生成时消耗。
               </p>
             </div>
             <div className="rounded-full border border-[#bdd1ff] bg-white px-4 py-2 text-[13px] font-black text-[#2f6df6] shadow-[0_10px_24px_rgba(47,109,246,0.12)]">
@@ -136,9 +160,16 @@ export default function AccountEntitlements() {
             </div>
             <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-1">
               {accountInfo.map((item) => (
-                <div key={item.label} className="rounded-[18px] border border-[#e3ebf6] bg-[#f9fbfe] p-[18px]">
-                  <div className="mb-2 text-[13px] text-[#66758e]">{item.label}</div>
-                  <div className="wrap-break-word text-[18px] font-black leading-[1.35] text-[#102039]">{item.value}</div>
+                <div
+                  key={item.label}
+                  className="rounded-[18px] border border-[#e3ebf6] bg-[#f9fbfe] p-[18px]"
+                >
+                  <div className="mb-2 text-[13px] text-[#66758e]">
+                    {item.label}
+                  </div>
+                  <div className="wrap-break-word text-[18px] font-black leading-[1.35] text-[#102039]">
+                    {item.value}
+                  </div>
                 </div>
               ))}
             </div>
@@ -154,13 +185,22 @@ export default function AccountEntitlements() {
                 const tone = quotaTone[quota.tone];
 
                 return (
-                  <div key={quota.title} className="rounded-[22px] border border-[#e3ebf6] bg-white p-5 shadow-[0_10px_28px_rgba(18,39,80,0.04)]">
+                  <div
+                    key={quota.title}
+                    className="rounded-[22px] border border-[#e3ebf6] bg-white p-5 shadow-[0_10px_28px_rgba(18,39,80,0.04)]"
+                  >
                     <div className="mb-5 flex items-start justify-between gap-4">
                       <div>
-                        <div className="mb-2 text-[18px] font-black text-[#102039]">{quota.title}</div>
-                        <div className="text-[13px] leading-[1.65] text-[#66758e]">{quota.description}</div>
+                        <div className="mb-2 text-[18px] font-black text-[#102039]">
+                          {quota.title}
+                        </div>
+                        <div className="text-[13px] leading-[1.65] text-[#66758e]">
+                          {quota.description}
+                        </div>
                       </div>
-                      <div className={`rounded-2xl px-4 py-3 text-[30px] font-black leading-none ${tone.bg} ${tone.text}`}>
+                      <div
+                        className={`rounded-2xl px-4 py-3 text-[30px] font-black leading-none ${tone.bg} ${tone.text}`}
+                      >
                         {quota.highlight}
                       </div>
                     </div>
@@ -210,10 +250,15 @@ export default function AccountEntitlements() {
                       </span>
                     )}
                   </div>
-                  <p className="mb-4 text-[13px] leading-[1.7] text-[#66758e]">{plan.note}</p>
+                  <p className="mb-4 text-[13px] leading-[1.7] text-[#66758e]">
+                    {plan.note}
+                  </p>
                   <div className="space-y-0">
                     {plan.benefits.map(([label, value]) => (
-                      <div key={`${label}-${value}`} className="flex justify-between gap-4 border-t border-[#edf2f8] py-3 text-[14px] text-[#31415d]">
+                      <div
+                        key={`${label}-${value}`}
+                        className="flex justify-between gap-4 border-t border-[#edf2f8] py-3 text-[14px] text-[#31415d]"
+                      >
                         <span>{label}</span>
                         <b className="text-[#102039]">{value}</b>
                       </div>
@@ -224,21 +269,43 @@ export default function AccountEntitlements() {
             </div>
           </section>
 
-          <section className="grid grid-cols-[1fr_1.35fr] gap-4 border-t border-[#e3ebf6] pt-6 max-xl:grid-cols-1">
-            <div>
+          <section className="space-y-4 border-t border-[#e3ebf6] pt-6">
+            <div className="rounded-[22px] border border-[#e3ebf6] bg-[#f9fbfe] p-5">
               <div className="mb-4 flex items-center gap-2 text-[18px] font-black text-[#102039]">
                 <FileText size={20} className="text-[#2f6df6]" />
                 权益说明
               </div>
-              <div className="rounded-[18px] border border-[#e3ebf6] bg-[#f9fbfe] p-[18px] text-[14px] leading-[1.85] text-[#31415d]">
-                基础功能默认开放，包括
-                <b className="text-[#102039]"> 企业挖掘、企业库、报告库、事件跟踪和报告查看</b>。当前主要限制为
-                <b className="text-[#102039]"> AI 分析次数</b> 与
-                <b className="text-[#102039]"> 初筛报告额度</b>。查看企业、筛选企业、关注企业、打开报告和查看事件不消耗额度。
+              <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-1">
+                <div className="rounded-[18px] border border-[#e3ebf6] bg-white p-4">
+                  <div className="mb-2 text-[13px] font-black text-[#2f6df6]">
+                    默认开放
+                  </div>
+                  <div className="text-[14px] leading-[1.75] text-[#31415d]">
+                    企业挖掘、企业库、报告库、事件跟踪和报告查看等基础功能可直接使用。
+                  </div>
+                </div>
+                <div className="rounded-[18px] border border-[#e3ebf6] bg-white p-4">
+                  <div className="mb-2 text-[13px] font-black text-[#2f6df6]">
+                    额度限制
+                  </div>
+                  <div className="text-[14px] leading-[1.75] text-[#31415d]">
+                    当前主要限制为
+                    <b className="text-[#102039]"> AI 分析次数</b> 与
+                    <b className="text-[#102039]"> 初筛报告额度</b>。
+                  </div>
+                </div>
+                <div className="rounded-[18px] border border-[#e3ebf6] bg-white p-4">
+                  <div className="mb-2 text-[13px] font-black text-[#2f6df6]">
+                    不消耗额度
+                  </div>
+                  <div className="text-[14px] leading-[1.75] text-[#31415d]">
+                    查看企业、筛选企业、关注企业、打开报告和查看事件不计入额度消耗。
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div>
+            <div className="rounded-[22px] border border-[#e3ebf6] bg-white p-5">
               <div className="mb-4 flex items-center gap-2 text-[18px] font-black text-[#102039]">
                 <CalendarDays size={20} className="text-[#2f6df6]" />
                 最近使用记录
@@ -249,8 +316,12 @@ export default function AccountEntitlements() {
                     key={`${record.time}-${record.action}`}
                     className="grid grid-cols-[150px_minmax(0,1fr)_104px] items-center gap-4 border-b border-[#e3ebf6] px-4 py-3 text-[14px] last:border-b-0 max-md:grid-cols-1 max-md:gap-2"
                   >
-                    <div className="text-[13px] text-[#66758e]">{record.time}</div>
-                    <div className="font-extrabold text-[#18345d]">{record.action}</div>
+                    <div className="text-[13px] text-[#66758e]">
+                      {record.time}
+                    </div>
+                    <div className="font-extrabold text-[#18345d]">
+                      {record.action}
+                    </div>
                     <div className="justify-self-end rounded-full bg-[#eef4ff] px-3 py-1.5 text-[12px] font-black text-[#2f6df6] max-md:justify-self-start">
                       {record.type}
                     </div>

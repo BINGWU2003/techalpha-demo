@@ -1,4 +1,4 @@
-.table :global(.ant-table-thead > tr > th) {
+.page .table :global(.ant-table-thead > tr > th) {
   background: #fbfcff;
   border-bottom: 1px solid #e3ebf6;
   color: #7a8699;
@@ -7,32 +7,63 @@
   padding: 14px 18px;
 }
 
-.table :global(.ant-table-tbody > tr) {
+.page .table :global(.ant-table-tbody > tr) {
   cursor: pointer;
   transition: background 0.16s ease;
 }
 
-.table :global(.ant-table-tbody > tr > td) {
+.page .table :global(.ant-table-tbody > tr > td) {
   border-bottom: 1px solid #eef3fa;
   padding: 18px;
   vertical-align: middle;
 }
 
-.table :global(.ant-table-tbody > tr.ant-table-row:hover > td),
-.table :global(.ant-table-tbody > tr > td.ant-table-cell-row-hover) {
+.page .table :global(.ant-table-tbody > tr.ant-table-row:hover > td),
+.page .table :global(.ant-table-tbody > tr > td.ant-table-cell-row-hover) {
   background: #f7faff;
 }
 
-.selectedRow :global(td) {
+.page .selectedRow :global(td) {
   background: #f1f6ff !important;
 }
 
-.table :global(.ant-table) {
+.page .table :global(.ant-table) {
   color: #13213a;
 }
 
-.table :global(.ant-table-container),
-.table :global(.ant-table-content) {
+.page .table :global(.ant-table-container),
+.page .table :global(.ant-table-content) {
   border-start-start-radius: 0;
   border-start-end-radius: 0;
+}
+
+.paginationBar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 22px 22px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.page .pagination :global(.ant-pagination-prev),
+.page .pagination :global(.ant-pagination-next),
+.page .pagination :global(.ant-pagination-item),
+.page .pagination :global(.ant-pagination-jump-prev),
+.page .pagination :global(.ant-pagination-jump-next),
+.page .pagination :global(.ant-pagination-options) {
+  display: inline-flex !important;
+}
+
+.page .pagination :global(.ant-pagination-prev),
+.page .pagination :global(.ant-pagination-next),
+.page .pagination :global(.ant-pagination-item) {
+  align-items: center;
+  justify-content: center;
+}
+
+.page .pagination :global(.ant-pagination-total-text) {
+  display: none !important;
 }

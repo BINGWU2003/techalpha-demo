@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
-import { ArrowLeft, Star, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, FileText, Star, X } from "lucide-react";
 import {
   Input as AntInput,
   Modal,
+  Pagination as AntPagination,
   Select as AntSelect,
   Table as AntTable,
 } from "antd";
@@ -35,12 +36,22 @@ type FilterChip = {
 };
 
 const QUICK_FILTERS = [
-  { name: "全部", count: 350 },
-  { name: "强技术布局", count: 86 },
-  { name: "近三年活跃", count: 128 },
-  { name: "创赛/展会出现", count: 24 },
-  { name: "高校院所转化", count: 79 },
+  { name: "全部" },
+  { name: "强技术布局" },
+  { name: "近三年活跃" },
+  { name: "创赛/展会出现" },
+  { name: "高校院所转化" },
 ];
+
+const ROUTE_OPTIONS = [
+  "全部路线",
+  "SNN",
+  "忆阻器",
+  "3D 混合",
+  "存算一体",
+  "其他路线",
+];
+const TYPE_OPTIONS = ["全部类型", "上市企业", "非上市企业", "高校/科研院所"];
 
 const COMPANIES: Company[] = [
   {
@@ -255,18 +266,21 @@ export default function DeepMineExplore({
   const [quickFilter, setQuickFilter] = useState("全部");
   const [route, setRoute] = useState("全部路线");
   const [type, setType] = useState("全部类型");
-  const [source, setSource] = useState("全部来源");
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("默认排序");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
   const [watchedCompanies, setWatchedCompanies] = useState<
     Record<string, boolean>
   >({
     深圳时识科技有限公司: true,
     "北方集成电路技术创新中心（北京）有限公司": true,
   });
-  const [reportStatuses, setReportStatuses] = useState<Record<string, ReportStatus>>({
-    "北京灵汐科技有限公司": "ready",
+  const [reportStatuses, setReportStatuses] = useState<
+    Record<string, ReportStatus>
+  >({
+    北京灵汐科技有限公司: "ready",
     "北方集成电路技术创新中心（北京）有限公司": "running",
   });
 
@@ -274,7 +288,6 @@ export default function DeepMineExplore({
     quickFilter !== "全部" ||
     route !== "全部路线" ||
     type !== "全部类型" ||
-    source !== "全部来源" ||
     keyword.trim() !== "" ||
     sort !== "默认排序";
 
@@ -282,7 +295,6 @@ export default function DeepMineExplore({
     setQuickFilter("全部");
     setRoute("全部路线");
     setType("全部类型");
-    setSource("全部来源");
     setKeyword("");
     setSort("默认排序");
   };
@@ -309,13 +321,6 @@ export default function DeepMineExplore({
           onClear: () => setType("全部类型"),
         }
       : null,
-    source !== "全部来源"
-      ? {
-          key: "source",
-          label: `来源：${source}`,
-          onClear: () => setSource("全部来源"),
-        }
-      : null,
     keyword.trim() !== ""
       ? {
           key: "keyword",
@@ -337,7 +342,6 @@ export default function DeepMineExplore({
       const matchesRoute =
         route === "全部路线" || company.route.includes(route);
       const matchesType = type === "全部类型" || company.type.includes(type);
-      const matchesSource = source === "全部来源" || company.source === source;
       const matchesQuick = matchesQuickFilter(company, quickFilter);
       const matchesKeyword =
         keyword.trim() === "" ||
@@ -345,13 +349,7 @@ export default function DeepMineExplore({
         company.summary.includes(keyword.trim()) ||
         company.tags.some((tag) => tag.text.includes(keyword.trim()));
 
-      return (
-        matchesRoute &&
-        matchesType &&
-        matchesSource &&
-        matchesQuick &&
-        matchesKeyword
-      );
+      return matchesRoute && matchesType && matchesQuick && matchesKeyword;
     });
 
     return [...filteredCompanies].sort((first, second) => {
@@ -375,9 +373,17 @@ export default function DeepMineExplore({
 
       return 0;
     });
-  }, [keyword, quickFilter, route, sort, source, type]);
+  }, [keyword, quickFilter, route, sort, type]);
 
   const resultCount = visibleCompanies.length;
+  const paginatedCompanies = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return visibleCompanies.slice(startIndex, startIndex + pageSize);
+  }, [currentPage, pageSize, visibleCompanies]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [keyword, quickFilter, route, sort, type]);
 
   const toggleWatch = (company: Company) => {
     setWatchedCompanies((prev) => ({
@@ -430,7 +436,6 @@ export default function DeepMineExplore({
     setQuickFilter("全部");
     setRoute("全部路线");
     setType("全部类型");
-    setSource("全部来源");
     setSort("默认排序");
   };
 
@@ -445,6 +450,18 @@ export default function DeepMineExplore({
 
   const closeSelectedCompany = () => {
     setSelectedCompany(null);
+  };
+
+  const handleTablePageChange = (nextPage: number, nextPageSize: number) => {
+    setSelectedCompany(null);
+
+    if (nextPageSize !== pageSize) {
+      setPageSize(nextPageSize);
+      setCurrentPage(1);
+      return;
+    }
+
+    setCurrentPage(nextPage);
   };
 
   const selectedReportStatus: ReportStatus = selectedCompany
@@ -543,79 +560,67 @@ export default function DeepMineExplore({
   ];
 
   return (
-    <PageShell>
+    <PageShell className={styles.page}>
       <main>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
           <header className="flex items-center justify-between gap-4 border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px] max-md:flex-wrap">
             <h1 className="m-0 shrink-0 text-[24px] font-black text-[#102039]">
               企业探索
             </h1>
-            <p className="m-0 min-w-0 text-right text-[14px] leading-[1.65] text-[#64748b] max-md:text-left">
-              目标：
-              <strong className="text-[#102039]">存算一体神经形态芯片</strong>
-              ，查看候选企业、筛选条件和轻量证据。
-            </p>
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-3 max-md:flex-wrap max-md:justify-start">
+              <p className="m-0 min-w-0 text-right text-[14px] leading-[1.65] text-[#64748b] max-md:text-left">
+                目标：
+                <strong className="text-[#102039]">存算一体神经形态芯片</strong>
+                ，查看候选企业、筛选条件和轻量证据。
+              </p>
+            </div>
           </header>
 
-          <div className="border-b border-[#e3ebf6] bg-white px-6 py-[20px_16px] max-md:px-5">
-            <div className="mb-4 flex flex-wrap gap-[10px]">
-              {QUICK_FILTERS.map((filter) => (
-                <button
-                  key={filter.name}
-                  type="button"
-                  onClick={() => setQuickFilter(filter.name)}
-                  className={`rounded-full border px-[13px] py-[9px] text-[13px] font-extrabold transition-colors ${
-                    quickFilter === filter.name
-                      ? "border-[#bdd1ff] bg-[#edf4ff] text-[#2f6df6]"
-                      : "border-[#dce6f6] bg-white text-[#4d5b73] hover:border-[#b9cdf8] hover:text-[#2f6df6]"
-                  }`}
-                >
-                  {filter.name}
-                  <span className="ml-1 text-[#8a96aa]">{filter.count}</span>
-                </button>
-              ))}
+          <div className="border-b border-[#e3ebf6] bg-white px-6 py-[18px] max-md:px-5">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+              <div className="flex min-w-0 flex-wrap items-center gap-[10px]">
+                {QUICK_FILTERS.map((filter) => (
+                  <button
+                    key={filter.name}
+                    type="button"
+                    onClick={() => setQuickFilter(filter.name)}
+                    className={`rounded-full border px-[13px] py-[9px] text-[13px] font-extrabold transition-colors ${
+                      quickFilter === filter.name
+                        ? "border-[#bdd1ff] bg-[#edf4ff] text-[#2f6df6]"
+                        : "border-[#dce6f6] bg-white text-[#4d5b73] hover:border-[#b9cdf8] hover:text-[#2f6df6]"
+                    }`}
+                  >
+                    {filter.name}
+                  </button>
+                ))}
+              </div>
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 text-[13px] max-lg:justify-start">
+                <strong className="text-[#13213a]">
+                  当前页结果：{resultCount} 家
+                </strong>
+                <span className="text-[#8b96a8]">
+                  点击企业行查看线索详情，点击星标关注
+                </span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-[10px] lg:grid-cols-[minmax(150px,1fr)_minmax(150px,1fr)_minmax(150px,1fr)_minmax(220px,1.35fr)_150px_auto]">
+            <div className="mt-3 grid grid-cols-1 gap-[10px] lg:grid-cols-[150px_150px_minmax(280px,1fr)_160px_auto]">
               <AntSelect
                 value={route}
                 onChange={setRoute}
                 size="large"
                 className="w-full"
-                options={[
-                  { value: "全部路线", label: "全部路线" },
-                  { value: "SNN", label: "SNN" },
-                  { value: "忆阻器", label: "忆阻器" },
-                  { value: "3D 混合", label: "3D 混合" },
-                  { value: "存算一体", label: "存算一体" },
-                  { value: "其他路线", label: "其他路线" },
-                ]}
+                options={ROUTE_OPTIONS.map((value) => ({
+                  value,
+                  label: value,
+                }))}
               />
               <AntSelect
                 value={type}
                 onChange={setType}
                 size="large"
                 className="w-full"
-                options={[
-                  { value: "全部类型", label: "全部类型" },
-                  { value: "上市企业", label: "上市企业" },
-                  { value: "非上市企业", label: "非上市企业" },
-                  { value: "高校/科研院所", label: "高校/科研院所" },
-                ]}
-              />
-              <AntSelect
-                value={source}
-                onChange={setSource}
-                size="large"
-                className="w-full"
-                options={[
-                  { value: "全部来源", label: "全部来源" },
-                  { value: "专利", label: "专利" },
-                  { value: "创赛", label: "创赛" },
-                  { value: "展会", label: "展会" },
-                  { value: "融资", label: "融资" },
-                  { value: "新闻", label: "新闻" },
-                ]}
+                options={TYPE_OPTIONS.map((value) => ({ value, label: value }))}
               />
               <AntInput
                 value={keyword}
@@ -646,17 +651,12 @@ export default function DeepMineExplore({
                 重置
               </Button>
             </div>
-          </div>
 
-          <div className="flex items-start justify-between gap-[18px] border-b border-[#e3ebf6] bg-[#fbfdff] px-6 py-[13px] text-[13px] text-[#536177] max-md:flex-col max-md:items-start max-md:gap-2 max-md:px-5">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <strong className="text-[#13213a]">
-                  当前结果：{resultCount}家
-                </strong>
-                {activeFilterChips.length === 0 && (
+            {(activeFilterChips.length > 0 || keyword.trim() !== "") && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px] text-[#536177]">
+                {activeFilterChips.length === 0 ? (
                   <span className="text-[#8b96a8]">全部候选企业</span>
-                )}
+                ) : null}
                 {activeFilterChips.map((chip) => (
                   <button
                     key={chip.key}
@@ -668,27 +668,24 @@ export default function DeepMineExplore({
                     <X className="h-3 w-3" />
                   </button>
                 ))}
+                {keyword.trim() !== "" && activeFilterChips.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={clearFiltersExceptKeyword}
+                    className="text-[12px] font-extrabold text-[#2563eb] hover:text-[#174ea6]"
+                  >
+                    只保留关键词搜索
+                  </button>
+                )}
               </div>
-              {keyword.trim() !== "" && activeFilterChips.length > 1 && (
-                <button
-                  type="button"
-                  onClick={clearFiltersExceptKeyword}
-                  className="mt-2 text-[12px] font-extrabold text-[#2563eb] hover:text-[#174ea6]"
-                >
-                  只保留关键词搜索
-                </button>
-              )}
-            </div>
-            <div className="text-[#8b96a8]">
-              点击企业行查看线索详情，点击星标关注
-            </div>
+            )}
           </div>
 
           <div className="min-h-[610px] bg-white">
             <AntTable<Company>
               className={styles.table}
               columns={companyColumns}
-              dataSource={visibleCompanies}
+              dataSource={paginatedCompanies}
               rowKey="name"
               pagination={false}
               style={{ minHeight: 520 }}
@@ -715,9 +712,7 @@ export default function DeepMineExplore({
                         onClick={handleEmptyReset}
                         className="h-[36px] rounded-[10px] px-4 font-extrabold"
                       >
-                        {keyword.trim() !== ""
-                          ? "只保留关键词"
-                          : "清空筛选"}
+                        {keyword.trim() !== "" ? "只保留关键词" : "清空筛选"}
                       </Button>
                       {keyword.trim() !== "" && (
                         <Button
@@ -733,6 +728,21 @@ export default function DeepMineExplore({
                 ),
               }}
             />
+            {resultCount > 0 && (
+              <div className={styles.paginationBar}>
+                <AntPagination
+                  className={styles.pagination}
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={resultCount}
+                  showSizeChanger
+                  pageSizeOptions={["5", "10", "20", "50"]}
+                  locale={{ items_per_page: "条/页" }}
+                  onChange={handleTablePageChange}
+                  onShowSizeChange={handleTablePageChange}
+                />
+              </div>
+            )}
           </div>
         </section>
         <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">

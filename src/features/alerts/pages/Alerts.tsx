@@ -237,8 +237,8 @@ export default function Alerts({
 
   return (
     <PageShell>
-        <section className="rounded-[28px] border border-[#e3ebf6] bg-white p-[28px] shadow-[0_16px_40px_rgba(23,39,70,0.05)] max-md:p-[20px]">
-          <div className="mb-[22px]">
+        <section className="overflow-hidden rounded-[28px] border border-[#e3ebf6] bg-white shadow-[0_16px_40px_rgba(23,39,70,0.05)]">
+          <header className="border-b border-[#e3ebf6] p-[20px_24px] max-md:p-[18px_20px]">
             <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
               <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#102039]">
                 事件跟踪
@@ -247,9 +247,9 @@ export default function Alerts({
                 跟踪已关注企业与标的池企业的关键动态，辅助更新企业记录和报告。
               </p>
             </div>
-          </div>
+          </header>
 
-          <div className="border-t border-[#e3ebf6] pt-[20px]">
+          <div className="p-[20px_28px_0] max-md:p-[18px_20px_0]">
             <div className="mb-[16px] flex items-center justify-between gap-[14px] max-xl:flex-col max-xl:items-start">
               <div className="flex flex-wrap gap-[10px]">
                 {categories.map((category) => (
@@ -341,7 +341,7 @@ export default function Alerts({
                 key={event.id}
                 type="button"
                 onClick={() => setSelectedEvent(event)}
-                className={`grid w-full grid-cols-[34px_minmax(0,1fr)_110px] gap-[14px] border-b border-[#e3ebf6] px-2 py-5 text-left transition-all hover:-mx-2 hover:rounded-[16px] hover:bg-[#f8fbff] hover:px-4 max-lg:grid-cols-[34px_1fr] ${toneClasses[event.tone].border}`}
+                className={`grid w-full grid-cols-[34px_minmax(0,1fr)_110px] gap-[14px] border-b border-[#e3ebf6] px-[28px] py-5 text-left transition-all hover:bg-[#f8fbff] max-md:px-[20px] max-lg:grid-cols-[34px_1fr] ${toneClasses[event.tone].border}`}
               >
                 <div
                   className={`flex h-[28px] w-[28px] items-center justify-center rounded-[10px] text-[15px] font-black ${toneClasses[event.tone].icon}`}
@@ -379,13 +379,13 @@ export default function Alerts({
             ))}
 
             {filteredEvents.length === 0 && (
-              <div className="rounded-[16px] border border-dashed border-[#d6e2f2] bg-[#f8fbff] p-8 text-center text-[13px] text-[#66758e]">
+              <div className="m-[28px] rounded-[16px] border border-dashed border-[#d6e2f2] bg-[#f8fbff] p-8 text-center text-[13px] text-[#66758e] max-md:m-[20px]">
                 暂无匹配事件，请调整筛选条件。
               </div>
             )}
           </div>
 
-          <div className="pt-[18px]">
+          <div className="p-[18px_28px_28px] max-md:p-[18px_20px_20px]">
             <Button
               variant="outline"
               className="h-[42px] rounded-[12px] border-[#d6e2f2] px-[16px] font-black text-[#18345d]"

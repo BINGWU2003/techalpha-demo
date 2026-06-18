@@ -278,7 +278,7 @@ export default function CompanyLibrary({
   return (
     <PageShell>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
-          <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[28px] py-[28px]">
+          <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[20px_24px] max-md:p-[18px_20px]">
             <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
               <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#102039]">
                 企业库

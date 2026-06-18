@@ -71,7 +71,7 @@ export default function ReportLibrary({ onCreateReport, onOpenReport }: { onBack
   return (
     <PageShell>
       <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
-        <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[30px_28px_22px]">
+        <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[20px_24px] max-md:p-[18px_20px]">
           <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
             <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#102039]">报告库</h1>
             <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">管理已生成的企业初筛报告，快速查看、筛选和打开报告。</p>

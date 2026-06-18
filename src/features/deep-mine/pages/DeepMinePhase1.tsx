@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PencilLine, Plus, X } from "lucide-react";
 import { message } from "antd";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -222,7 +223,7 @@ export default function DeepMinePhase1({
   };
 
   return (
-    <div className="max-w-[1280px] mx-auto p-[22px_28px_72px] max-md:p-[18px_16px_64px]">
+    <PageShell>
       <div className="mx-auto w-full">
         <main className="space-y-[18px]">
           <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
@@ -406,6 +407,6 @@ export default function DeepMinePhase1({
           </div>
         </main>
       </div>
-    </div>
+    </PageShell>
   );
 }

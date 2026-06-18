@@ -6,6 +6,7 @@ import {
   Select as AntSelect,
   Table as AntTable,
 } from "antd";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import styles from "./DeepMineExplore.module.css";
 
@@ -542,7 +543,7 @@ export default function DeepMineExplore({
   ];
 
   return (
-    <div className="mx-auto max-w-[1440px] p-[34px_36px_42px] max-xl:p-[24px_18px_36px] max-md:p-[22px_14px_34px]">
+    <PageShell>
       <main>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
           <header className="flex items-center justify-between gap-4 border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px] max-md:flex-wrap">
@@ -864,6 +865,6 @@ export default function DeepMineExplore({
           </aside>
         </>
       )}
-    </div>
+    </PageShell>
   );
 }

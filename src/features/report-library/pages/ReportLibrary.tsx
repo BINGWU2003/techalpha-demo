@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { PageShell } from '@/components/PageShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -68,7 +69,7 @@ export default function ReportLibrary({ onCreateReport, onOpenReport }: { onBack
   };
 
   return (
-    <div className="mx-auto max-w-[1440px] p-[34px_36px_54px] max-md:p-[24px_18px_46px]">
+    <PageShell>
       <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
         <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[30px_28px_22px]">
           <h1 className="m-0 text-[34px] font-bold leading-[1.2] tracking-[-0.04em] text-[#102039]">报告库</h1>
@@ -191,6 +192,6 @@ export default function ReportLibrary({ onCreateReport, onOpenReport }: { onBack
       <Button onClick={onCreateReport} className="mt-4 hidden h-[40px] w-full rounded-[13px] bg-[#2563eb] font-extrabold text-white shadow-[0_10px_18px_rgba(37,99,235,0.18)] hover:bg-[#1d4ed8] max-sm:inline-flex">
         新建报告任务
       </Button>
-    </div>
+    </PageShell>
   );
 }

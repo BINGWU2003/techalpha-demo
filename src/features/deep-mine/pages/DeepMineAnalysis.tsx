@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { PageShell } from "@/components/PageShell";
 import {
   ResponsiveContainer,
   LineChart,
@@ -259,10 +260,10 @@ export default function DeepMineAnalysis({
   onBack,
 }: DeepMineAnalysisProps) {
   return (
-    <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
+    <PageShell>
       <div className="grid grid-cols-1 gap-[18px] items-start">
         <main>
-          <section className="mt-[18px] overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+          <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
             <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h2 className="text-[24px] font-black m-0 text-[#102039]">
@@ -963,6 +964,6 @@ export default function DeepMineAnalysis({
           </div>
         </main>
       </div>
-    </div>
+    </PageShell>
   );
 }

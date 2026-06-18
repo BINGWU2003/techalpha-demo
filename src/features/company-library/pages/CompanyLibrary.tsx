@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Select as AntSelect } from "antd";
 import { ArrowLeft, ChevronRight, Search, X } from "lucide-react";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -275,8 +276,7 @@ export default function CompanyLibrary({
   };
 
   return (
-    <div className="min-h-[calc(100vh-96px)] bg-[#f4f7fb] px-[28px] py-[30px] max-md:px-[16px] max-md:py-[22px]">
-      <div className="mx-auto max-w-[1440px]">
+    <PageShell>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
           <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[28px] py-[28px]">
             <h1 className="m-0 text-[34px] font-black leading-[1.2] tracking-[-0.04em] text-[#102039]">
@@ -594,7 +594,6 @@ export default function CompanyLibrary({
             </div>
           </div>
         </aside>
-      </div>
-    </div>
+    </PageShell>
   );
 }

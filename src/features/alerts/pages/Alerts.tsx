@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowLeft, X } from "lucide-react";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -235,8 +236,7 @@ export default function Alerts({
       : events.filter((event) => event.category === category).length;
 
   return (
-    <div className="min-h-full bg-[#f4f7fb] p-[28px_32px_56px] max-md:p-[20px_14px_44px]">
-      <div className="mx-auto max-w-[1160px]">
+    <PageShell>
         <section className="rounded-[28px] border border-[#e3ebf6] bg-white p-[28px] shadow-[0_16px_40px_rgba(23,39,70,0.05)] max-md:p-[20px]">
           <div className="mb-[22px] flex items-start justify-between gap-[18px] max-lg:flex-col">
             <div>
@@ -395,7 +395,6 @@ export default function Alerts({
             </Button>
           </div>
         </section>
-      </div>
 
       {selectedEvent && (
         <>
@@ -495,6 +494,6 @@ export default function Alerts({
           </aside>
         </>
       )}
-    </div>
+    </PageShell>
   );
 }

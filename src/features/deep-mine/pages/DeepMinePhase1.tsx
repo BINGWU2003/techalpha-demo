@@ -222,23 +222,30 @@ export default function DeepMinePhase1({
   };
 
   return (
-    <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
+    <div className="max-w-[1280px] mx-auto p-[22px_28px_72px] max-md:p-[18px_16px_64px]">
       <div className="mx-auto w-full">
         <main className="space-y-[18px]">
           <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px_22px_14px]">
+            <div className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
               <h1 className="text-[24px] font-black m-0 text-[#102039]">
                 目标拆解
               </h1>
-              <p className="m-0 text-right text-[#64748b] text-[14px] leading-[1.65]">
-                {taskName}
+              <p className="m-0 text-right text-[13px] font-bold text-[#8a96a8] leading-[1.65] max-md:text-left">
+                当前任务：<strong className="font-black text-[#526078]">{taskName}</strong>
               </p>
             </div>
 
-            <div className="p-[14px_22px_22px]">
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-4">
+            <div className="mx-6 mt-[14px] flex items-center gap-2.5 rounded-[14px] border border-[#e5eaf3] bg-[#fbfdff] px-[14px] py-3 text-[13px] leading-[1.6] text-[#536177] max-md:mx-[18px] max-md:flex-col max-md:items-start">
+              <span className="shrink-0 rounded-full bg-[#edf4ff] px-[9px] py-[5px] text-[12px] font-black text-[#2f6df6]">
+                任务指令
+              </span>
+              <span>钠电池正极材料方向，关注压实密度、循环寿命、低成本和储能场景。</span>
+            </div>
+
+            <div className="p-[18px_24px_24px] max-md:p-[18px]">
+              <div className="mb-[18px] flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <h2 className="text-[22px] font-black m-0 text-[#102039]">
+                  <h2 className="text-[20px] font-black m-0 text-[#102039]">
                     已选技术方向
                   </h2>
                   {statusMessage && (
@@ -252,23 +259,14 @@ export default function DeepMinePhase1({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
+              <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3.5">
                 {selectedDirections.map((direction) => (
                   <article
                     key={direction.id}
-                    className="min-h-[188px] rounded-[18px] border border-[#7aa2ff] bg-linear-to-b from-white to-[#fbfdff] p-[14px] shadow-[0_8px_18px_rgba(47,109,246,0.08)]"
+                    className="rounded-[18px] border border-[#7aa2ff] bg-linear-to-b from-white to-[#fbfdff] p-[14px] shadow-[0_8px_18px_rgba(47,109,246,0.08)] transition"
                   >
                     <div className="mb-2 flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <div className="mb-2 flex items-center justify-between gap-2">
-                          <span className="text-[12px] font-extrabold text-[#94a3b8]">
-                            方向名称
-                          </span>
-                          <span className="inline-flex items-center gap-1 rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-2 py-1 text-[11px] font-extrabold text-[#2563eb]">
-                            <PencilLine className="size-3" />
-                            可编辑
-                          </span>
-                        </div>
                         <Textarea
                           aria-label="技术方向标题"
                           value={direction.title}
@@ -280,9 +278,12 @@ export default function DeepMinePhase1({
                               event.target.value,
                             )
                           }
-                          className="min-h-[48px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[16px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
+                          className="min-h-[42px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
                         />
                       </div>
+                      <span className="inline-flex size-[30px] shrink-0 items-center justify-center rounded-[10px] border border-[#dce6f6] bg-white text-[#6d7890]">
+                        <PencilLine className="size-4" />
+                      </span>
                       <button
                         type="button"
                         onClick={() => handleRemoveSelected(direction.id)}
@@ -291,9 +292,6 @@ export default function DeepMinePhase1({
                       >
                         <X className="size-4" />
                       </button>
-                    </div>
-                    <div className="mb-2 mt-3 text-[12px] font-extrabold text-[#94a3b8]">
-                      分析说明
                     </div>
                     <Textarea
                       aria-label="技术方向说明"
@@ -306,12 +304,12 @@ export default function DeepMinePhase1({
                           event.target.value,
                         )
                       }
-                      className="min-h-[68px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[14px] leading-[1.65] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
+                      className="mt-3 min-h-[58px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
                     />
                   </article>
                 ))}
                 {selectedCount < MAX_SELECTED_DIRECTIONS && (
-                  <div className="min-h-[188px] rounded-[18px] border border-dashed border-[#cfdbea] bg-[#fafcff] p-5 text-[13px] font-bold text-[#9aa6ba] flex items-center justify-center text-center">
+                  <div className="min-h-[146px] rounded-[18px] border border-dashed border-[#cfdbea] bg-[#fafcff] p-5 text-[13px] font-bold text-[#9aa6ba] flex items-center justify-center text-center">
                     可继续选择
                     {MAX_SELECTED_DIRECTIONS - selectedCount}
                     个候选方向
@@ -321,31 +319,33 @@ export default function DeepMinePhase1({
             </div>
           </section>
 
-          <section className="bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)] p-[22px]">
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
-              <h2 className="text-[22px] font-black m-0 text-[#102039]">
+          <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+            <div className="flex flex-col gap-2 p-[18px_24px_0] md:flex-row md:items-center md:justify-between max-md:px-[18px]">
+              <h2 className="text-[20px] font-black m-0 text-[#102039]">
                 候选技术方向
               </h2>
               <div className="text-[13px] font-bold text-[#64748b]">
                 更新候选不会影响已选方向
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end">
-              <Textarea
-                value={preference}
-                onChange={(event) => setPreference(event.target.value)}
-                placeholder="例如：更关注压实密度和循环寿命，暂不关注负极材料和电解液方向。"
-                className="min-h-[86px] resize-y rounded-[16px] border-[#dfe7f2] bg-[#fbfcff] px-4 py-3 text-[14px] leading-[1.6] text-[#102039] focus-visible:border-[#adc5ff] focus-visible:ring-0"
-              />
-              <Button
-                onClick={handleRefreshCandidates}
-                className="h-[44px] rounded-[14px] bg-[#2563eb] px-[18px] font-extrabold text-white shadow-[0_10px_20px_rgba(37,99,235,0.18)] hover:bg-[#1d4ed8]"
-              >
-                <RotateCcw data-icon="inline-start" />
-                更新候选
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5 pt-5">
+            <div className="p-[16px_24px_24px] max-md:p-[16px_18px_24px]">
+              <div className="relative mb-4 overflow-hidden rounded-[18px] border border-[#e5eaf3] bg-white shadow-[0_8px_18px_rgba(18,39,80,0.03)] focus-within:border-[#a9c2ff] focus-within:shadow-[0_0_0_4px_rgba(47,109,246,0.08),0_8px_18px_rgba(18,39,80,0.03)]">
+                <Textarea
+                  value={preference}
+                  onChange={(event) => setPreference(event.target.value)}
+                  placeholder="告诉 AI 你想如何调整候选方向，例如：更关注产业化落地，减少偏材料基础研究的方向"
+                  className="min-h-[92px] resize-y rounded-none border-0 bg-white py-4 pl-4 pr-[126px] text-[13px] leading-[1.6] text-[#25324a] shadow-none focus-visible:ring-0 max-md:min-h-[128px] max-md:pb-[68px] max-md:pr-4"
+                />
+                <Button
+                  type="button"
+                  onClick={handleRefreshCandidates}
+                  className="absolute right-[14px] top-1/2 h-10 -translate-y-1/2 rounded-[13px] bg-[#2f6df6] px-[14px] font-black text-white shadow-[0_10px_20px_rgba(47,109,246,0.16)] transition-colors hover:bg-[#245ee8] max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
+                >
+                  <RotateCcw data-icon="inline-start" />
+                  更新
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
               {candidateDirections.map((direction) => (
                 <article
                   key={direction.id}
@@ -376,29 +376,36 @@ export default function DeepMinePhase1({
                 </article>
               ))}
             </div>
-            <div className="flex flex-col gap-3 pt-5 md:flex-row md:items-center md:justify-between">
-              <div className="text-[13px] text-[#64748b]">
+            </div>
+          </section>
+
+          <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
+            <div className="flex flex-col gap-1">
+              <b className="text-[14px] text-[#102039]">
                 {selectedCount > 0
                   ? `已选择 ${selectedCount} 个技术方向`
                   : "请至少选择 1 个技术方向"}
-              </div>
-              <Button
-                onClick={handleAnalyze}
-                disabled={isAnalyzing || selectedDirections.length === 0}
-                className={`h-[46px] px-[22px] rounded-[14px] font-extrabold ${
-                  isAnalyzing
-                    ? "bg-[#f1f5f9] text-[#94a3b8] shadow-none"
-                    : "bg-[#2563eb] text-white shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8]"
-                }`}
-              >
-                {isAnalyzing
-                  ? "正在分析线索..."
-                  : showAnalysis
-                    ? "查看线索分析 →"
-                    : "进入线索分析 →"}
-              </Button>
+              </b>
+              <span className="text-[12px] text-[#8793a7]">
+                已选方向将用于下一步线索分析。
+              </span>
             </div>
-          </section>
+            <Button
+              onClick={handleAnalyze}
+              disabled={isAnalyzing || selectedDirections.length === 0}
+              className={`h-10 rounded-[12px] px-[14px] font-extrabold ${
+                isAnalyzing
+                  ? "bg-[#f1f5f9] text-[#94a3b8] shadow-none"
+                  : "bg-[#2f6df6] text-white shadow-[0_10px_20px_rgba(47,109,246,0.16)] hover:bg-[#2f6df6]"
+              }`}
+            >
+              {isAnalyzing
+                ? "正在分析线索..."
+                : showAnalysis
+                  ? "查看线索分析 →"
+                  : "进入线索分析 →"}
+            </Button>
+          </div>
         </main>
       </div>
     </div>

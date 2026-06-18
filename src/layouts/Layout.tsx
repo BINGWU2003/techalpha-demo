@@ -177,13 +177,8 @@ export function Layout({
                 key={task.id}
                 to={task.to}
                 onClick={() => onSelectTask?.(task.id)}
-                className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${isActive ? "bg-[#1d4ed814] text-[#dbeafe] font-extrabold shadow-[inset_3px_0_0_#60a5fa]" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+                className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${isActive ? "bg-white/[0.06] text-[#e0f2fe] font-extrabold shadow-[inset_2px_0_0_rgba(147,197,253,0.45)]" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
               >
-                <span
-                  className={`text-[10px] ${isActive ? "text-[#60a5fa]" : ""}`}
-                >
-                  &#9649;
-                </span>
                 <span className="min-w-0 truncate">{task.title}</span>
               </Link>
             );

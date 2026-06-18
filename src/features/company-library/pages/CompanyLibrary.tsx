@@ -284,26 +284,8 @@ export default function CompanyLibrary({
                 企业库
               </h1>
               <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">
-                管理已关注企业，并决定是否加入标的池、开启跟踪或生成初筛报告。任务结果池中的临时企业不会自动进入企业库，只有经过确认后才沉淀为企业资产。
+                管理已关注企业，沉淀企业资产并推进初筛、入池和跟踪。
               </p>
-            </div>
-            <div className="mt-[18px] flex flex-wrap gap-[10px]">
-              {[
-                ["已关注", "68"],
-                ["标的池", "12"],
-                ["已初筛", "24"],
-                ["跟踪中", "9"],
-              ].map(([label, value]) => (
-                <span
-                  key={label}
-                  className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-black text-[#536177]"
-                >
-                  {label}
-                  <strong className="ml-[4px] text-[16px] text-[#2f6df6]">
-                    {value}
-                  </strong>
-                </span>
-              ))}
             </div>
           </header>
 

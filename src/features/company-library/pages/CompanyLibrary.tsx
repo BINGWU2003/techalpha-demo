@@ -279,12 +279,14 @@ export default function CompanyLibrary({
     <PageShell>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
           <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[28px] py-[28px]">
-            <h1 className="m-0 text-[34px] font-black leading-[1.2] tracking-[-0.04em] text-[#102039]">
-              企业库
-            </h1>
-            <p className="mt-[10px] max-w-[760px] text-[14px] leading-[1.7] text-[#718096]">
-              管理已关注企业，并决定是否加入标的池、开启跟踪或生成初筛报告。任务结果池中的临时企业不会自动进入企业库，只有经过确认后才沉淀为企业资产。
-            </p>
+            <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
+              <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#102039]">
+                企业库
+              </h1>
+              <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">
+                管理已关注企业，并决定是否加入标的池、开启跟踪或生成初筛报告。任务结果池中的临时企业不会自动进入企业库，只有经过确认后才沉淀为企业资产。
+              </p>
+            </div>
             <div className="mt-[18px] flex flex-wrap gap-[10px]">
               {[
                 ["已关注", "68"],

@@ -238,17 +238,17 @@ export default function Alerts({
   return (
     <PageShell>
         <section className="rounded-[28px] border border-[#e3ebf6] bg-white p-[28px] shadow-[0_16px_40px_rgba(23,39,70,0.05)] max-md:p-[20px]">
-          <div className="mb-[22px] flex items-start justify-between gap-[18px] max-lg:flex-col">
-            <div>
-              <h1 className="m-0 text-[32px] font-black leading-[1.18] tracking-[-0.04em] text-[#0b1f3a] max-md:text-[28px]">
+          <div className="mb-[22px]">
+            <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
+              <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#0b1f3a]">
                 事件跟踪
               </h1>
-              <p className="mt-2 max-w-[620px] text-[14px] leading-[1.7] text-[#66758e]">
+              <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">
                 已关注企业和标的池企业的最新事件。系统聚合公开线索，帮助快速判断是否需要更新企业记录、报告或标的池状态。
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-end gap-[10px] max-lg:justify-start">
+            <div className="mt-[18px] flex flex-wrap justify-end gap-[10px] max-lg:justify-start">
               {[
                 { label: "今日新增", value: "4" },
                 { label: "本周新增", value: "18" },

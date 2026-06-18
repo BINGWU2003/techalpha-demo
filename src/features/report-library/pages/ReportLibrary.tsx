@@ -72,8 +72,10 @@ export default function ReportLibrary({ onCreateReport, onOpenReport }: { onBack
     <PageShell>
       <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
         <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[30px_28px_22px]">
-          <h1 className="m-0 text-[34px] font-bold leading-[1.2] tracking-[-0.04em] text-[#102039]">报告库</h1>
-          <p className="mt-[10px] max-w-[760px] text-[14px] leading-[1.65] text-[#718096]">管理已生成的企业初筛报告。点击报告行打开独立报告页，导出 PDF 等操作在报告页完成。</p>
+          <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
+            <h1 className="m-0 shrink-0 text-[24px] font-bold leading-[1.2] text-[#102039]">报告库</h1>
+            <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">管理已生成的企业初筛报告。点击报告行打开独立报告页，导出 PDF 等操作在报告页完成。</p>
+          </div>
           <div className="mt-[18px] flex flex-wrap gap-[10px]">
             <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">全部报告 <strong className="ml-1 text-[16px] text-[#2f6df6]">38</strong></span>
             <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">关联企业 <strong className="ml-1 text-[16px] text-[#2f6df6]">24</strong></span>

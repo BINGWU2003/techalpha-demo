@@ -37,6 +37,33 @@
   border-start-end-radius: 0;
 }
 
+.page .table :global(.ant-table-body) {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.page .table :global(.ant-table-body:hover),
+.page .table :global(.ant-table-body:focus),
+.page .table :global(.ant-table-body:focus-within) {
+  scrollbar-color: #c9d4e5 transparent;
+}
+
+.page .table :global(.ant-table-body::-webkit-scrollbar) {
+  width: 8px;
+  height: 8px;
+}
+
+.page .table :global(.ant-table-body::-webkit-scrollbar-thumb) {
+  border-radius: 999px;
+  background-color: transparent;
+}
+
+.page .table :global(.ant-table-body:hover::-webkit-scrollbar-thumb),
+.page .table :global(.ant-table-body:focus::-webkit-scrollbar-thumb),
+.page .table :global(.ant-table-body:focus-within::-webkit-scrollbar-thumb) {
+  background-color: #c9d4e5;
+}
+
 .loadMoreBar {
   padding: 14px 22px 88px;
   text-align: center;

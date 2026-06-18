@@ -595,9 +595,6 @@ export default function DeepMineExplore({
                 ))}
               </div>
               <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 text-[13px] max-lg:justify-start">
-                <span className="text-[#8b96a8]">
-                  点击企业行查看线索详情，点击星标关注
-                </span>
                 <strong className="text-[#13213a]">
                   当前页结果：{resultCount} 家
                 </strong>

@@ -336,14 +336,14 @@ export default function DeepMinePhase1({
                   placeholder="告诉 AI 你想如何调整候选方向，例如：更关注产业化落地，减少偏材料基础研究的方向"
                   className="min-h-[92px] resize-y rounded-none border-0 bg-white py-4 pl-4 pr-[126px] text-[13px] leading-[1.6] text-[#25324a] shadow-none focus-visible:ring-0 max-md:min-h-[128px] max-md:pb-[68px] max-md:pr-4"
                 />
-                <Button
+                <button
                   type="button"
                   onClick={handleRefreshCandidates}
-                  className="absolute right-[14px] top-1/2 h-10 -translate-y-1/2 rounded-[13px] bg-[#2f6df6] px-[14px] font-black text-white max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
+                  className="absolute right-[14px] top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center gap-1.5 rounded-[13px] bg-[#2f6df6] px-[14px] text-[14px] font-black text-white max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
                 >
                   <RotateCcw data-icon="inline-start" />
                   更新
-                </Button>
+                </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
               {candidateDirections.map((direction) => (

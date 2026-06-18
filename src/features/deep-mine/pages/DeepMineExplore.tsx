@@ -732,20 +732,25 @@ export default function DeepMineExplore({
                 ),
               }}
             />
-            <div className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px] px-[22px] pb-[22px]">
-              {onBack && (
-                <Button
-                  variant="outline"
-                  onClick={onBack}
-                  className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  返回线索分析
-                </Button>
-              )}
-            </div>
           </div>
         </section>
+        <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
+          <div className="text-[14px] font-bold text-[#102039]">
+            点击企业行查看线索详情,关注后的企业会进入企业库。
+          </div>
+          <div className="flex flex-col gap-[10px] md:flex-row md:justify-end">
+            {onBack && (
+              <Button
+                variant="outline"
+                onClick={onBack}
+                className="h-10 rounded-[12px] px-[14px] font-extrabold shadow-sm max-md:w-full"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                返回线索分析
+              </Button>
+            )}
+          </div>
+        </div>
       </main>
 
       {selectedCompany && (

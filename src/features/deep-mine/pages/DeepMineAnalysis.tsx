@@ -1,6 +1,4 @@
-import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { QuickScrollButton } from "@/components/QuickScrollButton";
 import {
   ResponsiveContainer,
   LineChart,
@@ -257,12 +255,9 @@ type DeepMineAnalysisProps = {
 };
 
 export default function DeepMineAnalysis({
-  onNextStep,
   onExplore,
   onBack,
 }: DeepMineAnalysisProps) {
-  const bottomActionsRef = useRef<HTMLDivElement | null>(null);
-
   return (
     <div className="max-w-[1280px] mx-auto p-[28px_28px_64px] max-md:p-[22px_16px_56px]">
       <div className="grid grid-cols-1 gap-[18px] items-start">
@@ -938,42 +933,36 @@ export default function DeepMineAnalysis({
                 </div>
               </div>
 
-              {/* Action Buttons Row */}
-              <div
-                ref={bottomActionsRef}
-                className="flex flex-col md:flex-row gap-[12px] md:items-center md:justify-between mt-[22px]"
-              >
-                {onBack && (
-                  <Button
-                    variant="outline"
-                    onClick={onBack}
-                    className="h-[44px] px-[20px] rounded-[13px] font-extrabold shadow-sm"
-                  >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    返回目标拆解
-                  </Button>
-                )}
-                <div className="flex flex-col md:flex-row gap-[12px] md:justify-end">
-                  {onExplore && (
-                    <Button
-                      onClick={onExplore}
-                      className="h-[44px] px-[24px] rounded-[13px] font-extrabold text-white bg-[#2563eb] shadow-[0_10px_20px_rgba(37,99,235,0.2)] hover:bg-[#1d4ed8] transform hover:-translate-y-px"
-                    >
-                      进入企业探索
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
             </div>
           </section>
+          <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
+            <div className="text-[14px] font-bold text-[#102039]">
+              可返回调整技术方向,或进入企业探索查看候选企业。
+            </div>
+            <div className="flex flex-col gap-[10px] md:flex-row md:justify-end">
+              {onBack && (
+                <Button
+                  variant="outline"
+                  onClick={onBack}
+                  className="h-10 rounded-[12px] px-[14px] font-extrabold shadow-sm max-md:w-full"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  返回目标拆解
+                </Button>
+              )}
+              {onExplore && (
+                <Button
+                  onClick={onExplore}
+                  className="h-10 rounded-[12px] bg-[#2f6df6] px-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(47,109,246,0.16)] hover:bg-[#2f6df6] max-md:w-full"
+                >
+                  进入企业探索
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
         </main>
       </div>
-
-      <QuickScrollButton
-        targetRef={bottomActionsRef}
-        positionClassName="bottom-24 right-[18px] md:bottom-32 md:right-6 lg:bottom-40 lg:right-[30px]"
-      />
     </div>
   );
 }

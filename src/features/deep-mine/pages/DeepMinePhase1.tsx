@@ -385,15 +385,8 @@ export default function DeepMinePhase1({
           </section>
 
           <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
-            <div className="flex flex-col gap-1">
-              <b className="text-[14px] text-[#102039]">
-                {selectedCount > 0
-                  ? `已选择 ${selectedCount} 个技术方向`
-                  : "请至少选择 1 个技术方向"}
-              </b>
-              <span className="text-[12px] text-[#8793a7]">
-                已选方向将用于下一步线索分析。
-              </span>
+            <div className="text-[14px] font-bold text-[#102039]">
+              已选方向将用于下一步线索分析。
             </div>
             <Button
               onClick={handleAnalyze}

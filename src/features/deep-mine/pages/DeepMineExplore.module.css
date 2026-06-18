@@ -37,33 +37,9 @@
   border-start-end-radius: 0;
 }
 
-.paginationBar {
-  display: flex;
-  justify-content: flex-end;
-  padding: 16px 22px 22px;
-}
-
-.pagination {
-  display: flex;
-  align-items: center;
-}
-
-.page .pagination :global(.ant-pagination-prev),
-.page .pagination :global(.ant-pagination-next),
-.page .pagination :global(.ant-pagination-item),
-.page .pagination :global(.ant-pagination-jump-prev),
-.page .pagination :global(.ant-pagination-jump-next),
-.page .pagination :global(.ant-pagination-options) {
-  display: inline-flex !important;
-}
-
-.page .pagination :global(.ant-pagination-prev),
-.page .pagination :global(.ant-pagination-next),
-.page .pagination :global(.ant-pagination-item) {
-  align-items: center;
-  justify-content: center;
-}
-
-.page .pagination :global(.ant-pagination-total-text) {
-  display: none !important;
+.loadMoreBar {
+  padding: 14px 22px 88px;
+  text-align: center;
+  color: #8b96a8;
+  font-size: 13px;
 }

@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type UIEvent } from "react";
 import { ArrowLeft, FileText, Star, X } from "lucide-react";
 import {
   Input as AntInput,
   Modal,
-  Pagination as AntPagination,
   Select as AntSelect,
   Table as AntTable,
 } from "antd";
@@ -52,6 +51,7 @@ const ROUTE_OPTIONS = [
   "其他路线",
 ];
 const TYPE_OPTIONS = ["全部类型", "上市企业", "非上市企业", "高校/科研院所"];
+const TABLE_LOAD_SIZE = 5;
 
 const COMPANIES: Company[] = [
   {
@@ -201,6 +201,301 @@ const COMPANIES: Company[] = [
       ],
     },
   },
+  {
+    name: "上海燧原科技股份有限公司",
+    tags: [
+      { text: "AI 芯片" },
+      { text: "存算一体" },
+      { text: "非上市企业", tone: "green" },
+      { text: "专利", tone: "orange" },
+    ],
+    summary:
+      "专利与产品线覆盖高性能推理芯片和片上数据搬移优化，可作为类脑计算周边平台型线索。",
+    metrics: ["相关专利 16", "近三年新增 4", "融资信号 活跃"],
+    type: "非上市企业",
+    route: "存算一体",
+    source: "专利",
+    detail: {
+      techRoutes: "AI 芯片 / 存算一体",
+      patentCount: "16 件",
+      recentCount: "4 件",
+      signals: [
+        "专利文本出现片上存储、计算单元协同和低延迟推理相关描述。",
+        "企业具备 AI 加速芯片产品化经验，可作为产业链平台主体观察。",
+        "建议结合客户案例和融资动态判断与神经形态方向的贴近程度。",
+      ],
+    },
+  },
+  {
+    name: "杭州后摩智能科技有限公司",
+    tags: [
+      { text: "存算一体" },
+      { text: "近存计算" },
+      { text: "非上市企业", tone: "green" },
+      { text: "创赛", tone: "orange" },
+    ],
+    summary:
+      "公开信息显示企业聚焦存算一体 AI 芯片，近三年存在持续研发和产业曝光信号。",
+    metrics: ["相关专利 13", "近三年新增 5", "创赛/展会 2"],
+    type: "非上市企业",
+    route: "存算一体",
+    source: "创赛",
+    detail: {
+      techRoutes: "存算一体 / 近存计算",
+      patentCount: "13 件",
+      recentCount: "5 件",
+      signals: [
+        "技术路线围绕存储与计算融合架构，和目标方向存在较强相邻性。",
+        "创赛和展会记录显示企业对外曝光频率较高。",
+        "适合优先关注产品落地、芯片流片和客户验证进度。",
+      ],
+    },
+  },
+  {
+    name: "苏州智存科技有限公司",
+    tags: [
+      { text: "忆阻器" },
+      { text: "存算一体" },
+      { text: "非上市企业", tone: "green" },
+      { text: "专利", tone: "orange" },
+    ],
+    summary:
+      "识别到多件围绕忆阻阵列、模拟计算和存储计算融合的技术线索，适合进一步确认器件成熟度。",
+    metrics: ["相关专利 11", "近三年新增 4", "展会 1"],
+    type: "非上市企业",
+    route: "忆阻器",
+    source: "专利",
+    detail: {
+      techRoutes: "忆阻器 / 模拟存算",
+      patentCount: "11 件",
+      recentCount: "4 件",
+      signals: [
+        "专利线索集中在忆阻阵列、权重写入和模拟乘加计算。",
+        "近期布局显示企业仍在推进器件和架构协同优化。",
+        "建议结合可靠性、工艺兼容性和样片进展判断产业化节奏。",
+      ],
+    },
+  },
+  {
+    name: "南京集成电路大学",
+    tags: [
+      { text: "3D 混合" },
+      { text: "高校/科研院所", tone: "purple" },
+      { text: "专利", tone: "orange" },
+    ],
+    summary:
+      "科研主体在三维集成、先进封装和异构互连方向存在技术积累，可作为院所转化线索。",
+    metrics: ["相关专利 14", "近三年新增 3", "转化线索 待确认"],
+    type: "高校/科研院所",
+    route: "3D 混合",
+    source: "专利",
+    detail: {
+      techRoutes: "3D 混合 / 异构互连",
+      patentCount: "14 件",
+      recentCount: "3 件",
+      signals: [
+        "专利布局覆盖三维堆叠、硅通孔和异构封装互连。",
+        "科研成果具备向工艺平台或设计服务转化的潜在路径。",
+        "建议继续排查关联企业、联合实验室和项目合作记录。",
+      ],
+    },
+  },
+  {
+    name: "北京清微智能科技有限公司",
+    tags: [
+      { text: "可重构计算" },
+      { text: "SNN" },
+      { text: "非上市企业", tone: "green" },
+      { text: "新闻", tone: "orange" },
+    ],
+    summary:
+      "企业技术围绕可重构计算和低功耗 AI 芯片，存在向事件驱动推理架构延展的可能。",
+    metrics: ["相关专利 10", "近三年新增 2", "新闻 3"],
+    type: "非上市企业",
+    route: "SNN",
+    source: "新闻",
+    detail: {
+      techRoutes: "可重构计算 / SNN",
+      patentCount: "10 件",
+      recentCount: "2 件",
+      signals: [
+        "公开技术资料强调低功耗推理和灵活计算单元配置。",
+        "与 SNN 方向存在架构层面的相邻性，但仍需确认脉冲编码能力。",
+        "适合作为低功耗 AI 芯片方向的横向参考企业。",
+      ],
+    },
+  },
+  {
+    name: "浙江大学杭州国际科创中心",
+    tags: [
+      { text: "神经形态计算" },
+      { text: "高校/科研院所", tone: "purple" },
+      { text: "专利", tone: "orange" },
+    ],
+    summary:
+      "院所平台出现多条类脑智能、神经形态器件和边缘计算相关研究线索。",
+    metrics: ["相关专利 19", "近三年新增 6", "转化线索 待确认"],
+    type: "高校/科研院所",
+    route: "其他路线",
+    source: "专利",
+    detail: {
+      techRoutes: "神经形态计算 / 边缘智能",
+      patentCount: "19 件",
+      recentCount: "6 件",
+      signals: [
+        "研究线索覆盖神经形态器件、边缘智能和低功耗感知计算。",
+        "平台型科研主体可能存在孵化团队或联合转化企业。",
+        "建议继续追踪成果转化公告、项目合作和关联公司信息。",
+      ],
+    },
+  },
+  {
+    name: "成都启英泰伦科技有限公司",
+    tags: [
+      { text: "边缘 AI" },
+      { text: "SNN" },
+      { text: "非上市企业", tone: "green" },
+      { text: "融资", tone: "orange" },
+    ],
+    summary:
+      "企业聚焦语音与边缘 AI 芯片，低功耗计算路线可作为神经形态应用侧观察对象。",
+    metrics: ["相关专利 8", "近三年新增 3", "融资信号 1"],
+    type: "非上市企业",
+    route: "SNN",
+    source: "融资",
+    detail: {
+      techRoutes: "边缘 AI / SNN",
+      patentCount: "8 件",
+      recentCount: "3 件",
+      signals: [
+        "专利和产品信息体现低功耗唤醒、端侧推理和感知计算能力。",
+        "与神经形态方向属于应用侧相邻线索，技术底层仍需进一步验证。",
+        "适合结合量产客户和芯片迭代节奏判断跟踪价值。",
+      ],
+    },
+  },
+  {
+    name: "上海交通大学微纳电子学系",
+    tags: [
+      { text: "忆阻器" },
+      { text: "高校/科研院所", tone: "purple" },
+      { text: "专利", tone: "orange" },
+    ],
+    summary:
+      "科研团队在新型存储器件、忆阻计算阵列和类脑硬件方向出现连续研究信号。",
+    metrics: ["相关专利 17", "近三年新增 5", "转化线索 待确认"],
+    type: "高校/科研院所",
+    route: "忆阻器",
+    source: "专利",
+    detail: {
+      techRoutes: "忆阻器 / 类脑硬件",
+      patentCount: "17 件",
+      recentCount: "5 件",
+      signals: [
+        "技术线索集中在新型存储器件、突触模拟和阵列级计算。",
+        "高校主体具备基础研究优势，需进一步识别企业化承接方。",
+        "建议优先排查论文作者关联公司、专利共同申请人和项目转化记录。",
+      ],
+    },
+  },
+  {
+    name: "合肥本源量子计算科技有限责任公司",
+    tags: [
+      { text: "其他路线" },
+      { text: "平台型主体", tone: "green" },
+      { text: "新闻", tone: "orange" },
+    ],
+    summary:
+      "主体技术方向与量子计算相关，和神经形态芯片不是直接路线，但可作为异构计算生态参考。",
+    metrics: ["相关专利 6", "近三年新增 2", "新闻 4"],
+    type: "非上市企业",
+    route: "其他路线",
+    source: "新闻",
+    detail: {
+      techRoutes: "异构计算 / 其他路线",
+      patentCount: "6 件",
+      recentCount: "2 件",
+      signals: [
+        "企业主要聚焦量子计算与控制系统，和目标方向存在较弱相邻性。",
+        "可作为异构计算产业生态中的外围参考主体。",
+        "建议降低优先级，仅在扩展技术图谱时保留观察。",
+      ],
+    },
+  },
+  {
+    name: "深圳鲲云信息科技有限公司",
+    tags: [
+      { text: "AI 加速" },
+      { text: "存算一体" },
+      { text: "非上市企业", tone: "green" },
+      { text: "展会", tone: "orange" },
+    ],
+    summary:
+      "公开线索显示企业聚焦端侧 AI 加速和数据流架构，可作为存算一体应用侧补充样本。",
+    metrics: ["相关专利 9", "近三年新增 3", "展会 2"],
+    type: "非上市企业",
+    route: "存算一体",
+    source: "展会",
+    detail: {
+      techRoutes: "AI 加速 / 存算一体",
+      patentCount: "9 件",
+      recentCount: "3 件",
+      signals: [
+        "技术描述涉及数据流计算、端侧推理和片上资源调度。",
+        "展会信号显示企业具备一定市场曝光和生态合作基础。",
+        "适合作为存算架构商业化侧的补充观察对象。",
+      ],
+    },
+  },
+  {
+    name: "中科寒武纪科技股份有限公司",
+    tags: [
+      { text: "AI 芯片" },
+      { text: "上市企业", tone: "green" },
+      { text: "专利", tone: "orange" },
+    ],
+    summary:
+      "上市 AI 芯片主体具备丰富专利和产品经验，可作为目标赛道的成熟企业参照。",
+    metrics: ["相关专利 23", "近三年新增 4", "主体类型 平台型"],
+    type: "上市企业",
+    route: "存算一体",
+    source: "专利",
+    detail: {
+      techRoutes: "AI 芯片 / 存算一体",
+      patentCount: "23 件",
+      recentCount: "4 件",
+      signals: [
+        "专利覆盖 AI 处理器架构、片上存储访问和算子执行优化。",
+        "作为成熟上市主体，可用于对比产品化能力和产业链资源。",
+        "建议作为标杆参照，不一定作为早期投资型线索优先处理。",
+      ],
+    },
+  },
+  {
+    name: "上海壁仞智能科技有限公司",
+    tags: [
+      { text: "AI 芯片" },
+      { text: "3D 混合" },
+      { text: "非上市企业", tone: "green" },
+      { text: "融资", tone: "orange" },
+    ],
+    summary:
+      "企业聚焦高性能通用 GPU，封装互连和片上带宽设计可作为 3D 混合方向参考。",
+    metrics: ["相关专利 12", "近三年新增 3", "融资信号 2"],
+    type: "非上市企业",
+    route: "3D 混合",
+    source: "融资",
+    detail: {
+      techRoutes: "高性能 AI 芯片 / 3D 混合",
+      patentCount: "12 件",
+      recentCount: "3 件",
+      signals: [
+        "公开技术线索强调片间互连、带宽提升和高性能计算架构。",
+        "与目标方向的直接关联较弱，但对先进封装路线具备参考价值。",
+        "建议作为产业链高性能芯片平台主体纳入对照。",
+      ],
+    },
+  },
 ];
 
 const tagClasses = {
@@ -269,8 +564,7 @@ export default function DeepMineExplore({
   const [keyword, setKeyword] = useState("");
   const [sort, setSort] = useState("默认排序");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [loadedCount, setLoadedCount] = useState(TABLE_LOAD_SIZE);
   const [watchedCompanies, setWatchedCompanies] = useState<
     Record<string, boolean>
   >({
@@ -376,13 +670,14 @@ export default function DeepMineExplore({
   }, [keyword, quickFilter, route, sort, type]);
 
   const resultCount = visibleCompanies.length;
-  const paginatedCompanies = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    return visibleCompanies.slice(startIndex, startIndex + pageSize);
-  }, [currentPage, pageSize, visibleCompanies]);
+  const loadedCompanies = useMemo(
+    () => visibleCompanies.slice(0, loadedCount),
+    [loadedCount, visibleCompanies],
+  );
+  const hasMoreCompanies = loadedCount < resultCount;
 
   useEffect(() => {
-    setCurrentPage(1);
+    setLoadedCount(TABLE_LOAD_SIZE);
   }, [keyword, quickFilter, route, sort, type]);
 
   const toggleWatch = (company: Company) => {
@@ -452,16 +747,17 @@ export default function DeepMineExplore({
     setSelectedCompany(null);
   };
 
-  const handleTablePageChange = (nextPage: number, nextPageSize: number) => {
-    setSelectedCompany(null);
+  const handleTableScroll = (event: UIEvent<HTMLDivElement>) => {
+    if (!hasMoreCompanies) return;
 
-    if (nextPageSize !== pageSize) {
-      setPageSize(nextPageSize);
-      setCurrentPage(1);
-      return;
+    const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
+    const isNearBottom = scrollTop + clientHeight >= scrollHeight - 24;
+
+    if (isNearBottom) {
+      setLoadedCount((current) =>
+        Math.min(current + TABLE_LOAD_SIZE, resultCount),
+      );
     }
-
-    setCurrentPage(nextPage);
   };
 
   const selectedReportStatus: ReportStatus = selectedCompany
@@ -682,11 +978,12 @@ export default function DeepMineExplore({
             <AntTable<Company>
               className={styles.table}
               columns={companyColumns}
-              dataSource={paginatedCompanies}
+              dataSource={loadedCompanies}
               rowKey="name"
               pagination={false}
               style={{ minHeight: 520 }}
               scroll={{ x: 820, y: 520 }}
+              onScroll={handleTableScroll}
               onRow={(company) => ({
                 onClick: () => setSelectedCompany(company),
                 className:
@@ -726,18 +1023,10 @@ export default function DeepMineExplore({
               }}
             />
             {resultCount > 0 && (
-              <div className={styles.paginationBar}>
-                <AntPagination
-                  className={styles.pagination}
-                  current={currentPage}
-                  pageSize={pageSize}
-                  total={resultCount}
-                  showSizeChanger
-                  pageSizeOptions={["5", "10", "20", "50"]}
-                  locale={{ items_per_page: "条/页" }}
-                  onChange={handleTablePageChange}
-                  onShowSizeChange={handleTablePageChange}
-                />
+              <div className={styles.loadMoreBar}>
+                {hasMoreCompanies
+                  ? `已展示 ${loadedCompanies.length} / ${resultCount} 家，继续下滑加载更多`
+                  : `已加载全部 ${resultCount} 家`}
               </div>
             )}
           </div>

@@ -339,7 +339,7 @@ export default function DeepMinePhase1({
                 <Button
                   type="button"
                   onClick={handleRefreshCandidates}
-                  className="absolute right-[14px] top-1/2 h-10 -translate-y-1/2 rounded-[13px] bg-[#2f6df6] px-[14px] font-black text-white shadow-[0_10px_20px_rgba(47,109,246,0.16)] transition-colors hover:bg-[#245ee8] max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
+                  className="absolute right-[14px] top-1/2 h-10 -translate-y-1/2 rounded-[13px] bg-[#2f6df6] px-[14px] font-black text-white max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
                 >
                   <RotateCcw data-icon="inline-start" />
                   更新

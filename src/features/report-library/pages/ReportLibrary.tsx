@@ -74,12 +74,7 @@ export default function ReportLibrary({ onCreateReport, onOpenReport }: { onBack
         <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[30px_28px_22px]">
           <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
             <h1 className="m-0 shrink-0 text-[24px] font-bold leading-[1.2] text-[#102039]">报告库</h1>
-            <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">管理已生成的企业初筛报告。点击报告行打开独立报告页，导出 PDF 等操作在报告页完成。</p>
-          </div>
-          <div className="mt-[18px] flex flex-wrap gap-[10px]">
-            <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">全部报告 <strong className="ml-1 text-[16px] text-[#2f6df6]">38</strong></span>
-            <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">关联企业 <strong className="ml-1 text-[16px] text-[#2f6df6]">24</strong></span>
-            <span className="rounded-full border border-[#e6edf7] bg-[#f6f9fd] px-[12px] py-[8px] text-[13px] font-extrabold text-[#536177]">本周生成 <strong className="ml-1 text-[16px] text-[#2f6df6]">9</strong></span>
+            <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">管理已生成的企业初筛报告，快速查看、筛选和打开报告。</p>
           </div>
         </header>
 

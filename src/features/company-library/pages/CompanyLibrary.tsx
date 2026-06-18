@@ -278,15 +278,13 @@ export default function CompanyLibrary({
   return (
     <PageShell>
         <section className="overflow-hidden rounded-[24px] border border-[#e3ebf6] bg-white shadow-[0_12px_34px_rgba(18,39,80,0.06)]">
-          <header className="border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] p-[20px_24px] max-md:p-[18px_20px]">
-            <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
-              <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#102039]">
-                企业库
-              </h1>
-              <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">
-                管理已关注企业，沉淀企业资产并推进初筛、入池和跟踪。
-              </p>
-            </div>
+          <header className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
+            <h1 className="text-[24px] font-black m-0 text-[#102039]">
+              企业库
+            </h1>
+            <p className="m-0 text-right text-[13px] font-bold text-[#8a96a8] leading-[1.65] max-md:text-left">
+              管理已关注企业，沉淀企业资产并推进初筛、入池和跟踪。
+            </p>
           </header>
 
           <div className="border-b border-[#e3ebf6] bg-white px-[24px] py-[20px]">

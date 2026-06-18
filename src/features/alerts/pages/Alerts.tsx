@@ -238,15 +238,13 @@ export default function Alerts({
   return (
     <PageShell>
         <section className="overflow-hidden rounded-[28px] border border-[#e3ebf6] bg-white shadow-[0_16px_40px_rgba(23,39,70,0.05)]">
-          <header className="border-b border-[#e3ebf6] p-[20px_24px] max-md:p-[18px_20px]">
-            <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
-              <h1 className="m-0 shrink-0 text-[24px] font-black leading-[1.2] text-[#102039]">
-                事件跟踪
-              </h1>
-              <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">
-                跟踪已关注企业与标的池企业的关键动态，辅助更新企业记录和报告。
-              </p>
-            </div>
+          <header className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
+            <h1 className="text-[24px] font-black m-0 text-[#102039]">
+              事件跟踪
+            </h1>
+            <p className="m-0 text-right text-[13px] font-bold text-[#8a96a8] leading-[1.65] max-md:text-left">
+              跟踪已关注企业与标的池企业的关键动态，辅助更新企业记录和报告。
+            </p>
           </header>
 
           <div className="p-[20px_28px_0] max-md:p-[18px_20px_0]">

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { PencilLine, Plus, RotateCcw, X } from "lucide-react";
+import { PencilLine, Plus, X } from "lucide-react";
 import { message } from "antd";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -231,7 +231,10 @@ export default function DeepMinePhase1({
                 目标拆解
               </h1>
               <p className="m-0 text-right text-[13px] font-bold text-[#8a96a8] leading-[1.65] max-md:text-left">
-                当前任务：<strong className="font-black text-[#526078]">{taskName}</strong>
+                当前任务：
+                <strong className="font-black text-[#526078]">
+                  {taskName}
+                </strong>
               </p>
             </div>
 
@@ -239,7 +242,9 @@ export default function DeepMinePhase1({
               <span className="shrink-0 rounded-full bg-[#edf4ff] px-[9px] py-[5px] text-[12px] font-black text-[#2f6df6]">
                 任务指令
               </span>
-              <span>钠电池正极材料方向，关注压实密度、循环寿命、低成本和储能场景。</span>
+              <span>
+                钠电池正极材料方向，关注压实密度、循环寿命、低成本和储能场景。
+              </span>
             </div>
 
             <div className="p-[18px_24px_24px] max-md:p-[18px]">
@@ -341,41 +346,41 @@ export default function DeepMinePhase1({
                   onClick={handleRefreshCandidates}
                   className="absolute right-[14px] top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center gap-1.5 rounded-[13px] bg-[#2f6df6] px-[14px] text-[14px] font-black text-white max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
                 >
-                  <RotateCcw data-icon="inline-start" />
+                  <span className="text-[15px] leading-none">↻</span>
                   更新
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
-              {candidateDirections.map((direction) => (
-                <article
-                  key={direction.id}
-                  className={`min-h-[150px] rounded-[18px] border bg-white p-[14px] transition-all hover:border-[#bdd1ff] hover:shadow-[0_8px_18px_rgba(47,109,246,0.06)] ${
-                    blockedDirectionId === direction.id
-                      ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
-                      : "border-[#dfe7f2]"
-                  }`}
-                >
-                  <div className="mb-2 flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <div className="rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039]">
-                        {direction.title}
+                {candidateDirections.map((direction) => (
+                  <article
+                    key={direction.id}
+                    className={`min-h-[150px] rounded-[18px] border bg-white p-[14px] transition-all hover:border-[#bdd1ff] hover:shadow-[0_8px_18px_rgba(47,109,246,0.06)] ${
+                      blockedDirectionId === direction.id
+                        ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
+                        : "border-[#dfe7f2]"
+                    }`}
+                  >
+                    <div className="mb-2 flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039]">
+                          {direction.title}
+                        </div>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAddCandidate(direction.id)}
+                        className="inline-flex h-[30px] shrink-0 items-center justify-center gap-1 rounded-full border border-[#dce6f6] bg-white px-3 text-[12px] font-black text-[#3f6cf6] transition hover:-translate-y-0.5 hover:border-[#b8cdf8] hover:bg-[#f7faff]"
+                      >
+                        <Plus className="size-3.5" />
+                        加入
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => handleAddCandidate(direction.id)}
-                      className="inline-flex h-[30px] shrink-0 items-center justify-center gap-1 rounded-full border border-[#dce6f6] bg-white px-3 text-[12px] font-black text-[#3f6cf6] transition hover:-translate-y-0.5 hover:border-[#b8cdf8] hover:bg-[#f7faff]"
-                    >
-                      <Plus className="size-3.5" />
-                      加入
-                    </button>
-                  </div>
-                  <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
-                    {direction.description}
-                  </div>
-                </article>
-              ))}
-            </div>
+                    <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
+                      {direction.description}
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
 

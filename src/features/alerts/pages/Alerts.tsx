@@ -244,47 +244,46 @@ export default function Alerts({
                 事件跟踪
               </h1>
               <p className="m-0 max-w-[760px] text-right text-[13px] font-bold leading-[1.65] text-[#8a96a8] max-md:text-left">
-                已关注企业和标的池企业的最新事件。系统聚合公开线索，帮助快速判断是否需要更新企业记录、报告或标的池状态。
+                跟踪已关注企业与标的池企业的关键动态，辅助更新企业记录和报告。
               </p>
-            </div>
-
-            <div className="mt-[18px] flex flex-wrap justify-end gap-[10px] max-lg:justify-start">
-              {[
-                { label: "今日新增", value: "4" },
-                { label: "本周新增", value: "18" },
-                { label: "跟踪企业", value: "26" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="min-w-[88px] rounded-[14px] border border-[#e3ebf6] bg-[#f8fbff] px-[14px] py-[10px]"
-                >
-                  <div className="mb-[5px] text-[12px] text-[#66758e]">
-                    {item.label}
-                  </div>
-                  <div className="text-[22px] font-black leading-none text-[#0b1f3a]">
-                    {item.value}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
           <div className="border-t border-[#e3ebf6] pt-[20px]">
-            <div className="mb-[16px] flex flex-wrap gap-[10px]">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => setActiveCategory(category)}
-                  className={`rounded-full border px-[18px] py-[10px] text-[14px] font-black transition-all ${
-                    activeCategory === category
-                      ? "border-[#2f6df6] bg-[#2f6df6] text-white shadow-[0_8px_18px_rgba(47,109,246,0.18)]"
-                      : "border-[#d6e2f2] bg-white text-[#18345d] hover:border-[#2f6df6] hover:text-[#2f6df6]"
-                  }`}
-                >
-                  {category} {categoryCount(category)}
-                </button>
-              ))}
+            <div className="mb-[16px] flex items-center justify-between gap-[14px] max-xl:flex-col max-xl:items-start">
+              <div className="flex flex-wrap gap-[10px]">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => setActiveCategory(category)}
+                    className={`rounded-full border px-[18px] py-[10px] text-[14px] font-black transition-all ${
+                      activeCategory === category
+                        ? "border-[#2f6df6] bg-[#2f6df6] text-white shadow-[0_8px_18px_rgba(47,109,246,0.18)]"
+                        : "border-[#d6e2f2] bg-white text-[#18345d] hover:border-[#2f6df6] hover:text-[#2f6df6]"
+                    }`}
+                  >
+                    {category} {categoryCount(category)}
+                  </button>
+                ))}
+              </div>
+              <div className="flex shrink-0 flex-wrap justify-end gap-[8px] max-xl:justify-start">
+                {[
+                  { label: "今日新增", value: "4" },
+                  { label: "本周新增", value: "18" },
+                  { label: "跟踪企业", value: "26" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-full border border-[#e3ebf6] bg-[#f8fbff] px-[11px] py-[8px] text-[12px] font-black text-[#66758e]"
+                  >
+                    {item.label}
+                    <strong className="ml-1 text-[14px] text-[#0b1f3a]">
+                      {item.value}
+                    </strong>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mb-[14px] grid grid-cols-[1.5fr_1fr_1fr_1.1fr] gap-[12px] max-lg:grid-cols-2 max-sm:grid-cols-1">

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>深圳珈钠能源科技有限公司初筛报告</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --bg:#f4f7fb;
+      --paper:#fff;
+      --paper2:#fbfcff;
+      --text:#0f1f3d;
+      --sub:#61708a;
+      --muted:#8793a8;
+      --line:#dfe7f2;
+      --line2:#cbd8ea;
+      --blue:#2f6df6;
+      --blue2:#edf4ff;
+      --blue3:#dbe9ff;
+      --green:#18ad62;
+      --green2:#eaf8f0;
+      --orange:#c87910;
+      --orange2:#fff3df;
+      --red:#dc4b4b;
+      --red2:#fff0f0;
+      --purple:#7655d7;
+      --purple2:#f1edff;
+      --shadow:0 14px 36px rgba(18,35,68,.07);
+      --shadow2:0 8px 20px rgba(18,35,68,.05);
+      --radius:22px;
+    }
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;
+      background:
+        radial-gradient(circle at 8% -6%,rgba(47,109,246,.10),transparent 30%),
+        radial-gradient(circle at 90% 3%,rgba(24,173,98,.06),transparent 26%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.62;
+    }
+    a{color:inherit;text-decoration:none}
+    .page{
+      max-width:1540px;
+      margin:0 auto;
+      padding:24px 26px 56px;
+      display:grid;
+      grid-template-columns:230px minmax(760px,1fr) 326px;
+      gap:22px;
+      align-items:start;
+    }
+    .left,.right{position:sticky;top:20px;display:grid;gap:18px}
+    .panel,.report{
+      background:rgba(255,255,255,.96);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow2);
+    }
+    .panel{padding:20px}
+    .report{padding:38px 46px 50px;box-shadow:var(--shadow);overflow:hidden}
+    .toc-title,.side-title{margin:0 0 15px;font-size:20px;line-height:1.3;color:#0c1d3a;font-weight:900}
+    .toc{display:grid;gap:4px}
+    .toc a{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:12px;color:#50617c;font-size:13px;font-weight:800;border:1px solid transparent}
+    .toc a:hover,.toc a.active{background:var(--blue2);border-color:var(--blue3);color:var(--blue)}
+    .toc .small{font-size:12px;color:var(--muted);font-weight:700;padding-left:22px}
+
+    header.report-head{border-bottom:1px solid var(--line);padding-bottom:24px;margin-bottom:26px}
+    .brand-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;color:var(--sub);font-size:12px;font-weight:800;letter-spacing:.2px}
+    .brand-left{display:flex;align-items:center;gap:9px}
+    .brand-dot{width:9px;height:9px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 6px var(--blue2)}
+    .report-kind{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:var(--blue2);color:var(--blue);font-size:13px;font-weight:900;margin-bottom:12px}
+    h1{font-size:36px;line-height:1.22;margin:0;color:#0b1b35;letter-spacing:-.4px}
+    .subtitle{margin:10px 0 0;color:var(--sub);font-size:15px;max-width:920px}
+    .head-grid{display:grid;grid-template-columns:1fr auto;gap:22px;align-items:start}
+    .task-card{min-width:300px;background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:15px 16px;display:grid;gap:10px}
+    .task-row{display:grid;grid-template-columns:86px 1fr;gap:10px;font-size:13px;border-bottom:1px solid #edf2f8;padding-bottom:9px}
+    .task-row:last-child{border-bottom:none;padding-bottom:0}.task-k{color:var(--muted)}.task-v{font-weight:900;color:var(--text)}
+
+    section{margin-top:28px;padding-top:28px;border-top:1px solid var(--line);scroll-margin-top:18px}
+    section.first{margin-top:0;padding-top:0;border-top:none}
+    .sec-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:16px}
+    h2{margin:0;font-size:24px;line-height:1.35;color:#0b1b35;letter-spacing:-.2px}
+    .sec-note{margin:5px 0 0;color:var(--sub);font-size:13px}
+    h3{margin:0 0 10px;font-size:17px;color:#0b1b35}
+    p{margin:0;color:#33435d}
+    .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:900;white-space:nowrap;line-height:1;background:var(--blue2);color:var(--blue)}
+    .badge.green{background:var(--green2);color:var(--green)}.badge.orange{background:var(--orange2);color:var(--orange)}.badge.red{background:var(--red2);color:var(--red)}.badge.purple{background:var(--purple2);color:var(--purple)}.badge.gray{background:#eef2f7;color:#607089}
+
+    .summary-box{border:1px solid #cfe0ff;background:linear-gradient(135deg,#f7fbff 0%,#fff 70%);border-radius:24px;padding:22px;box-shadow:0 12px 28px rgba(47,109,246,.05)}
+    .summary-top{display:grid;grid-template-columns:1fr 160px;gap:18px;align-items:stretch;margin-bottom:18px}
+    .summary-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+    .summary-title strong{font-size:21px;color:#0b1b35}.summary-title .badge{font-size:13px;padding:8px 12px}
+    .summary-text{font-size:16px;font-weight:800;color:#1e2f4f;margin-bottom:8px}.summary-sub{color:var(--sub);font-size:14px}
+    .decision-card{background:#fff;border:1px solid #d8e6ff;border-radius:18px;padding:16px;text-align:center;display:grid;align-content:center;gap:8px}.decision-k{font-size:12px;color:var(--muted);font-weight:800}.decision-v{font-size:26px;font-weight:900;color:var(--green);letter-spacing:-.5px}.decision-s{font-size:12px;color:var(--sub)}
+    .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.two{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .mini,.card,.evidence-card,.risk-card,.action-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:16px}
+    .mini{background:#fbfcff}.mini-k{font-size:13px;color:var(--muted);font-weight:800;margin-bottom:7px}.mini-v{font-size:20px;font-weight:900;color:#0f1f3d}.mini-desc{font-size:12px;color:var(--sub);margin-top:4px}
+    .card p,.evidence-card p,.risk-card p,.action-card p{font-size:14px;color:#43526b}.card .label{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.label strong{font-size:17px;color:#0b1b35}
+    .evidence-grid{display:grid;gap:10px}.evidence-card{background:#fbfcff;display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start}.evidence-type{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900;color:var(--blue)}.evidence-type .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}.evidence-card strong{display:block;margin-bottom:4px;color:#162744}.evidence-card small{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+    .quote-box{background:#f8fbff;border:1px solid var(--line);border-radius:18px;padding:16px;color:#33435d;font-size:14px}.quote-box strong{color:#0b1b35}
+
+    .info-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff;font-size:14px}
+    .info-table th,.info-table td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}.info-table tr:last-child th,.info-table tr:last-child td{border-bottom:none}.info-table th{width:130px;background:#f7f9fd;color:var(--sub);font-weight:800}.info-table td{color:#23324b;font-weight:600}.info-table .wide{width:auto}
+    .tag-row{display:flex;flex-wrap:wrap;gap:8px}.tag{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--blue2);color:var(--blue);font-size:12px;font-weight:900}.tag.green{background:var(--green2);color:var(--green)}.tag.orange{background:var(--orange2);color:var(--orange)}.tag.gray{background:#eef2f7;color:#607089}.tag.purple{background:var(--purple2);color:var(--purple)}
+    .route{display:grid;gap:12px}.route-line{display:grid;grid-template-columns:150px 1fr 58px;gap:12px;align-items:center;font-size:13px;color:#33435d}.bar{height:10px;background:#edf2f8;border-radius:999px;overflow:hidden}.fill{height:100%;border-radius:999px;background:var(--blue)}.fill.green{background:var(--green)}.fill.orange{background:#f59e0b}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}.data-table{width:100%;min-width:760px;border-collapse:collapse;font-size:13px}.data-table th,.data-table td{padding:12px 13px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.data-table th{background:#f7f9fd;color:var(--sub);font-weight:900;white-space:nowrap}.data-table tr:last-child td{border-bottom:none}.data-table td{color:#263650}.data-table .strong{font-weight:900;color:#0b1b35}
+    .risk-list{display:grid;gap:10px}.risk-card{display:grid;grid-template-columns:110px 1fr 92px;gap:14px;align-items:start}.risk-level{font-size:13px;font-weight:900}.risk-level.mid{color:var(--orange)}.risk-level.low{color:var(--green)}.risk-level.high{color:var(--red)}.risk-card strong{display:block;margin-bottom:4px;color:#0b1b35}.risk-card small{color:var(--muted)}
+    .action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.action-card{background:#fbfcff}.action-no{width:30px;height:30px;border-radius:10px;background:var(--blue2);color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:900;margin-bottom:10px}.action-card strong{display:block;margin-bottom:5px;color:#0b1b35}
+    .appendix details{border:1px solid var(--line);border-radius:18px;background:#fff;margin-bottom:12px;overflow:hidden}.appendix summary{cursor:pointer;padding:15px 18px;font-weight:900;color:#0b1b35;background:#fbfcff;list-style:none}.appendix summary::-webkit-details-marker{display:none}.appendix summary:after{content:"展开";float:right;color:var(--blue);font-size:12px;background:var(--blue2);padding:5px 8px;border-radius:999px}.appendix details[open] summary:after{content:"收起"}.appendix-body{padding:0 18px 18px}
+
+    .side-info{display:grid}.side-row{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.side-row:last-child{border-bottom:none}.side-k{font-size:14px;color:#73819a;font-weight:700}.side-v{justify-self:start;border-radius:999px;background:#eef2f7;color:#607089;padding:5px 10px;font-size:14px;font-weight:900;line-height:1}.side-v.green{background:var(--green2);color:var(--green)}.side-v.orange{background:var(--orange2);color:#b86400}.side-v.blue{background:var(--blue2);color:var(--blue)}
+    .side-actions{display:grid;gap:12px}.btn{width:100%;height:45px;border-radius:13px;border:1px solid var(--line2);background:#fff;color:var(--blue);font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer}.btn.green{background:var(--green);border-color:var(--green);color:#fff}.btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}.btn:hover{filter:brightness(.98)}
+    .route-note{border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.72);padding:18px;color:#5f6f88;font-size:14px}.route-note strong{display:flex;align-items:center;gap:8px;color:#0b1b35;font-size:16px;margin-bottom:8px}.icon{display:inline-flex;width:18px;height:18px;align-items:center;justify-content:center;color:var(--blue)}
+
+    @media(max-width:1280px){.page{grid-template-columns:220px minmax(680px,1fr)}.right{grid-column:1/-1;position:static;grid-template-columns:repeat(3,1fr)}.four{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:920px){.page{display:block;padding:14px}.left,.right{position:static;margin-bottom:16px}.report{padding:26px 18px}.head-grid,.summary-top,.two,.three,.four,.action-grid{grid-template-columns:1fr}.evidence-card,.risk-card{grid-template-columns:1fr}.info-table th,.info-table td{display:block;width:100%}.route-line{grid-template-columns:105px 1fr 42px}h1{font-size:28px}.right{display:grid;grid-template-columns:1fr;gap:14px}.panel{margin-bottom:14px}}
+    @media print{body{background:#fff}.page{display:block;max-width:none;padding:0}.left,.right{display:none}.report{border:none;box-shadow:none;border-radius:0;padding:0}section{break-inside:avoid}.appendix details{break-inside:avoid}.appendix details:not([open]) .appendix-body{display:block}.appendix summary:after{display:none}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <aside class="left">
+      <div class="panel">
+        <h3 class="toc-title">报告目录</h3>
+        <nav class="toc">
+          <a class="active" href="#summary">初筛摘要</a>
+          <a href="#profile">企业基础画像</a>
+          <a href="#match">发现原因与方向匹配</a>
+          <a href="#tech">技术与专利信号</a>
+          <a href="#potential">成长潜力：团队、融资、股东</a>
+          <a href="#industrial">产业化与竞争力信号</a>
+          <a href="#risk">声誉与风险</a>
+          <a href="#action">初筛结论与建议动作</a>
+          <a href="#appendix">附录</a>
+        </nav>
+      </div>
+    </aside>
+
+    <article class="report">
+      <header class="report-head">
+        <div class="brand-row">
+          <div class="brand-left"><span class="brand-dot"></span><span>suwen.ai industrial Intelligence</span></div>
+          <span>企业发现 · 初筛报告</span>
+        </div>
+        <div class="head-grid">
+          <div>
+            <div class="report-kind">企业初筛报告</div>
+            <h1>深圳珈钠能源科技有限公司</h1>
+            <p class="subtitle">基于“钠离子电池正极材料”企业探索任务生成，用于判断该企业是否值得进入下一步关注、入池和持续跟踪。</p>
+          </div>
+          <div class="task-card">
+            <div class="task-row"><div class="task-k">发现任务</div><div class="task-v">钠离子电池正极材料</div></div>
+            <div class="task-row"><div class="task-k">主要来源</div><div class="task-v">专利线索、融资新闻、标准资质</div></div>
+            <div class="task-row"><div class="task-k">生成时间</div><div class="task-v">2026-04-29</div></div>
+          </div>
+        </div>
+      </header>
+
+      <section class="first" id="summary">
+        <div class="summary-box">
+          <div class="summary-top">
+            <div>
+              <div class="summary-title"><strong>初筛摘要</strong><span class="badge green">建议关注</span><span class="badge orange">进入候选池</span></div>
+              <p class="summary-text">该企业与“钠离子电池正极材料”方向高度相关，公开专利、融资和产业化布局均有可验证线索，适合纳入关注并继续补充客户、产线和核心专利授权进展。</p>
+              <p class="summary-sub">本报告不直接形成投资建议，只用于企业发现后的快速判断和下一步验证安排。</p>
+            </div>
+            <div class="decision-card">
+              <div class="decision-k">初筛结论</div>
+              <div class="decision-v">关注</div>
+              <div class="decision-s">优先跟踪产业化进展</div>
+            </div>
+          </div>
+          <div class="three">
+            <div class="card">
+              <div class="label"><span class="badge green">亮点</span><strong>技术方向聚焦</strong></div>
+              <p>相关线索集中在聚阴离子型正极材料、硫酸铁钠、水系正极浆料、前驱体制备等方向，与任务目标高度一致。</p>
+            </div>
+            <div class="card">
+              <div class="label"><span class="badge green">亮点</span><strong>融资与股东背书</strong></div>
+              <p>已披露多轮融资，投资方包括顺为资本、春华资本、超威集团、自贡高投等财务和产业资源。</p>
+            </div>
+            <div class="card">
+              <div class="label"><span class="badge orange">待验证</span><strong>商业化仍需核验</strong></div>
+              <p>公开线索显示产线和合作进展，但真实产能利用率、客户订单、收入规模和核心专利授权仍需进一步确认。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="profile">
+        <div class="sec-head">
+          <div><h2>企业基础画像</h2><p class="sec-note">只展示初筛所需字段，完整工商数据放入附录。</p></div>
+          <span class="badge blue">非上市企业</span>
+        </div>
+        <table class="info-table">
+          <tr><th>企业名称</th><td>深圳珈钠能源科技有限公司</td><th>登记状态</th><td>存续</td></tr>
+          <tr><th>成立日期</th><td>2022-04-13</td><th>注册资本</th><td>555.7251万元人民币</td></tr>
+          <tr><th>注册地址</th><td colspan="3">深圳市龙岗区宝龙街道同乐社区深汕路340-352号黄江实业B栋深汕路350号</td></tr>
+          <tr><th>主营方向</th><td colspan="3">钠离子电池关键材料、正极材料、负极材料、储能技术服务、新材料研发制造</td></tr>
+          <tr><th>企业标签</th><td colspan="3"><div class="tag-row"><span class="tag green">高新技术企业</span><span class="tag">科技型中小企业</span><span class="tag">创新型中小企业</span><span class="tag orange">股权转让</span><span class="tag gray">小微企业</span></div></td></tr>
+        </table>
+        <div class="evidence-grid" style="margin-top:14px">
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>主体确认</div><div><strong>企业状态存续，主营业务与钠电材料相关</strong><p>工商经营范围包含电子专用材料研发、制造、销售，储能技术服务，新材料技术研发，电池制造和销售等内容。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>初筛备注</div><div><strong>核心技术背景明确</strong><p>已知备注显示公司董事长为武汉大学教授、钠电池领域专家，适合在后续验证中重点核查团队和高校技术转化关系。</p></div></div>
+        </div>
+      </section>
+
+      <section id="match">
+        <div class="sec-head">
+          <div><h2>发现原因与方向匹配</h2><p class="sec-note">把结论和证据放在同一章节，回答“为什么这家公司出现在本次企业探索结果中”。</p></div>
+          <span class="badge green">相关性高</span>
+        </div>
+        <div class="two">
+          <div class="card">
+            <h3>方向判断</h3>
+            <p>公司公开专利和业务描述均集中在钠离子电池材料，尤其是聚阴离子型钠电正极、硫酸铁钠复合正极、水系正极浆料等与本次任务高度相关的子方向。</p>
+          </div>
+          <div class="card">
+            <h3>路线覆盖</h3>
+            <div class="route">
+              <div class="route-line"><span>聚阴离子正极</span><div class="bar"><div class="fill" style="width:92%"></div></div><b>高</b></div>
+              <div class="route-line"><span>硫酸铁钠材料</span><div class="bar"><div class="fill green" style="width:82%"></div></div><b>高</b></div>
+              <div class="route-line"><span>水系正极浆料</span><div class="bar"><div class="fill orange" style="width:66%"></div></div><b>中</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="evidence-grid" style="margin-top:14px">
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>专利证据</div><div><strong>产业相关专利集中在钠电正极材料</strong><p>相关专利覆盖单晶制备、预钠化、高导电率改性、低孔隙率调控、水系浆料工艺等关键子方向。</p><small>证据来源：专利检索与技术路线识别</small></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>业务证据</div><div><strong>产品描述与任务方向一致</strong><p>公开业务描述包括“钠离子电池关键材料生产商”“钠离子电池系统”等，能够支撑其进入本次企业探索列表。</p><small>证据来源：产品/业务信息与融资报道</small></div></div>
+        </div>
+      </section>
+
+      <section id="tech">
+        <div class="sec-head">
+          <div><h2>技术与专利信号</h2><p class="sec-note">正文只保留判断所需的技术证据，专利长表放入附录。</p></div>
+          <span class="badge green">技术信号强</span>
+        </div>
+        <div class="four">
+          <div class="mini"><div class="mini-k">产业相关专利</div><div class="mini-v">96件</div><div class="mini-desc">集中于钠电材料</div></div>
+          <div class="mini"><div class="mini-k">发明类专利</div><div class="mini-v">80件</div><div class="mini-desc">授权、公开、申请合计</div></div>
+          <div class="mini"><div class="mini-k">有效专利</div><div class="mini-v">45件</div><div class="mini-desc">另有49件处于实审</div></div>
+          <div class="mini"><div class="mini-k">专利转入</div><div class="mini-v">3件</div><div class="mini-desc">转入方为武汉大学</div></div>
+        </div>
+        <div class="two" style="margin-top:14px">
+          <div class="card">
+            <h3>技术判断</h3>
+            <p>企业技术布局呈现明显聚焦，近年专利主要围绕钠离子电池正极材料及其前驱体制备展开，具备较强研发连续性和工程转化指向。</p>
+          </div>
+          <div class="card">
+            <h3>需要注意</h3>
+            <p>多数产业相关专利仍处于公开或实审阶段，高被引专利较少，说明专利确权进展和行业影响力仍需持续跟踪。</p>
+          </div>
+        </div>
+        <div class="evidence-grid" style="margin-top:14px">
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>代表专利</div><div><strong>纳米态聚阴离子型钠离子电池正极材料及其制备方法</strong><p>该类专利直接对应聚阴离子型正极材料，是当前任务下的重要技术证据。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>代表专利</div><div><strong>钠离子电池水系正极浆料及其制备方法、正极片</strong><p>该专利指向正极浆料工艺和正极片制备，体现材料体系向产业化工艺环节延伸。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>技术标签</div><div><strong>聚阴离子型正极材料、硫酸铁钠、预钠化、水系浆料、前驱体</strong><p>关键词显示技术布局并非泛化电池概念，而是较集中地命中钠电池材料核心环节。</p></div></div>
+        </div>
+      </section>
+
+      <section id="potential">
+        <div class="sec-head">
+          <div><h2>成长潜力：团队、融资、股东</h2><p class="sec-note">聚焦团队背景、融资质量和股东结构三类证据，用于判断企业成长潜力。</p></div>
+          <span class="badge green">成长信号较强</span>
+        </div>
+        <div class="two">
+          <div class="card">
+            <h3>团队判断</h3>
+            <p>创始人与核心技术团队具备钠电池材料领域背景，其中曹余良为武汉大学教授，在钠离子电池材料方向有长期积累。后续需要补充其他经营、量产和市场团队成员信息。</p>
+          </div>
+          <div class="card">
+            <h3>融资判断</h3>
+            <p>公司从天使轮、Pre-A、Pre-A+到A轮已有连续融资记录，投资方包含财务机构、产业方和地方基金，说明其在产业资本侧已有一定认可。</p>
+          </div>
+        </div>
+        <div class="evidence-grid" style="margin-top:14px">
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>团队证据</div><div><strong>曹余良：武汉大学教授、钠离子电池材料专家</strong><p>技术创始人背景与公司主营方向匹配，是该企业进入关注名单的重要依据。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>融资证据</div><div><strong>2024年完成数亿元A轮融资</strong><p>投资方包括自贡高投、超威集团、相城金控等，能够支持材料企业后续中试、产线和客户验证。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>股东证据</div><div><strong>股东中包含顺为、春华、地方产业基金等机构</strong><p>股东结构显示其同时获得早期财务投资和地方产业资源支持。</p></div></div>
+        </div>
+      </section>
+
+      <section id="industrial">
+        <div class="sec-head">
+          <div><h2>产业化与竞争力信号</h2><p class="sec-note">聚合标准、资质、对外投资、项目和经营线索，用于判断产业化基础与竞争力。</p></div>
+          <span class="badge orange">继续验证</span>
+        </div>
+        <div class="three">
+          <div class="card"><div class="label"><span class="badge blue">标准资质</span><strong>参与多项团体标准</strong></div><p>公开数据中可见7项钠离子电池相关团体标准参与记录，并拥有高新技术企业、知识产权管理体系认证、ISO9001等资质。</p></div>
+          <div class="card"><div class="label"><span class="badge blue">产业布局</span><strong>多地子公司布局</strong></div><p>对外投资企业包括成都、自贡、武汉、普洱、河南等主体，经营范围多与新材料、电池制造、储能技术相关。</p></div>
+          <div class="card"><div class="label"><span class="badge blue">项目线索</span><strong>有招投标和示范项目线索</strong></div><p>公开项目中可见复合磷酸铁钠材料加工检测、钠离子电池聚阴离子正极材料开发与产业化等相关线索。</p></div>
+        </div>
+        <div class="evidence-grid" style="margin-top:14px">
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>标准证据</div><div><strong>参与钠离子电池用材料、电性能、储能、动力等标准</strong><p>标准线索能体现企业在行业规则和技术规范体系中的参与度，但仍需确认其在标准中的具体起草角色和贡献。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>产线证据</div><div><strong>公开舆情提到万吨级聚阴离子正极材料产线</strong><p>如果属实，将是重要产业化信号；下一步应核验产线位置、投产时间、产能利用率和客户出货情况。</p></div></div>
+          <div class="evidence-card"><div class="evidence-type"><span class="dot"></span>客户证据</div><div><strong>新闻中出现维科技术、采日能源、好电科技等合作线索</strong><p>合作新闻可作为客户验证入口，但需要区分战略合作、样品验证、批量供货和收入确认。</p></div></div>
+        </div>
+      </section>
+
+      <section id="risk">
+        <div class="sec-head">
+          <div><h2>声誉与风险</h2><p class="sec-note">将声誉判断与风险提示放在一起阅读，既看舆情，也看关键证据缺口。</p></div>
+          <span class="badge orange">需补充验证</span>
+        </div>
+        <div class="three">
+          <div class="card"><div class="label"><span class="badge blue">声誉概况</span><strong>公开舆情整体偏正面</strong></div><p>近期可见新闻主要围绕专利申请、合作进展、奖项荣誉和产业化动态展开，未观察到明显负面舆情。</p></div>
+          <div class="card"><div class="label"><span class="badge blue">正面信号</span><strong>行业曝光与合作信息较多</strong></div><p>公开传播中出现技术突破、战略合作、产线建设等正面信息，可作为持续跟踪企业声誉和行业认可度的入口。</p></div>
+          <div class="card"><div class="label"><span class="badge blue">风险提醒</span><strong>正面新闻不等于产业化兑现</strong></div><p>声誉层面的积极信号较多，但仍需与专利、产线、客户和收入等硬证据交叉验证，避免仅依据宣传判断。</p></div>
+        </div>
+        <div class="risk-list" style="margin-top:14px">
+          <div class="risk-card"><div class="risk-level mid">中优先级</div><div><strong>核心专利确权与保护范围</strong><p>产业相关专利中有较多处于公开或实审阶段，需持续跟踪授权进度、权利要求稳定性和可绕开空间。</p></div><small>下一步：专利法律状态跟踪</small></div>
+          <div class="risk-card"><div class="risk-level mid">中优先级</div><div><strong>产线与出货真实性</strong><p>公开报道提及产线和合作，但需要核验实际投产、产能利用、客户验证、订单和回款情况。</p></div><small>下一步：访谈/新闻/招投标复核</small></div>
+          <div class="risk-card"><div class="risk-level low">低优先级</div><div><strong>持续监控舆情变化</strong><p>目前公开负面舆情暂未突出，但后续仍需持续跟踪行政处罚、经营异常、重大纠纷和舆情拐点。</p></div><small>下一步：持续监控</small></div>
+        </div>
+      </section>
+
+      <section id="action">
+        <div class="sec-head">
+          <div><h2>初筛结论与建议动作</h2><p class="sec-note">结论服务产品动作，不替代投资尽调。</p></div>
+          <span class="badge green">建议关注</span>
+        </div>
+        <div class="quote-box"><strong>最终判断：</strong>该企业在钠离子电池正极材料方向具备明确技术线索和资本背书，建议先纳入关注并进入候选池；在确认产线、客户、收入和核心专利授权后，再决定是否进入重点企业池或生成深度报告。</div>
+        <div class="action-grid" style="margin-top:14px">
+          <div class="action-card"><div class="action-no">1</div><strong>关注企业</strong><p>跟踪专利授权、融资、合作、产线和招投标更新。</p></div>
+          <div class="action-card"><div class="action-no">2</div><strong>补充产业化验证</strong><p>核验产能、样品验证、批量供货、客户结构和回款信息。</p></div>
+          <div class="action-card"><div class="action-no">3</div><strong>暂不直接深度尽调</strong><p>待产业化证据补齐后，再生成深度报告或安排专家访谈。</p></div>
+        </div>
+      </section>
+
+      <section id="appendix" class="appendix">
+        <div class="sec-head">
+          <div><h2>附录</h2><p class="sec-note">正文只放关键判断和证据，附录承接全量数据表和明细信息。</p></div>
+        </div>
+
+        <details open>
+          <summary>附录A：工商与主体信息</summary>
+          <div class="appendix-body">
+            <table class="info-table">
+              <tr><th>法定代表人</th><td>范海满</td><th>统一社会信用代码</th><td>91440300MA5H9N9M0R</td></tr>
+              <tr><th>企业类型</th><td>有限责任公司</td><th>行业</th><td>其他制造业</td></tr>
+              <tr><th>参保人数</th><td>46</td><th>官网</th><td>http://www.janaenergy.com</td></tr>
+              <tr><th>经营范围</th><td colspan="3">电子专用材料研发、制造、销售；储能技术服务；新材料技术研发；新兴能源技术研发；电池制造；电池销售；技术服务、技术开发、技术咨询等。</td></tr>
+            </table>
+          </div>
+        </details>
+
+        <details>
+          <summary>附录B：重点专利清单</summary>
+          <div class="appendix-body">
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>公开号</th><th>专利名称</th><th>方向</th><th>状态/备注</th></tr></thead>
+                <tbody>
+                  <tr><td class="strong">CN119100348B</td><td>一种纳米态聚阴离子型钠离子电池正极材料及其制备方法</td><td>聚阴离子正极材料</td><td>代表性核心专利</td></tr>
+                  <tr><td class="strong">CN118782744A</td><td>钠离子电池水系正极浆料及其制备方法、正极片</td><td>水系浆料工艺</td><td>产业化工艺相关</td></tr>
+                  <tr><td class="strong">CN119503750A</td><td>聚阴离子型钠离子电池正极材料用前驱体及其制备方法</td><td>前驱体制备</td><td>材料制备链条</td></tr>
+                  <tr><td class="strong">CN119176583A</td><td>一种钠离子电池硫酸铁钠复合正极材料的制备方法</td><td>硫酸铁钠材料</td><td>任务高度相关</td></tr>
+                  <tr><td class="strong">CN120261457A</td><td>单晶颗粒状聚阴离子型钠离子电池正极材料的制备方法</td><td>单晶颗粒正极</td><td>正极结构优化</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>附录C：融资历程</summary>
+          <div class="appendix-body">
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>发布时间</th><th>融资轮次</th><th>融资金额</th><th>投资方</th><th>备注</th></tr></thead>
+                <tbody>
+                  <tr><td>2024-03-05</td><td>A轮</td><td>数亿元人民币</td><td>自贡高投、超威集团、相城金控等</td><td>产业化扩张相关</td></tr>
+                  <tr><td>2023-08-23</td><td>Pre-A+轮</td><td>未披露</td><td>春华资本、顺为资本</td><td>一线机构参与</td></tr>
+                  <tr><td>2023-01-11</td><td>Pre-A轮</td><td>数千万元人民币</td><td>光合创投、春华资本</td><td>早期融资</td></tr>
+                  <tr><td>2022-08-10</td><td>天使轮</td><td>数千万元人民币</td><td>顺为资本</td><td>早期背书</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>附录D：标准、资质与对外投资</summary>
+          <div class="appendix-body">
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>类型</th><th>名称</th><th>时间/状态</th><th>初筛意义</th></tr></thead>
+                <tbody>
+                  <tr><td>标准</td><td>钠离子电池性能、储能用钠离子电池、动力用钠离子电池等团体标准</td><td>2023-2024，现行</td><td>行业规范参与度</td></tr>
+                  <tr><td>证书</td><td>高新技术企业证书</td><td>2024-12-26至2027-12-26</td><td>创新企业资质</td></tr>
+                  <tr><td>证书</td><td>企业知识产权管理体系认证</td><td>2025-03-20至2028-03-19</td><td>知识产权管理能力</td></tr>
+                  <tr><td>对外投资</td><td>成都珈钠能源科技有限公司、自贡珈钠新材料科技有限公司、武汉珈钠能源科技有限公司等</td><td>多为控股</td><td>多地产业布局</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>附录E：公开舆情与项目信息</summary>
+          <div class="appendix-body">
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead><tr><th>时间</th><th>类型</th><th>标题/事项</th><th>初筛意义</th></tr></thead>
+                <tbody>
+                  <tr><td>2026-01-26</td><td>专利新闻</td><td>申请高温电解液及其制备方法与钠离子电池专利</td><td>技术持续更新</td></tr>
+                  <tr><td>2026-01-19</td><td>合作新闻</td><td>珈钠能源与好电科技达成战略合作</td><td>客户/合作验证入口</td></tr>
+                  <tr><td>2024-10-29</td><td>项目</td><td>复合磷酸铁钠材料加工检测项目</td><td>材料检测与项目线索</td></tr>
+                  <tr><td>2024-05-10</td><td>招标公告</td><td>钠离子电池聚阴离子正极材料开发与产业化项目</td><td>产业化验证入口</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+    </article>
+
+    <aside class="right">
+      <div class="panel">
+        <h3 class="side-title">报告信息</h3>
+        <div class="side-info">
+          <div class="side-row"><div class="side-k">生成时间</div><div class="side-v">2026-04-29</div></div>
+          <div class="side-row"><div class="side-k">企业类型</div><div class="side-v">非上市企业</div></div>
+          <div class="side-row"><div class="side-k">发现来源</div><div class="side-v">专利线索</div></div>
+          <div class="side-row"><div class="side-k">初筛结论</div><div class="side-v green">建议关注</div></div>
+          <div class="side-row"><div class="side-k">企业状态</div><div class="side-v orange">未关注</div></div>
+          <div class="side-row"><div class="side-k">入库状态</div><div class="side-v orange">未保存</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 class="side-title">报告操作</h3>
+        <div class="side-actions">
+          <button class="btn green">♡ 关注企业</button>
+          <button class="btn">▣ 保存到报告库</button>
+          <button class="btn blue" onclick="window.print()">⇩ 导出PDF</button>
+        </div>
+      </div>
+      <div class="route-note">
+        <strong><span class="icon">▤</span>报告口径</strong>
+        初筛报告用于企业发现后的快速判断，只呈现可验证线索、关键风险和下一步动作建议。
+      </div>
+    </aside>
+  </main>
+</body>
+</html>

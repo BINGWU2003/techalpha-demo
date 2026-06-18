@@ -5,7 +5,7 @@ import {
   FileText,
   Flag,
   LogOut,
-  PanelLeftClose,
+  PanelLeft,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { User } from "../services/auth";
@@ -105,7 +105,7 @@ export function Layout({
               className="absolute right-[14px] top-[22px] flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-white/6 text-[#cdd6e7] transition-colors hover:bg-white/12 hover:text-white"
               title="收起侧边栏"
             >
-              <PanelLeftClose size={18} />
+              <PanelLeft size={18} strokeWidth={1.8} />
             </button>
           )}
         </div>
@@ -163,27 +163,35 @@ export function Layout({
           </Link>
         </nav>
 
-        <div
-          className={`${isSidebarCollapsed ? "hidden" : "px-3 flex-1 overflow-auto"}`}
-        >
-          <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">
-            最近任务记录
-          </div>
-          {recentTasks.map((task) => {
-            const isActive = activeHistory === task.id;
+        {isSidebarCollapsed ? (
+          <button
+            type="button"
+            onClick={() => setIsSidebarCollapsed(false)}
+            className="min-h-0 flex-1 cursor-pointer"
+            title="展开侧边栏"
+            aria-label="展开侧边栏"
+          />
+        ) : (
+          <div className="flex-1 overflow-auto px-3">
+            <div className="text-xs text-[#64748b] font-extrabold p-[16px_12px_6px] tracking-wider">
+              最近任务记录
+            </div>
+            {recentTasks.map((task) => {
+              const isActive = activeHistory === task.id;
 
-            return (
-              <Link
-                key={task.id}
-                to={task.to}
-                onClick={() => onSelectTask?.(task.id)}
-                className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${isActive ? "bg-white/[0.06] text-[#e0f2fe] font-extrabold shadow-[inset_2px_0_0_rgba(147,197,253,0.45)]" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
-              >
-                <span className="min-w-0 truncate">{task.title}</span>
-              </Link>
-            );
-          })}
-        </div>
+              return (
+                <Link
+                  key={task.id}
+                  to={task.to}
+                  onClick={() => onSelectTask?.(task.id)}
+                  className={`text-xs leading-relaxed p-[10px_11px] rounded-[11px] flex items-center gap-2 cursor-pointer transition-colors ${isActive ? "bg-white/[0.06] text-[#e0f2fe] font-extrabold shadow-[inset_2px_0_0_rgba(147,197,253,0.45)]" : "text-[#94a3b8] hover:bg-white/5 hover:text-[#e2e8f0]"}`}
+                >
+                  <span className="min-w-0 truncate">{task.title}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
         <div
           className={`group relative mt-auto border-t border-[#94a3b823] transition-colors ${
@@ -225,12 +233,12 @@ export function Layout({
           </div>
 
           <div
-            className={`flex min-w-0 items-center rounded-[14px] border transition-colors ${
+            className={`flex min-w-0 items-center rounded-[14px] transition-colors ${
               isSidebarCollapsed ? "justify-center p-2" : "gap-[10px] p-[10px]"
             } ${
               activeNav === "account"
-                ? "border-white/15 bg-white/10 text-white"
-                : "border-white/10 bg-white/6 text-[#cbd5e1] hover:border-white/15 hover:bg-white/10 hover:text-white"
+                ? "text-white"
+                : "text-[#cbd5e1] hover:text-white"
             }`}
           >
             <Link

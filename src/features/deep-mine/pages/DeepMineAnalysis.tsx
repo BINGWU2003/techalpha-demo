@@ -90,21 +90,7 @@ const WORDS = [
   { text: "隔膜材料", size: "10px", color: "#d1d5db" },
 ];
 
-const ENTERPRISE_TYPE_DATA = [
-  { name: "非上市企业", value: 162, percentage: "46.29%", color: "#10b981" },
-  {
-    name: "上市企业 / 集团主体",
-    value: 109,
-    percentage: "31.14%",
-    color: "#3b82f6",
-  },
-  {
-    name: "高校 / 科研院所",
-    value: 79,
-    percentage: "22.57%",
-    color: "#f59e0b",
-  },
-];
+const INDUSTRY_ENTERPRISE_COUNT = 350;
 
 const TECH_ROUTE_DATA = [
   {
@@ -282,80 +268,23 @@ export default function DeepMineAnalysis({
             <div className="p-[22px]">
               {/* Enterprise Statistics Section */}
               <div className="space-y-5 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
-                <div className="grid grid-cols-1 lg:grid-cols-[0.72fr_1.28fr] gap-4">
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-7 shadow-sm flex flex-col justify-center min-h-[220px]">
-                    <span className="text-[#64748b] text-[15px] mb-3">
-                      产业企业总数
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                      <strong className="text-[64px] leading-none font-black text-[#0f1f3d] tracking-tight">
-                        350
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[20px] p-5 shadow-sm flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <h3 className="text-[18px] font-black text-[#0f1f3d] mb-1">
+                        候选企业线索已形成
+                      </h3>
+                      <p className="text-[13px] leading-[1.7] text-[#64748b]">
+                        已基于已选技术方向完成企业主体识别、线索归并和去重。下一步可进入企业探索，查看候选企业、筛选条件和轻量证据。
+                      </p>
+                    </div>
+                    <div className="flex items-baseline gap-2 md:shrink-0">
+                      <strong className="text-[42px] leading-none font-black text-[#0f1f3d] tracking-tight">
+                        {INDUSTRY_ENTERPRISE_COUNT}
                       </strong>
-                      <span className="text-xl font-bold text-[#64748b]">
+                      <span className="text-lg font-bold text-[#64748b]">
                         家
                       </span>
-                    </div>
-                    <p className="mt-5 text-[13px] leading-[1.7] text-[#64748b]">
-                      基于当前专利线索识别出的产业相关主体，后续将随创赛、展会、融资等数据补充持续更新。
-                    </p>
-                  </div>
-
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-7 shadow-sm">
-                    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-center">
-                      <div className="relative w-[206px] h-[206px] mx-auto">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={ENTERPRISE_TYPE_DATA}
-                              cx="50%"
-                              cy="50%"
-                              innerRadius={58}
-                              outerRadius={100}
-                              dataKey="value"
-                              startAngle={90}
-                              endAngle={-270}
-                            >
-                              {ENTERPRISE_TYPE_DATA.map((entry, index) => (
-                                <Cell
-                                  key={`enterprise-type-${index}`}
-                                  fill={entry.color}
-                                />
-                              ))}
-                            </Pie>
-                            <Tooltip />
-                          </PieChart>
-                        </ResponsiveContainer>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                          <span className="text-[12px] text-[#64748b]">
-                            主体总数
-                          </span>
-                          <strong className="text-[28px] text-[#0f1f3d]">
-                            350
-                          </strong>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="text-[24px] font-black text-[#0f1f3d] mb-5">
-                          企业类型分布
-                        </h3>
-                        <div className="space-y-4">
-                          {ENTERPRISE_TYPE_DATA.map((item) => (
-                            <div
-                              key={item.name}
-                              className="grid grid-cols-[12px_1fr_auto] gap-3 items-center text-[14px]"
-                            >
-                              <span
-                                className="w-2.5 h-2.5 rounded-full"
-                                style={{ backgroundColor: item.color }}
-                              ></span>
-                              <span className="text-[#172033]">
-                                {item.name}
-                              </span>
-                              <b className="text-[#0f1f3d]">{item.value} 家</b>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>

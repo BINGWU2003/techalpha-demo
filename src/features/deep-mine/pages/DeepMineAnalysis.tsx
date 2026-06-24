@@ -582,7 +582,7 @@ export default function DeepMineAnalysis({
               </div>
 
               {/* Line Charts Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
+              <div className="grid grid-cols-1 gap-4 mt-4 text-[#172033]">
                 {/* All Patents Line Chart */}
                 <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
                   <div className="flex items-center gap-2 mb-6">
@@ -632,76 +632,6 @@ export default function DeepMineAnalysis({
                             stroke: "#fff",
                           }}
                           activeDot={{ r: 6 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                {/* Tech Patents Multi-Line Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="w-1.5 h-4 bg-[#10b981] rounded-full"></div>
-                    <h3 className="text-[15px] font-bold">
-                      产业投资重点技术相关专利统计
-                    </h3>
-                  </div>
-                  <div className="h-[280px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        data={TECH_PATENT_DATA}
-                        margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          vertical={false}
-                          stroke="#f1f5f9"
-                        />
-                        <XAxis
-                          dataKey="year"
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#94a3b8", fontSize: 11 }}
-                        />
-                        <YAxis
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#94a3b8", fontSize: 11 }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            borderRadius: "12px",
-                            border: "none",
-                            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                          }}
-                        />
-                        <Line
-                          name="层状氧化物"
-                          type="monotone"
-                          dataKey="layered"
-                          stroke="#f59e0b"
-                          strokeWidth={3}
-                          dot={false}
-                        />
-                        <Line
-                          name="聚阴离子"
-                          type="monotone"
-                          dataKey="polyAnion"
-                          stroke="#ef4444"
-                          strokeWidth={3}
-                          dot={false}
-                        />
-                        <Line
-                          name="普鲁士蓝"
-                          type="monotone"
-                          dataKey="prussian"
-                          stroke="#10b981"
-                          strokeWidth={3}
-                          dot={false}
-                        />
-                        <Legend
-                          iconType="circle"
-                          wrapperStyle={{ paddingTop: "10px" }}
                         />
                       </LineChart>
                     </ResponsiveContainer>

@@ -134,10 +134,6 @@ export default function AccountEntitlements() {
           <div className="absolute right-[-90px] top-[-110px] h-[260px] w-[260px] rounded-full bg-[#2f6df6]/10 blur-3xl" />
           <div className="relative flex items-start justify-between gap-6 max-md:flex-col">
             <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#dbe8ff] bg-white/80 px-3 py-2 text-[13px] font-extrabold text-[#2f6df6]">
-                <ShieldCheck size={15} />
-                账户中心
-              </div>
               <h1 className="m-0 text-[34px] font-bold leading-[1.18] tracking-[-0.04em] text-[#102039]">
                 账户与权益
               </h1>

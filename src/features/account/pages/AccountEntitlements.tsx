@@ -20,6 +20,7 @@ type QuotaMetric = {
 type QuotaMetricGroup = {
   title: string;
   description: string;
+  tone: "blue" | "green";
   refreshCycle?: string;
   nextRefreshTime?: string;
   metrics: QuotaMetric[];
@@ -55,6 +56,7 @@ const quotas: QuotaCard[] = [
       {
         title: "AI 分析次数",
         description: "目标拆解、线索分析、结果刷新等主动分析动作消耗。",
+        tone: "blue",
         refreshCycle: "30 天",
         nextRefreshTime: "2026-08-05 16:48",
         metrics: [
@@ -66,8 +68,9 @@ const quotas: QuotaCard[] = [
       {
         title: "初筛报告额度",
         description: "生成企业初筛报告时消耗，查看报告不消耗额度。",
+        tone: "green",
         metrics: [
-          { label: "本周期额度", value: "3 / 10", percent: 30 },
+          { label: "总额度", value: "3 / 10", percent: 30 },
         ],
       },
     ],
@@ -126,8 +129,17 @@ const usageRecords = [
 const quotaTone = {
   blue: {
     text: "text-[#2f6df6]",
-    bar: "from-[#2f6df6] to-[#8057ff]",
+    bar: "from-[#2f6df6] via-[#4f8cff] to-[#8057ff]",
+    track: "bg-[#eaf1ff]",
+    shadow: "shadow-[0_4px_12px_rgba(47,109,246,0.22)]",
     bg: "bg-[#eef4ff]",
+  },
+  green: {
+    text: "text-[#16b978]",
+    bar: "from-[#13b981] via-[#31c78f] to-[#63d79f]",
+    track: "bg-[#e9f8f1]",
+    shadow: "shadow-[0_4px_12px_rgba(22,185,120,0.2)]",
+    bg: "bg-[#ecfbf4]",
   },
 };
 
@@ -202,50 +214,58 @@ export default function AccountEntitlements() {
                     </div>
 
                     <div className="space-y-4">
-                      {quota.metricGroups.map((metricGroup) => (
-                        <div
-                          key={metricGroup.title}
-                          className="rounded-[18px] border border-[#edf2f8] bg-[#f9fbfe] p-4"
-                        >
-                          <div className="mb-4 flex items-start justify-between gap-4 max-md:flex-col">
-                            <div>
-                              <div className="text-[14px] font-black text-[#102039]">
-                                {metricGroup.title}
+                      {quota.metricGroups.map((metricGroup) => {
+                        const metricGroupTone = quotaTone[metricGroup.tone];
+
+                        return (
+                          <div
+                            key={metricGroup.title}
+                            className="rounded-[18px] border border-[#edf2f8] bg-[#f9fbfe] p-4"
+                          >
+                            <div className="mb-4 flex items-start justify-between gap-4 max-md:flex-col">
+                              <div>
+                                <div className="text-[14px] font-black text-[#102039]">
+                                  {metricGroup.title}
+                                </div>
+                                <div className="mt-1 text-[12px] leading-[1.6] text-[#66758e]">
+                                  {metricGroup.description}
+                                </div>
                               </div>
-                              <div className="mt-1 text-[12px] leading-[1.6] text-[#66758e]">
-                                {metricGroup.description}
-                              </div>
+                              {metricGroup.refreshCycle &&
+                                metricGroup.nextRefreshTime && (
+                                  <div
+                                    className={`shrink-0 rounded-2xl px-4 py-3 text-[13px] font-black leading-[1.6] ${tone.bg} ${tone.text}`}
+                                  >
+                                    <div>
+                                      刷新周期：{metricGroup.refreshCycle}
+                                    </div>
+                                    <div>
+                                      下次刷新：{metricGroup.nextRefreshTime}
+                                    </div>
+                                  </div>
+                                )}
                             </div>
-                            {metricGroup.refreshCycle &&
-                              metricGroup.nextRefreshTime && (
-                                <div
-                                  className={`shrink-0 rounded-2xl px-4 py-3 text-[13px] font-black leading-[1.6] ${tone.bg} ${tone.text}`}
-                                >
-                                  <div>刷新周期：{metricGroup.refreshCycle}</div>
-                                  <div>
-                                    下次刷新：{metricGroup.nextRefreshTime}
+                            <div className="space-y-4">
+                              {metricGroup.metrics.map((metric) => (
+                                <div key={metric.label}>
+                                  <div className="mb-2 flex justify-between gap-3 text-[13px] text-[#31415d]">
+                                    <span>{metric.label}</span>
+                                    <b>{metric.value}</b>
+                                  </div>
+                                  <div
+                                    className={`h-[9px] overflow-hidden rounded-full ${metricGroupTone.track}`}
+                                  >
+                                    <div
+                                      className={`h-full rounded-full bg-linear-to-r ${metricGroupTone.bar} ${metricGroupTone.shadow}`}
+                                      style={{ width: `${metric.percent}%` }}
+                                    />
                                   </div>
                                 </div>
-                              )}
+                              ))}
+                            </div>
                           </div>
-                          <div className="space-y-4">
-                            {metricGroup.metrics.map((metric) => (
-                              <div key={metric.label}>
-                                <div className="mb-2 flex justify-between gap-3 text-[13px] text-[#31415d]">
-                                  <span>{metric.label}</span>
-                                  <b>{metric.value}</b>
-                                </div>
-                                <div className="h-[9px] overflow-hidden rounded-full bg-[#edf2f8]">
-                                  <div
-                                    className={`h-full rounded-full bg-linear-to-r ${tone.bar}`}
-                                    style={{ width: `${metric.percent}%` }}
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );

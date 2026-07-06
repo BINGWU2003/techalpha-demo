@@ -3,7 +3,6 @@ import {
   BadgeCheck,
   CalendarDays,
   FileText,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 
@@ -21,8 +20,9 @@ type QuotaMetric = {
 type QuotaCard = {
   title: string;
   description: string;
-  highlight: string;
-  tone: "blue" | "green";
+  refreshCycle: string;
+  nextRefreshTime: string;
+  tone: "blue";
   metrics: QuotaMetric[];
 };
 
@@ -41,25 +41,17 @@ const accountInfo: InfoCard[] = [
 
 const quotas: QuotaCard[] = [
   {
-    title: "AI 分析次数",
-    description: "用于目标拆解、线索分析、结果刷新等主动分析动作。",
-    highlight: "420",
+    title: "额度使用情况",
+    description:
+      "用于目标拆解、线索分析、结果刷新等主动分析动作，企业初筛报告生成额度也合并在此查看。",
+    refreshCycle: "30 天",
+    nextRefreshTime: "2026-08-05 16:48",
     tone: "blue",
     metrics: [
-      { label: "每 5 小时", value: "68 / 100", percent: 68 },
-      { label: "本周", value: "220 / 500", percent: 44 },
-      { label: "本周期", value: "420 / 1000", percent: 42 },
-    ],
-  },
-  {
-    title: "初筛报告额度",
-    description: "生成企业初筛报告时消耗，查看报告不消耗额度。",
-    highlight: "7",
-    tone: "green",
-    metrics: [
-      { label: "总额度", value: "10 次", percent: 100 },
-      { label: "已使用", value: "3 次", percent: 30 },
-      { label: "剩余", value: "7 次", percent: 70 },
+      { label: "AI 分析次数（每 5 小时）", value: "68 / 100", percent: 68 },
+      { label: "AI 分析次数（本周）", value: "220 / 500", percent: 44 },
+      { label: "AI 分析次数（本周期）", value: "420 / 1000", percent: 42 },
+      { label: "初筛报告额度", value: "3 / 10", percent: 30 },
     ],
   },
 ];
@@ -119,11 +111,6 @@ const quotaTone = {
     bar: "from-[#2f6df6] to-[#8057ff]",
     bg: "bg-[#eef4ff]",
   },
-  green: {
-    text: "text-[#16b978]",
-    bar: "from-[#16b978] to-[#39d391]",
-    bg: "bg-[#ecfbf4]",
-  },
 };
 
 export default function AccountEntitlements() {
@@ -176,7 +163,7 @@ export default function AccountEntitlements() {
               <Activity size={20} className="text-[#2f6df6]" />
               当前额度
             </div>
-            <div className="grid grid-cols-2 gap-4 max-xl:grid-cols-1">
+            <div className="grid grid-cols-1 gap-4">
               {quotas.map((quota) => {
                 const tone = quotaTone[quota.tone];
 
@@ -195,9 +182,10 @@ export default function AccountEntitlements() {
                         </div>
                       </div>
                       <div
-                        className={`rounded-2xl px-4 py-3 text-[30px] font-black leading-none ${tone.bg} ${tone.text}`}
+                        className={`rounded-2xl px-4 py-3 text-[13px] font-black leading-[1.6] ${tone.bg} ${tone.text}`}
                       >
-                        {quota.highlight}
+                        <div>刷新周期：{quota.refreshCycle}</div>
+                        <div>下次刷新：{quota.nextRefreshTime}</div>
                       </div>
                     </div>
 

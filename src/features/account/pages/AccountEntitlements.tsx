@@ -17,13 +17,19 @@ type QuotaMetric = {
   percent: number;
 };
 
+type QuotaMetricGroup = {
+  title: string;
+  description: string;
+  refreshCycle?: string;
+  nextRefreshTime?: string;
+  metrics: QuotaMetric[];
+};
+
 type QuotaCard = {
   title: string;
   description: string;
-  refreshCycle: string;
-  nextRefreshTime: string;
   tone: "blue";
-  metrics: QuotaMetric[];
+  metricGroups: QuotaMetricGroup[];
 };
 
 type Plan = {
@@ -43,15 +49,27 @@ const quotas: QuotaCard[] = [
   {
     title: "额度使用情况",
     description:
-      "用于目标拆解、线索分析、结果刷新等主动分析动作，企业初筛报告生成额度也合并在此查看。",
-    refreshCycle: "30 天",
-    nextRefreshTime: "2026-08-05 16:48",
+      "展示 AI 分析次数的不同刷新频次，以及独立的企业初筛报告生成额度。",
     tone: "blue",
-    metrics: [
-      { label: "AI 分析次数（每 5 小时）", value: "68 / 100", percent: 68 },
-      { label: "AI 分析次数（本周）", value: "220 / 500", percent: 44 },
-      { label: "AI 分析次数（本周期）", value: "420 / 1000", percent: 42 },
-      { label: "初筛报告额度", value: "3 / 10", percent: 30 },
+    metricGroups: [
+      {
+        title: "AI 分析次数",
+        description: "目标拆解、线索分析、结果刷新等主动分析动作消耗。",
+        refreshCycle: "30 天",
+        nextRefreshTime: "2026-08-05 16:48",
+        metrics: [
+          { label: "每 5 小时额度", value: "68 / 100", percent: 68 },
+          { label: "本周额度", value: "220 / 500", percent: 44 },
+          { label: "本周期额度", value: "420 / 1000", percent: 42 },
+        ],
+      },
+      {
+        title: "初筛报告额度",
+        description: "生成企业初筛报告时消耗，查看报告不消耗额度。",
+        metrics: [
+          { label: "本周期额度", value: "3 / 10", percent: 30 },
+        ],
+      },
     ],
   },
 ];
@@ -181,26 +199,50 @@ export default function AccountEntitlements() {
                           {quota.description}
                         </div>
                       </div>
-                      <div
-                        className={`rounded-2xl px-4 py-3 text-[13px] font-black leading-[1.6] ${tone.bg} ${tone.text}`}
-                      >
-                        <div>刷新周期：{quota.refreshCycle}</div>
-                        <div>下次刷新：{quota.nextRefreshTime}</div>
-                      </div>
                     </div>
 
                     <div className="space-y-4">
-                      {quota.metrics.map((metric) => (
-                        <div key={metric.label}>
-                          <div className="mb-2 flex justify-between gap-3 text-[13px] text-[#31415d]">
-                            <span>{metric.label}</span>
-                            <b>{metric.value}</b>
+                      {quota.metricGroups.map((metricGroup) => (
+                        <div
+                          key={metricGroup.title}
+                          className="rounded-[18px] border border-[#edf2f8] bg-[#f9fbfe] p-4"
+                        >
+                          <div className="mb-4 flex items-start justify-between gap-4 max-md:flex-col">
+                            <div>
+                              <div className="text-[14px] font-black text-[#102039]">
+                                {metricGroup.title}
+                              </div>
+                              <div className="mt-1 text-[12px] leading-[1.6] text-[#66758e]">
+                                {metricGroup.description}
+                              </div>
+                            </div>
+                            {metricGroup.refreshCycle &&
+                              metricGroup.nextRefreshTime && (
+                                <div
+                                  className={`shrink-0 rounded-2xl px-4 py-3 text-[13px] font-black leading-[1.6] ${tone.bg} ${tone.text}`}
+                                >
+                                  <div>刷新周期：{metricGroup.refreshCycle}</div>
+                                  <div>
+                                    下次刷新：{metricGroup.nextRefreshTime}
+                                  </div>
+                                </div>
+                              )}
                           </div>
-                          <div className="h-[9px] overflow-hidden rounded-full bg-[#edf2f8]">
-                            <div
-                              className={`h-full rounded-full bg-linear-to-r ${tone.bar}`}
-                              style={{ width: `${metric.percent}%` }}
-                            />
+                          <div className="space-y-4">
+                            {metricGroup.metrics.map((metric) => (
+                              <div key={metric.label}>
+                                <div className="mb-2 flex justify-between gap-3 text-[13px] text-[#31415d]">
+                                  <span>{metric.label}</span>
+                                  <b>{metric.value}</b>
+                                </div>
+                                <div className="h-[9px] overflow-hidden rounded-full bg-[#edf2f8]">
+                                  <div
+                                    className={`h-full rounded-full bg-linear-to-r ${tone.bar}`}
+                                    style={{ width: `${metric.percent}%` }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ))}

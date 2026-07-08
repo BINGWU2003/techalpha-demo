@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { LoaderCircle, PencilLine, Plus, Sparkles, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { PencilLine, Plus, X } from "lucide-react";
 import { message } from "antd";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
@@ -77,38 +77,6 @@ const CANDIDATE_DIRECTIONS_B: Direction[] = [
 
 const MAX_SELECTED_DIRECTIONS = 3;
 const DIRECTION_LIMIT_WARNING = "最多选择 3 个技术方向，请先取消一个已选方向";
-const CANDIDATE_GENERATION_DELAY_MS = 4000;
-const CANDIDATE_GENERATION_MAX_WAIT_MS = 6000;
-const CANDIDATE_GENERATION_STAGE_INTERVAL_MS = 900;
-const CANDIDATE_SKELETON_COUNT = 4;
-const CANDIDATE_GENERATION_STAGES = [
-  "正在理解任务目标...",
-  "正在分析偏好描述...",
-  "正在提取关键技术指标...",
-  "正在筛选候选技术方向...",
-  "正在整理推荐理由...",
-];
-
-function CandidateDirectionSkeletonCards() {
-  return Array.from({ length: CANDIDATE_SKELETON_COUNT }).map(
-    (_, skeletonIndex) => (
-      <article
-        key={`candidate-direction-skeleton-${skeletonIndex}`}
-        className="min-h-[150px] rounded-[18px] border border-[#dfe7f2] bg-white p-[14px] shadow-[0_8px_18px_rgba(18,39,80,0.03)]"
-      >
-        <div className="mb-2 flex items-start justify-between gap-2">
-          <div className="h-[38px] flex-1 animate-pulse rounded-[12px] bg-[#eef4ff]" />
-          <div className="h-[30px] w-[66px] animate-pulse rounded-full bg-[#eef4ff]" />
-        </div>
-        <div className="mt-3 space-y-2 rounded-[12px] bg-[#f8fbff] px-3 py-3">
-          <div className="h-3 animate-pulse rounded-full bg-[#e2ebfb]" />
-          <div className="h-3 w-5/6 animate-pulse rounded-full bg-[#e2ebfb]" />
-          <div className="h-3 w-2/3 animate-pulse rounded-full bg-[#e2ebfb]" />
-        </div>
-      </article>
-    ),
-  );
-}
 
 export default function DeepMinePhase1({
   onAnalyze,
@@ -139,7 +107,7 @@ export default function DeepMinePhase1({
     INITIAL_SELECTED_DIRECTIONS,
   );
   const [candidateDirections, setCandidateDirections] = useState<Direction[]>(
-    [],
+    CANDIDATE_DIRECTIONS_A,
   );
   const [usesCandidateSetB, setUsesCandidateSetB] = useState(false);
   const [preference, setPreference] = useState(
@@ -149,11 +117,6 @@ export default function DeepMinePhase1({
   const [blockedDirectionId, setBlockedDirectionId] = useState<number | null>(
     null,
   );
-  const [isGeneratingCandidates, setIsGeneratingCandidates] = useState(true);
-  const [candidateGenerationStageIndex, setCandidateGenerationStageIndex] =
-    useState(0);
-  const candidateGenerationTimeoutRef = useRef<number | null>(null);
-  const candidateGenerationMaxWaitTimeoutRef = useRef<number | null>(null);
 
   const selectedCount = selectedDirections.length;
   const taskName = state.taskInput?.trim() || "钠电池正极材料方向企业挖掘";
@@ -162,71 +125,6 @@ export default function DeepMinePhase1({
     () => new Set(selectedDirections.map((direction) => direction.id)),
     [selectedDirections],
   );
-
-  const candidateGenerationStage =
-    CANDIDATE_GENERATION_STAGES[candidateGenerationStageIndex];
-  const hasExistingCandidateDirections = candidateDirections.length > 0;
-  const candidateGenerationTitle = hasExistingCandidateDirections
-    ? "AI 正在重新生成候选方向"
-    : "AI 正在生成候选技术方向";
-  const candidateGenerationDescription = hasExistingCandidateDirections
-    ? "正在根据你的偏好描述，筛选更匹配的技术方向。旧结果会先保留，生成完成后一次性更新。"
-    : "正在结合任务目标、技术指标和产业化路径，为你推荐可继续挖掘的方向。";
-
-  useEffect(() => {
-    candidateGenerationMaxWaitTimeoutRef.current = window.setTimeout(() => {
-      if (candidateGenerationTimeoutRef.current) {
-        window.clearTimeout(candidateGenerationTimeoutRef.current);
-        candidateGenerationTimeoutRef.current = null;
-      }
-
-      setIsGeneratingCandidates(false);
-      setStatusMessage("候选技术方向生成时间较长，请稍后重试");
-      message.warning({
-        content: "候选技术方向生成时间较长，请稍后重试",
-        key: "candidate-generation-timeout",
-      });
-    }, CANDIDATE_GENERATION_MAX_WAIT_MS);
-
-    candidateGenerationTimeoutRef.current = window.setTimeout(() => {
-      if (candidateGenerationMaxWaitTimeoutRef.current) {
-        window.clearTimeout(candidateGenerationMaxWaitTimeoutRef.current);
-        candidateGenerationMaxWaitTimeoutRef.current = null;
-      }
-
-      setCandidateDirections(CANDIDATE_DIRECTIONS_A);
-      setIsGeneratingCandidates(false);
-      candidateGenerationTimeoutRef.current = null;
-    }, CANDIDATE_GENERATION_DELAY_MS);
-
-    return () => {
-      if (candidateGenerationTimeoutRef.current) {
-        window.clearTimeout(candidateGenerationTimeoutRef.current);
-        candidateGenerationTimeoutRef.current = null;
-      }
-
-      if (candidateGenerationMaxWaitTimeoutRef.current) {
-        window.clearTimeout(candidateGenerationMaxWaitTimeoutRef.current);
-        candidateGenerationMaxWaitTimeoutRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isGeneratingCandidates) {
-      setCandidateGenerationStageIndex(0);
-      return;
-    }
-
-    const stageTimer = window.setInterval(() => {
-      setCandidateGenerationStageIndex(
-        (currentStageIndex) =>
-          (currentStageIndex + 1) % CANDIDATE_GENERATION_STAGES.length,
-      );
-    }, CANDIDATE_GENERATION_STAGE_INTERVAL_MS);
-
-    return () => window.clearInterval(stageTimer);
-  }, [isGeneratingCandidates]);
 
   useEffect(() => {
     if (!blockedDirectionId) {
@@ -253,10 +151,6 @@ export default function DeepMinePhase1({
   };
 
   const handleAddCandidate = (id: number) => {
-    if (isGeneratingCandidates) {
-      return;
-    }
-
     if (selectedDirections.length >= MAX_SELECTED_DIRECTIONS) {
       message.warning({
         content: DIRECTION_LIMIT_WARNING,
@@ -297,59 +191,20 @@ export default function DeepMinePhase1({
   };
 
   const handleRefreshCandidates = () => {
-    if (isGeneratingCandidates) {
-      return;
-    }
-
     const source = usesCandidateSetB
       ? CANDIDATE_DIRECTIONS_A
       : CANDIDATE_DIRECTIONS_B;
 
-    if (candidateGenerationTimeoutRef.current) {
-      window.clearTimeout(candidateGenerationTimeoutRef.current);
-    }
-
-    if (candidateGenerationMaxWaitTimeoutRef.current) {
-      window.clearTimeout(candidateGenerationMaxWaitTimeoutRef.current);
-    }
-
-    setIsGeneratingCandidates(true);
-    setCandidateGenerationStageIndex(0);
+    setCandidateDirections(
+      source.filter((direction) => !selectedDirectionIds.has(direction.id)),
+    );
+    setUsesCandidateSetB(!usesCandidateSetB);
     setBlockedDirectionId(null);
-    setStatusMessage("AI 正在生成候选技术方向");
-
-    candidateGenerationMaxWaitTimeoutRef.current = window.setTimeout(() => {
-      if (candidateGenerationTimeoutRef.current) {
-        window.clearTimeout(candidateGenerationTimeoutRef.current);
-        candidateGenerationTimeoutRef.current = null;
-      }
-
-      setIsGeneratingCandidates(false);
-      setStatusMessage("候选技术方向生成时间较长，请稍后重试");
-      message.warning({
-        content: "候选技术方向生成时间较长，请稍后重试",
-        key: "candidate-generation-timeout",
-      });
-    }, CANDIDATE_GENERATION_MAX_WAIT_MS);
-
-    candidateGenerationTimeoutRef.current = window.setTimeout(() => {
-      if (candidateGenerationMaxWaitTimeoutRef.current) {
-        window.clearTimeout(candidateGenerationMaxWaitTimeoutRef.current);
-        candidateGenerationMaxWaitTimeoutRef.current = null;
-      }
-
-      setCandidateDirections(
-        source.filter((direction) => !selectedDirectionIds.has(direction.id)),
-      );
-      setUsesCandidateSetB(!usesCandidateSetB);
-      setIsGeneratingCandidates(false);
-      candidateGenerationTimeoutRef.current = null;
-      setStatusMessage("已更新候选技术方向");
-      message.success({
-        content: "已更新候选技术方向",
-        key: "refresh-candidates",
-      });
-    }, CANDIDATE_GENERATION_DELAY_MS);
+    setStatusMessage("已更新候选技术方向");
+    message.success({
+      content: "已更新候选技术方向",
+      key: "refresh-candidates",
+    });
   };
 
   const handleAnalyze = () => {
@@ -490,88 +345,42 @@ export default function DeepMinePhase1({
                 <button
                   type="button"
                   onClick={handleRefreshCandidates}
-                  disabled={isGeneratingCandidates}
-                  className={`absolute right-[14px] top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center gap-1.5 rounded-[13px] px-[14px] text-[14px] font-black transition max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0 ${
-                    isGeneratingCandidates
-                      ? "cursor-not-allowed bg-[#e8eef9] text-[#8a96a8]"
-                      : "bg-[#2f6df6] text-white hover:bg-[#275de0]"
-                  }`}
+                  className="absolute right-[14px] top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center gap-1.5 rounded-[13px] bg-[#2f6df6] px-[14px] text-[14px] font-black text-white max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0"
                 >
-                  {isGeneratingCandidates ? (
-                    <>
-                      <LoaderCircle className="size-4 animate-spin" />
-                      AI 生成中
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-[15px] leading-none">↻</span>
-                      更新
-                    </>
-                  )}
+                  <span className="text-[15px] leading-none">↻</span>
+                  更新
                 </button>
               </div>
-              {isGeneratingCandidates && (
-                <div className="mb-4 rounded-[18px] border border-[#cfe0ff] bg-linear-to-r from-[#f8fbff] via-white to-[#f5f8ff] p-4 shadow-[0_8px_18px_rgba(47,109,246,0.06)]">
-                  <div className="flex items-start gap-3">
-                    <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-[13px] bg-[#edf4ff] text-[#2f6df6]">
-                      <Sparkles className="size-4" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[15px] font-black text-[#102039]">
-                        {candidateGenerationTitle}
-                      </div>
-                      <p className="mt-1.5 mb-0 text-[13px] font-bold leading-[1.6] text-[#64748b]">
-                        {candidateGenerationDescription}
-                      </p>
-                      <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#d7e4ff] bg-white px-3 py-1.5 text-[12px] font-black text-[#2f6df6]">
-                        <LoaderCircle className="size-3.5 animate-spin" />
-                        {candidateGenerationStage}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div
-                className={`grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5 transition-opacity ${
-                  isGeneratingCandidates && hasExistingCandidateDirections
-                    ? "pointer-events-none opacity-50"
-                    : "opacity-100"
-                }`}
-              >
-                {isGeneratingCandidates && !hasExistingCandidateDirections ? (
-                  <CandidateDirectionSkeletonCards />
-                ) : (
-                  candidateDirections.map((direction) => (
-                    <article
-                      key={direction.id}
-                      className={`min-h-[150px] rounded-[18px] border bg-white p-[14px] transition-all hover:border-[#bdd1ff] hover:shadow-[0_8px_18px_rgba(47,109,246,0.06)] ${
-                        blockedDirectionId === direction.id
-                          ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
-                          : "border-[#dfe7f2]"
-                      }`}
-                    >
-                      <div className="mb-2 flex items-start justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039]">
-                            {direction.title}
-                          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5">
+                {candidateDirections.map((direction) => (
+                  <article
+                    key={direction.id}
+                    className={`min-h-[150px] rounded-[18px] border bg-white p-[14px] transition-all hover:border-[#bdd1ff] hover:shadow-[0_8px_18px_rgba(47,109,246,0.06)] ${
+                      blockedDirectionId === direction.id
+                        ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
+                        : "border-[#dfe7f2]"
+                    }`}
+                  >
+                    <div className="mb-2 flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039]">
+                          {direction.title}
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleAddCandidate(direction.id)}
-                          disabled={isGeneratingCandidates}
-                          className="inline-flex h-[30px] shrink-0 items-center justify-center gap-1 rounded-full border border-[#dce6f6] bg-white px-3 text-[12px] font-black text-[#3f6cf6] transition hover:-translate-y-0.5 hover:border-[#b8cdf8] hover:bg-[#f7faff] disabled:cursor-not-allowed disabled:text-[#94a3b8]"
-                        >
-                          <Plus className="size-3.5" />
-                          加入
-                        </button>
                       </div>
-                      <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
-                        {direction.description}
-                      </div>
-                    </article>
-                  ))
-                )}
+                      <button
+                        type="button"
+                        onClick={() => handleAddCandidate(direction.id)}
+                        className="inline-flex h-[30px] shrink-0 items-center justify-center gap-1 rounded-full border border-[#dce6f6] bg-white px-3 text-[12px] font-black text-[#3f6cf6] transition hover:-translate-y-0.5 hover:border-[#b8cdf8] hover:bg-[#f7faff]"
+                      >
+                        <Plus className="size-3.5" />
+                        加入
+                      </button>
+                    </div>
+                    <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
+                      {direction.description}
+                    </div>
+                  </article>
+                ))}
               </div>
             </div>
           </section>

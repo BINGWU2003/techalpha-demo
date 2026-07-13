@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kimi 流式 SSE 源 — 前端集成 Demo</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f5f6fa;
+    color: #2c3e50;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 8px; }
+  .subtitle { color: #7f8c8d; margin-bottom: 20px; font-size: 14px; }
+  .panel {
+    background: white;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  label { font-size: 14px; color: #586069; }
+  input[type="number"], input[type="text"] {
+    padding: 6px 10px;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 120px;
+  }
+  select {
+    padding: 6px 10px;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+  }
+  button {
+    padding: 8px 16px;
+    background: #0366d6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button:hover { background: #0258bf; }
+  button:disabled { background: #d1d5da; cursor: not-allowed; }
+  button.disconnect { background: #d73a49; }
+  button.disconnect:hover { background: #cb2431; }
+  .status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    background: #d1d5da;
+    color: #586069;
+  }
+  .status.connecting { background: #fef3c7; color: #92400e; }
+  .status.streaming { background: #d1fae5; color: #065f46; }
+  .status.done { background: #e0e7ff; color: #3730a3; }
+  .status.error { background: #fee2e2; color: #991b1b; }
+  .status.closed { background: #f3f4f6; color: #6b7280; }
+
+  .output-section h3 {
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    color: #586069;
+  }
+  .thinking {
+    background: #fef9e7;
+    border: 1px solid #f9e79f;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    max-height: 120px;
+    overflow-y: auto;
+    color: #7d6608;
+  }
+  .answer {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    min-height: 80px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .final-json {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+  .event-log {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 4px;
+    padding: 12px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .event-log .line { margin-bottom: 4px; }
+  .event-log .ts { color: #94a3b8; }
+  .event-log .ev { color: #fbbf24; }
+  .event-log .data { color: #86efac; }
+
+  .note {
+    background: #fff8e1;
+    border-left: 4px solid #fbbf24;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .note code { background: #fef3c7; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Kimi 流式 SSE 源 — 前端集成 Demo</h1>
+  <div class="subtitle">支持前端本地模拟，也可切换为真实 SSE 接口</div>
+
+  <div class="note">
+    💡 <strong>本地模拟</strong>无需后端即可演示完整流式效果。切换到“真实 SSE”后，浏览器需能访问对应 API；
+    生产部署建议通过 tech_alpha 后端代理，不要让前端直接访问 ai_scout。
+  </div>
+
+  <div class="panel">
+    <div class="controls">
+      <label>数据源:
+        <select id="dataSource">
+          <option value="mock">本地模拟</option>
+          <option value="sse">真实 SSE</option>
+        </select>
+      </label>
+      <label>API base:
+        <input type="text" id="apiBase" value="http://localhost:8700" />
+      </label>
+      <label>industry_id:
+        <input type="number" id="industryId" value="426" />
+      </label>
+      <label>batch_id:
+        <input type="number" id="batchId" value="12" />
+      </label>
+      <button id="connectBtn">开始模拟</button>
+      <button id="disconnectBtn" class="disconnect" disabled>断开</button>
+      <span class="status" id="statusBadge">idle</span>
+    </div>
+  </div>
+
+  <div class="panel output-section">
+    <h3>📡 元数据 (meta 事件)</h3>
+    <div class="answer" id="metaOutput">—</div>
+
+    <h3>💭 Kimi 思考过程 (reasoning_summary.text.delta)</h3>
+    <div class="thinking" id="thinkingOutput">—</div>
+
+    <h3>📝 回答 (response.output_text.delta)</h3>
+    <div class="answer" id="answerOutput">—</div>
+
+    <h3>🎯 最终 target_json (response.output_item.done)</h3>
+    <div class="final-json" id="finalJsonOutput">—</div>
+
+    <h3>📋 原始事件日志</h3>
+    <div class="event-log" id="eventLog"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 配置
+// ============================================================
+const STREAM_PATH = '/api/service/streaming/query/generate/';
+const EVENT_TYPES = [
+  'stream-open',
+  'meta',
+  'response.output_text.delta',
+  'response.reasoning_summary.text.delta',
+  'response.output_item.done',
+  'response.error',
+];
+
+// ============================================================
+// 状态
+// ============================================================
+let eventSource = null;
+let mockTimers = [];
+let reconnectAttempts = 0;
+let currentStatus = 'idle';
+
+// ============================================================
+// DOM 引用
+// ============================================================
+const $ = (id) => document.getElementById(id);
+const apiBase = $('apiBase');
+const dataSource = $('dataSource');
+const industryIdEl = $('industryId');
+const batchIdEl = $('batchId');
+const connectBtn = $('connectBtn');
+const disconnectBtn = $('disconnectBtn');
+const statusBadge = $('statusBadge');
+const metaOutput = $('metaOutput');
+const thinkingOutput = $('thinkingOutput');
+const answerOutput = $('answerOutput');
+const finalJsonOutput = $('finalJsonOutput');
+const eventLog = $('eventLog');
+
+// ============================================================
+// 工具函数
+// ============================================================
+function setStatus(s) {
+  currentStatus = s;
+  statusBadge.textContent = s;
+  statusBadge.className = 'status ' + s;
+  connectBtn.disabled = (s === 'connecting' || s === 'streaming');
+  disconnectBtn.disabled = (s !== 'connecting' && s !== 'streaming');
+}
+
+function logEvent(type, data) {
+  const ts = new Date().toLocaleTimeString();
+  const line = document.createElement('div');
+  line.className = 'line';
+  line.innerHTML = `<span class="ts">[${ts}]</span> <span class="ev">event: ${type}</span>` +
+                   (data ? `<br><span class="data">data: ${escapeHtml(data).slice(0, 200)}${data.length > 200 ? '…' : ''}</span>` : '');
+  eventLog.appendChild(line);
+  eventLog.scrollTop = eventLog.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function safeParse(s) {
+  try { return JSON.parse(s); }
+  catch { return null; }
+}
+
+function resetOutput() {
+  metaOutput.textContent = '—';
+  thinkingOutput.textContent = '';
+  answerOutput.textContent = '';
+  finalJsonOutput.textContent = '—';
+  eventLog.textContent = '';
+  reconnectAttempts = 0;
+}
+
+function emitMock(type, payload) {
+  handleEvent(type, { data: typeof payload === 'string' ? payload : JSON.stringify(payload) });
+}
+
+function connectMock(industryId, batchId) {
+  const target = {
+    industry_id: industryId,
+    batch_id: batchId,
+    industry_name: '人工智能与软件服务',
+    summary: '行业保持较快增长，企业持续加大 AI 应用与数字化投入。',
+    confidence: 0.92
+  };
+  const events = [
+    [250, 'stream-open', { request_id: `mock-${Date.now()}` }],
+    [500, 'meta', { industry_name: target.industry_name, industry_id: industryId, batch_id: batchId }],
+    [800, 'response.reasoning_summary.text.delta', { delta: '正在读取行业与批次信息…' }],
+    [1250, 'response.reasoning_summary.text.delta', { delta: '\n正在归纳市场趋势和关键指标…' }],
+    [1750, 'response.output_text.delta', { delta: '根据当前模拟数据，' }],
+    [2050, 'response.output_text.delta', { delta: '该行业整体处于快速发展阶段，' }],
+    [2350, 'response.output_text.delta', { delta: 'AI 应用落地和企业数字化升级是主要增长动力。' }],
+    [2750, 'response.output_item.done', { item: { content: [{ text: JSON.stringify(target, null, 2) }] } }],
+    [3100, '[DONE]', '']
+  ];
+
+  logEvent('connecting', 'local mock stream');
+  for (const [delay, type, payload] of events) {
+    mockTimers.push(setTimeout(() => {
+      emitMock(type, payload);
+      if (type === '[DONE]') {
+        mockTimers = [];
+        setStatus('done');
+      }
+    }, delay));
+  }
+}
+
+// ============================================================
+// 连接管理
+// ============================================================
+function connect() {
+  const industryId = parseInt(industryIdEl.value, 10);
+  const batchId = parseInt(batchIdEl.value, 10);
+  if (!industryId || !batchId) {
+    alert('industry_id 和 batch_id 必须为正整数');
+    return;
+  }
+
+  disconnect(false);
+  resetOutput();
+  setStatus('connecting');
+
+  if (dataSource.value === 'mock') {
+    connectMock(industryId, batchId);
+    return;
+  }
+
+  const url = `${apiBase.value.replace(/\/$/, '')}${STREAM_PATH}?industry_id=${industryId}&batch_id=${batchId}`;
+  logEvent('connecting', url);
+
+  // 无 withCredentials:无 cookie
+  eventSource = new EventSource(url);
+
+  // 默认 message 事件(无 event: 行时触发)
+  eventSource.onmessage = (e) => {
+    logEvent('message', e.data);
+  };
+
+  // 自定义事件
+  for (const t of EVENT_TYPES) {
+    eventSource.addEventListener(t, (e) => handleEvent(t, e));
+  }
+
+  // [DONE] 由后端以字面 'event: [DONE]' 发送
+  eventSource.addEventListener('[DONE]', (e) => {
+    handleEvent('[DONE]', e);
+    disconnect();
+    setStatus('done');
+  });
+
+  eventSource.onopen = () => {
+    logEvent('open', '');
+  };
+
+  eventSource.onerror = (e) => {
+    if (eventSource.readyState === EventSource.CLOSED) {
+      logEvent('error (closed)', 'Connection closed. Check IP whitelist or backend logs.');
+      setStatus('closed');
+    } else if (eventSource.readyState === EventSource.CONNECTING) {
+      // 浏览器正在重连
+      reconnectAttempts++;
+      logEvent('reconnecting', `attempt #${reconnectAttempts}`);
+    } else {
+      logEvent('error', 'EventSource error');
+      setStatus('error');
+    }
+  };
+}
+
+function disconnect(shouldLog = true) {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
+  }
+  mockTimers.forEach(clearTimeout);
+  mockTimers = [];
+  if (shouldLog) logEvent('disconnect', 'client closed');
+}
+
+// ============================================================
+// 事件处理
+// ============================================================
+function handleEvent(type, e) {
+  logEvent(type, e.data || '');
+  const payload = safeParse(e.data);
+
+  switch (type) {
+    case 'stream-open':
+      setStatus('streaming');
+      break;
+    case 'meta':
+      if (payload?.industry_name) {
+        metaOutput.textContent = `行业: ${payload.industry_name}`;
+      }
+      break;
+    case 'response.output_text.delta':
+      if (payload?.delta) answerOutput.textContent += payload.delta;
+      break;
+    case 'response.reasoning_summary.text.delta':
+      if (payload?.delta) thinkingOutput.textContent += payload.delta;
+      break;
+    case 'response.output_item.done':
+      if (payload?.item?.content?.[0]?.text) {
+        finalJsonOutput.textContent = payload.item.content[0].text;
+      } else {
+        finalJsonOutput.textContent = JSON.stringify(payload, null, 2);
+      }
+      break;
+    case 'response.error':
+      setStatus('error');
+      if (payload?.error) {
+        const errEl = document.createElement('div');
+        errEl.style.color = '#dc2626';
+        errEl.style.fontSize = '13px';
+        errEl.style.marginTop = '8px';
+        errEl.textContent = `⚠️ ${payload.error}`;
+        eventLog.appendChild(errEl);
+      }
+      break;
+    case '[DONE]':
+      break;
+  }
+}
+
+// ============================================================
+// 绑定事件
+// ============================================================
+connectBtn.addEventListener('click', connect);
+dataSource.addEventListener('change', () => {
+  const isMock = dataSource.value === 'mock';
+  apiBase.disabled = isMock;
+  connectBtn.textContent = isMock ? '开始模拟' : '连接 SSE';
+});
+disconnectBtn.addEventListener('click', () => {
+  disconnect();
+  setStatus('idle');
+});
+
+// 清理:离开页面时关闭连接
+window.addEventListener('beforeunload', disconnect);
+dataSource.dispatchEvent(new Event('change'));
+</script>
+</body>
+</html>

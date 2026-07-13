@@ -6,6 +6,7 @@ import {
   Flag,
   LogOut,
   PanelLeft,
+  MonitorPlay,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { User } from "../services/auth";
@@ -44,6 +45,7 @@ export function Layout({
   if (path.startsWith("/reports")) activeNav = "reports";
   if (path.startsWith("/alerts")) activeNav = "alerts";
   if (path.startsWith("/account")) activeNav = "account";
+  if (path.startsWith("/demos")) activeNav = "demos";
 
   let activeHistory = historyTask || "";
   if (!activeHistory) {
@@ -192,6 +194,28 @@ export function Layout({
             })}
           </div>
         )}
+
+        <div
+          className={`border-t border-[rgba(148,163,184,0.14)] ${
+            isSidebarCollapsed ? "px-0 py-3" : "px-3 py-3"
+          }`}
+        >
+          {!isSidebarCollapsed && (
+            <div className="px-3 pb-2 text-[11px] font-extrabold uppercase tracking-wider text-[#64748b]">
+              开发工具
+            </div>
+          )}
+          <Link
+            to="/demos"
+            title="Demo 预览"
+            className={`flex h-[42px] items-center rounded-xl text-[14px] transition-colors ${
+              isSidebarCollapsed ? "justify-center px-0" : "gap-[11px] px-[13px]"
+            } ${activeNav === "demos" ? "bg-[#2563eb] text-white" : "text-[#cbd5e1] hover:bg-white/5 hover:text-white"}`}
+          >
+            <MonitorPlay size={16} />
+            <span className={isSidebarCollapsed ? "hidden" : ""}>Demo 预览</span>
+          </Link>
+        </div>
 
         <div
           className={`group relative mt-auto border-t border-[#94a3b823] transition-colors ${

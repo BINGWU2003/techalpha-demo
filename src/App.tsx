@@ -24,6 +24,7 @@ import SectorScanPhase2 from "./features/sector-scan/pages/SectorScanPhase2";
 import SectorScanPhase3 from "./features/sector-scan/pages/SectorScanPhase3";
 import SectorScanPhase4 from "./features/sector-scan/pages/SectorScanPhase4";
 import AccountEntitlements from "./features/account/pages/AccountEntitlements";
+import DemoPreview from "./features/demos/pages/DemoPreview";
 import { authService } from "./services/auth";
 
 type RecentTask = {
@@ -253,6 +254,7 @@ export default function App() {
                 }
               />
               <Route path="/account" element={<AccountEntitlements />} />
+              <Route path="/demos" element={<DemoPreview />} />
 
               {/* Sector Scan */}
               <Route

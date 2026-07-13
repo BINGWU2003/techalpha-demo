@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LoaderCircle, PencilLine, Plus, Search, X } from "lucide-react";
 import { message } from "antd";
+import { Resizable } from "re-resizable";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -136,6 +137,18 @@ const MAX_SELECTED_DIRECTIONS = 3;
 const DIRECTION_LIMIT_WARNING = "最多选择 3 个技术方向，请先取消一个已选方向";
 const UPDATE_STEP_INTERVAL_MS = 1100;
 const CANDIDATE_SKELETON_COUNT = 4;
+const DRAWER_WIDTH_STORAGE_KEY = "deep-mine-analysis-drawer-width";
+const DEFAULT_DRAWER_WIDTH = 460;
+const MIN_DRAWER_WIDTH = 360;
+
+function getInitialDrawerWidth() {
+  const storedWidth = Number(window.localStorage.getItem(DRAWER_WIDTH_STORAGE_KEY));
+  const maxWidth = window.innerWidth * 0.75;
+  if (!Number.isFinite(storedWidth) || storedWidth <= 0) {
+    return Math.min(DEFAULT_DRAWER_WIDTH, maxWidth);
+  }
+  return Math.min(Math.max(storedWidth, Math.min(MIN_DRAWER_WIDTH, maxWidth)), maxWidth);
+}
 
 function createTargetAnalysis(taskName: string): AnalysisRound {
   return {
@@ -274,6 +287,7 @@ export default function DeepMinePhase1({
     createTargetAnalysis(taskName),
   ]);
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerWidth, setDrawerWidth] = useState(getInitialDrawerWidth);
   const [usesCandidateSetB, setUsesCandidateSetB] = useState(false);
   const [updateRoundCount, setUpdateRoundCount] = useState(0);
   const [isUpdatingCandidates, setIsUpdatingCandidates] = useState(false);
@@ -752,8 +766,31 @@ export default function DeepMinePhase1({
         </button>
       )}
 
-      <aside
-        className={`fixed right-0 top-0 z-40 flex h-screen w-[460px] max-w-[92vw] flex-col border-l border-[#e3ebf6] bg-white shadow-[-18px_0_44px_rgba(15,30,60,0.18)] transition-transform duration-200 ${
+      <Resizable
+        size={{ width: drawerWidth, height: "100vh" }}
+        style={{ position: "fixed" }}
+        minWidth={Math.min(MIN_DRAWER_WIDTH, window.innerWidth * 0.75)}
+        maxWidth="75vw"
+        enable={{ left: true }}
+        onResizeStop={(_event, _direction, element) => {
+          const nextWidth = element.offsetWidth;
+          setDrawerWidth(nextWidth);
+          window.localStorage.setItem(
+            DRAWER_WIDTH_STORAGE_KEY,
+            String(nextWidth),
+          );
+        }}
+        handleComponent={{
+          left: (
+            <div
+              className="group flex h-full w-3 -translate-x-1/2 cursor-col-resize items-center justify-center"
+              title="拖动调整分析过程面板宽度"
+            >
+              <span className="h-12 w-1 rounded-full bg-[#cbd8eb] opacity-0 shadow-sm transition-opacity group-hover:opacity-100" />
+            </div>
+          ),
+        }}
+        className={`fixed right-0 top-0 z-40 flex max-w-[92vw] flex-col border-l border-[#e3ebf6] bg-white shadow-[-18px_0_44px_rgba(15,30,60,0.18)] transition-transform duration-200 ${
           drawerOpen ? "translate-x-0" : "translate-x-[104%]"
         }`}
       >
@@ -876,7 +913,7 @@ export default function DeepMinePhase1({
             </section>
           ))}
         </div>
-      </aside>
+      </Resizable>
     </PageShell>
   );
 }

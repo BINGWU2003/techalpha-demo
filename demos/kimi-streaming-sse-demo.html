@@ -82,6 +82,22 @@
     overflow-y: auto;
     color: #7d6608;
   }
+  .reasoning-step { margin: 5px 0; white-space: pre-wrap; }
+  .search-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1px solid #dbeafe;
+    border-radius: 4px;
+    padding: 9px 10px;
+    margin: 7px 0;
+    background: #f8fbff;
+    font-size: 13px;
+  }
+  .search-item .round { color: #64748b; white-space: nowrap; }
+  .search-item .query { flex: 1; color: #1e3a5f; }
+  .search-item .search-status { color: #b45309; white-space: nowrap; }
+  .search-item.completed .search-status { color: #047857; }
   .answer {
     background: #f0f9ff;
     border: 1px solid #bae6fd;
@@ -191,6 +207,9 @@ const EVENT_TYPES = [
   'meta',
   'response.output_text.delta',
   'response.reasoning_summary.text.delta',
+  'response.web_search_call.in_progress',
+  'response.web_search_call.searching',
+  'response.web_search_call.completed',
   'response.output_item.done',
   'response.error',
 ];
@@ -274,13 +293,24 @@ function connectMock(industryId, batchId) {
   const events = [
     [250, 'stream-open', { request_id: `mock-${Date.now()}` }],
     [500, 'meta', { industry_name: target.industry_name, industry_id: industryId, batch_id: batchId }],
-    [800, 'response.reasoning_summary.text.delta', { delta: '正在读取行业与批次信息…' }],
-    [1250, 'response.reasoning_summary.text.delta', { delta: '\n正在归纳市场趋势和关键指标…' }],
-    [1750, 'response.output_text.delta', { delta: '根据当前模拟数据，' }],
-    [2050, 'response.output_text.delta', { delta: '该行业整体处于快速发展阶段，' }],
-    [2350, 'response.output_text.delta', { delta: 'AI 应用落地和企业数字化升级是主要增长动力。' }],
-    [2750, 'response.output_item.done', { item: { content: [{ text: JSON.stringify(target, null, 2) }] } }],
-    [3100, '[DONE]', '']
+    [750, 'response.reasoning_summary.text.delta', { delta: '需要先检索行业规模和近期市场趋势。' }],
+    [1050, 'response.web_search_call.in_progress', { item_id: 'ws_1', round: 1, query: '2025 人工智能软件服务 行业规模 增长率' }],
+    [1350, 'response.web_search_call.searching', { item_id: 'ws_1', round: 1, query: '2025 人工智能软件服务 行业规模 增长率' }],
+    [2100, 'response.web_search_call.completed', { item_id: 'ws_1', round: 1, query: '2025 人工智能软件服务 行业规模 增长率', result_count: 8 }],
+    [2350, 'response.reasoning_summary.text.delta', { delta: '\n首轮结果给出了市场规模，但还需要验证核心增长驱动。' }],
+    [2700, 'response.web_search_call.in_progress', { item_id: 'ws_2', round: 2, query: '企业 AI 应用投入 数字化转型 2025 趋势' }],
+    [3000, 'response.web_search_call.searching', { item_id: 'ws_2', round: 2, query: '企业 AI 应用投入 数字化转型 2025 趋势' }],
+    [3750, 'response.web_search_call.completed', { item_id: 'ws_2', round: 2, query: '企业 AI 应用投入 数字化转型 2025 趋势', result_count: 6 }],
+    [4000, 'response.reasoning_summary.text.delta', { delta: '\n还缺少风险侧信息，补充检索政策与商业化挑战。' }],
+    [4350, 'response.web_search_call.in_progress', { item_id: 'ws_3', round: 3, query: 'AI 软件服务 商业化风险 数据合规 竞争格局' }],
+    [4650, 'response.web_search_call.searching', { item_id: 'ws_3', round: 3, query: 'AI 软件服务 商业化风险 数据合规 竞争格局' }],
+    [5400, 'response.web_search_call.completed', { item_id: 'ws_3', round: 3, query: 'AI 软件服务 商业化风险 数据合规 竞争格局', result_count: 7 }],
+    [5700, 'response.reasoning_summary.text.delta', { delta: '\n三轮检索信息已足够，正在交叉核验并生成结论。' }],
+    [6100, 'response.output_text.delta', { delta: '根据多轮 Web Search 结果，' }],
+    [6400, 'response.output_text.delta', { delta: '该行业整体处于快速发展阶段，' }],
+    [6700, 'response.output_text.delta', { delta: 'AI 应用落地和企业数字化升级是主要增长动力，同时需关注数据合规与商业化效率。' }],
+    [7100, 'response.output_item.done', { item: { content: [{ text: JSON.stringify(target, null, 2) }] } }],
+    [7450, '[DONE]', '']
   ];
 
   logEvent('connecting', 'local mock stream');
@@ -387,7 +417,12 @@ function handleEvent(type, e) {
       if (payload?.delta) answerOutput.textContent += payload.delta;
       break;
     case 'response.reasoning_summary.text.delta':
-      if (payload?.delta) thinkingOutput.textContent += payload.delta;
+      if (payload?.delta) appendReasoning(payload.delta);
+      break;
+    case 'response.web_search_call.in_progress':
+    case 'response.web_search_call.searching':
+    case 'response.web_search_call.completed':
+      updateWebSearch(type, payload);
       break;
     case 'response.output_item.done':
       if (payload?.item?.content?.[0]?.text) {
@@ -410,6 +445,40 @@ function handleEvent(type, e) {
     case '[DONE]':
       break;
   }
+}
+
+function appendReasoning(text) {
+  const step = document.createElement('div');
+  step.className = 'reasoning-step';
+  step.textContent = text.replace(/^\n/, '');
+  thinkingOutput.appendChild(step);
+  thinkingOutput.scrollTop = thinkingOutput.scrollHeight;
+}
+
+function updateWebSearch(type, payload) {
+  const itemId = payload?.item_id || payload?.item?.id;
+  if (!itemId) return;
+  let item = document.getElementById(`search-${itemId}`);
+  if (!item) {
+    const round = thinkingOutput.querySelectorAll('.search-item').length + 1;
+    item = document.createElement('div');
+    item.id = `search-${itemId}`;
+    item.className = 'search-item';
+    item.innerHTML = '<span class="round"></span><span class="query"></span><span class="search-status"></span>';
+    item.querySelector('.round').textContent = `第 ${round} 轮`;
+    item.querySelector('.query').textContent = 'Web Search';
+    thinkingOutput.appendChild(item);
+  }
+
+  const statusMap = {
+    'response.web_search_call.in_progress': '准备中',
+    'response.web_search_call.searching': '搜索中…',
+    'response.web_search_call.completed': `完成 · ${payload.result_count || 0} 条`,
+  };
+  if (payload.round) item.querySelector('.round').textContent = `第 ${payload.round} 轮`;
+  if (payload.query) item.querySelector('.query').textContent = payload.query;
+  item.querySelector('.search-status').textContent = statusMap[type];
+  item.classList.toggle('completed', type === 'response.web_search_call.completed');
 }
 
 // ============================================================

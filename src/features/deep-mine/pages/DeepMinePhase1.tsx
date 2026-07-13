@@ -1,10 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { LoaderCircle, PencilLine, Plus, Search, X } from "lucide-react";
+import {
+  LoaderCircle,
+  PanelRightOpen,
+  PencilLine,
+  Plus,
+  X,
+} from "lucide-react";
 import { message } from "antd";
 import { Resizable } from "re-resizable";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AnalysisProcessTimeline,
+  type ProcessEvent,
+} from "../components/AnalysisProcessTimeline";
 
 type Direction = {
   id: number;
@@ -15,20 +25,12 @@ type Direction = {
   source: string;
 };
 
-type ProcessMessage = {
-  kind: "reasoning" | "web-search" | "answer" | "final-summary";
-  text: string;
-  round?: number;
-  resultCount?: number;
-  targetJson?: Record<string, unknown>;
-};
-
 type AnalysisRound = {
   id: number;
   name: string;
   status: "running" | "done";
   instruction: string;
-  messages: ProcessMessage[];
+  messages: ProcessEvent[];
 };
 
 const TASK_INSTRUCTION =
@@ -293,6 +295,9 @@ export default function DeepMinePhase1({
   ]);
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [drawerWidth, setDrawerWidth] = useState(getInitialDrawerWidth);
+  const [isCompactLayout, setIsCompactLayout] = useState(
+    () => window.innerWidth < 1024,
+  );
   const [usesCandidateSetB, setUsesCandidateSetB] = useState(false);
   const [updateRoundCount, setUpdateRoundCount] = useState(0);
   const [isUpdatingCandidates, setIsUpdatingCandidates] = useState(false);
@@ -312,6 +317,14 @@ export default function DeepMinePhase1({
     () => new Set(selectedDirections.map((direction) => direction.id)),
     [selectedDirections],
   );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const handleChange = (event: MediaQueryListEvent) =>
+      setIsCompactLayout(event.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   useEffect(() => {
     if (!blockedDirectionId) {
@@ -417,7 +430,7 @@ export default function DeepMinePhase1({
       ? CANDIDATE_DIRECTIONS_A
       : CANDIDATE_DIRECTIONS_B;
     const selectedIds = new Set(selectedDirections.map((item) => item.id));
-    const steps: ProcessMessage[] = [
+    const steps: ProcessEvent[] = [
       {
         kind: "reasoning",
         text: "正在把新的偏好应用到候选方向集合，已选方向保持不变。本轮不会逐个分析单个候选。",
@@ -538,10 +551,10 @@ export default function DeepMinePhase1({
   };
 
   return (
-    <PageShell>
-      <div className="mx-auto w-full">
-        <main className="space-y-[18px]">
-          <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+    <PageShell className="h-screen max-w-none overflow-hidden p-4 max-md:p-3">
+      <div className="flex h-full items-stretch gap-4">
+        <main className="flex h-full min-w-0 flex-1 flex-col gap-[18px] overflow-hidden pr-1">
+          <section className="max-h-[48%] shrink-0 overflow-y-auto bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
             <div className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
               <h1 className="text-[24px] font-black m-0 text-[#102039]">
                 目标拆解
@@ -638,45 +651,15 @@ export default function DeepMinePhase1({
             </div>
           </section>
 
-          <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+          <section className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
             <div className="flex flex-col gap-2 p-[18px_24px_0] md:flex-row md:items-center md:justify-between max-md:px-[18px]">
               <h2 className="text-[20px] font-black m-0 text-[#102039]">
                 候选技术方向
               </h2>
             </div>
-            <div className="p-[16px_24px_24px] max-md:p-[16px_18px_24px]">
-              <div className="relative mb-4 overflow-hidden rounded-[18px] border border-[#e5eaf3] bg-white shadow-[0_8px_18px_rgba(18,39,80,0.03)] focus-within:border-[#a9c2ff] focus-within:shadow-[0_0_0_4px_rgba(47,109,246,0.08),0_8px_18px_rgba(18,39,80,0.03)]">
-                <Textarea
-                  value={preference}
-                  onChange={(event) => setPreference(event.target.value)}
-                  placeholder="告诉 AI 你想如何调整候选方向，例如：更关注产业化落地，减少偏材料基础研究的方向"
-                  className="min-h-[92px] resize-y rounded-none border-0 bg-white py-4 pl-4 pr-[126px] text-[13px] leading-[1.6] text-[#25324a] shadow-none focus-visible:ring-0 max-md:min-h-[128px] max-md:pb-[68px] max-md:pr-4"
-                />
-                <button
-                  type="button"
-                  onClick={handleRefreshCandidates}
-                  disabled={isUpdatingCandidates}
-                  className={`absolute right-[14px] top-1/2 inline-flex h-10 -translate-y-1/2 items-center justify-center gap-1.5 rounded-[13px] px-[14px] text-[14px] font-black transition max-md:bottom-[14px] max-md:top-auto max-md:translate-y-0 ${
-                    isUpdatingCandidates
-                      ? "cursor-not-allowed bg-[#e8eef9] text-[#8a96a8]"
-                      : "bg-[#2f6df6] text-white hover:bg-[#275de0]"
-                  }`}
-                >
-                  {isUpdatingCandidates ? (
-                    <>
-                      <LoaderCircle className="size-4 animate-spin" />
-                      分析中
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-[15px] leading-none">↻</span>
-                      更新分析
-                    </>
-                  )}
-                </button>
-              </div>
+            <div className="min-h-0 flex-1 overflow-hidden px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
               <div
-                className={`grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3.5 ${
+                className={`grid h-full content-start grid-cols-1 gap-3.5 overflow-y-auto pr-1 md:grid-cols-2 2xl:grid-cols-3 ${
                   isUpdatingCandidates
                     ? "pointer-events-none opacity-80"
                     : "opacity-100"
@@ -717,9 +700,24 @@ export default function DeepMinePhase1({
                 )}
               </div>
             </div>
+            {!drawerOpen && (
+              <div className="flex shrink-0 items-center justify-between gap-3 border-t border-[#e5eaf3] bg-[#fbfdff] px-6 py-3 max-md:px-[18px]">
+                <span className="text-[12px] font-bold text-[#8793a7]">
+                  查看候选方向的生成与检索过程
+                </span>
+                <button
+                  type="button"
+                  onClick={handleOpenProcessDrawer}
+                  className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
+                >
+                  <PanelRightOpen className="size-4" />
+                  查看分析过程
+                </button>
+              </div>
+            )}
           </section>
 
-          <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
+          <div className="z-20 flex shrink-0 items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:flex-col max-md:items-stretch">
             <div>
               <div className="text-[14px] font-bold text-[#102039]">
                 {isUpdatingCandidates
@@ -753,167 +751,137 @@ export default function DeepMinePhase1({
             </Button>
           </div>
         </main>
-      </div>
 
-      {!drawerOpen && (
-        <button
-          type="button"
-          onClick={handleOpenProcessDrawer}
-          className="fixed bottom-[94px] right-7 z-30 inline-flex h-11 items-center gap-2 rounded-full border border-[#c7d8ff] bg-white px-4 text-[13px] font-black text-[#2f6df6] shadow-[0_14px_34px_rgba(18,39,80,0.16)] transition hover:-translate-y-0.5 hover:bg-[#f8fbff] max-md:right-4"
-        >
-          <span className="size-2 rounded-full bg-[#2f6df6] shadow-[0_0_0_4px_#edf4ff]" />
-          查看分析过程
-        </button>
-      )}
-
-      <Resizable
-        size={{ width: drawerWidth, height: "100vh" }}
-        style={{ position: "fixed" }}
-        minWidth={Math.min(MIN_DRAWER_WIDTH, window.innerWidth * 0.75)}
-        maxWidth="75vw"
-        enable={{ left: true }}
-        onResizeStop={(_event, _direction, element) => {
-          const nextWidth = element.offsetWidth;
-          setDrawerWidth(nextWidth);
-          window.localStorage.setItem(
-            DRAWER_WIDTH_STORAGE_KEY,
-            String(nextWidth),
-          );
-        }}
-        handleComponent={{
-          left: (
-            <div
-              className="group flex h-full w-3 -translate-x-1/2 cursor-col-resize items-center justify-center"
-              title="拖动调整分析过程面板宽度"
-            >
-              <span className="h-12 w-1 rounded-full bg-[#cbd8eb] opacity-0 shadow-sm transition-opacity group-hover:opacity-100" />
-            </div>
-          ),
-        }}
-        className={`fixed right-0 top-0 z-40 flex max-w-[92vw] flex-col border-l border-[#e3ebf6] bg-white shadow-[-18px_0_44px_rgba(15,30,60,0.18)] transition-transform duration-200 ${
-          drawerOpen ? "translate-x-0" : "translate-x-[104%]"
-        }`}
-      >
-        <div className="flex items-start justify-between gap-3 border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[18px] py-[16px]">
-          <div className="min-w-0">
-            <h2 className="m-0 text-[20px] font-black leading-[1.35] text-[#102039]">
-              AI 分析过程
-            </h2>
-            <p className="m-0 mt-1.5 text-[13px] leading-[1.5] text-[#7b879b]">
-              {isUpdatingCandidates
-                ? "正在通过多轮 Web Search 更新整体候选方向。"
-                : "展示整体技术方向的推理、检索与汇总过程。"}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(false)}
-            className="inline-flex size-[34px] shrink-0 items-center justify-center rounded-[12px] border border-[#e3ebf6] bg-[#f7f9fd] text-[#6d7890] transition hover:border-[#cbd8eb] hover:text-[#102039]"
-            aria-label="关闭分析过程"
+        {drawerOpen && (
+          <Resizable
+            size={{
+              width: drawerWidth,
+              height: isCompactLayout ? "calc(100vh - 24px)" : "100%",
+            }}
+            style={{ position: isCompactLayout ? "fixed" : "relative" }}
+            minWidth={Math.min(MIN_DRAWER_WIDTH, window.innerWidth * 0.75)}
+            maxWidth={isCompactLayout ? "92vw" : "60vw"}
+            enable={{ left: true }}
+            onResizeStop={(_event, _direction, element) => {
+              const nextWidth = element.offsetWidth;
+              setDrawerWidth(nextWidth);
+              window.localStorage.setItem(
+                DRAWER_WIDTH_STORAGE_KEY,
+                String(nextWidth),
+              );
+            }}
+            handleComponent={{
+              left: (
+                <div
+                  className="group flex h-full w-3 -translate-x-1/2 cursor-col-resize items-center justify-center"
+                  title="拖动调整分析过程面板宽度"
+                >
+                  <span className="h-12 w-1 rounded-full bg-[#cbd8eb] opacity-0 shadow-sm transition-opacity group-hover:opacity-100" />
+                </div>
+              ),
+            }}
+            className={`z-30 flex max-w-[92vw] flex-col overflow-hidden rounded-[18px] border border-[#e3ebf6] bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] ${
+              isCompactLayout ? "right-3 top-3 z-40" : "shrink-0"
+            }`}
           >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        <div
-          ref={processLogRef}
-          className="min-h-0 flex-1 overflow-auto bg-[#fbfdff] px-[18px] py-4"
-        >
-          {analysisRounds.map((round) => (
-            <section key={round.id} className="mb-[18px]">
-              <div className="my-3 flex items-center gap-2 text-[12px] font-black text-[#7b879b] before:h-px before:flex-1 before:bg-[#e1e9f5] after:h-px after:flex-1 after:bg-[#e1e9f5]">
-                {round.name}
+            <div className="flex items-start justify-between gap-3 border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[18px] py-[16px]">
+              <div className="min-w-0">
+                <h2 className="m-0 text-[20px] font-black leading-[1.35] text-[#102039]">
+                  AI 分析过程
+                </h2>
+                <p className="m-0 mt-1.5 text-[13px] leading-[1.5] text-[#7b879b]">
+                  {isUpdatingCandidates
+                    ? "正在通过多轮 Web Search 更新整体候选方向。"
+                    : "展示整体技术方向的推理、检索与汇总过程。"}
+                </p>
               </div>
-              <div className="mb-2.5 rounded-[16px] border border-[#e3ebf6] bg-white p-3">
-                <div className="mb-1.5 flex items-center justify-between gap-2 text-[14px] font-black text-[#13213a]">
-                  <span>{round.name}</span>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-black ${
-                      round.status === "running"
-                        ? "bg-[#edf4ff] text-[#2f6df6]"
-                        : "bg-[#eaf8f0] text-[#18a957]"
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                className="inline-flex size-[34px] shrink-0 items-center justify-center rounded-[12px] border border-[#e3ebf6] bg-[#f7f9fd] text-[#6d7890] transition hover:border-[#cbd8eb] hover:text-[#102039]"
+                aria-label="关闭分析过程"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            <div
+              ref={processLogRef}
+              className="min-h-0 flex-1 overflow-auto bg-[#fbfdff] px-[18px] py-4"
+            >
+              {analysisRounds.map((round) => (
+                <section key={round.id} className="mb-[18px]">
+                  <div className="my-3 flex items-center gap-2 text-[12px] font-black text-[#7b879b] before:h-px before:flex-1 before:bg-[#e1e9f5] after:h-px after:flex-1 after:bg-[#e1e9f5]">
+                    {round.name}
+                  </div>
+                  <div className="mb-2.5 rounded-[16px] border border-[#e3ebf6] bg-white p-3">
+                    <div className="mb-1.5 flex items-center justify-between gap-2 text-[14px] font-black text-[#13213a]">
+                      <span>{round.name}</span>
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-1 text-[11px] font-black ${
+                          round.status === "running"
+                            ? "bg-[#edf4ff] text-[#2f6df6]"
+                            : "bg-[#eaf8f0] text-[#18a957]"
+                        }`}
+                      >
+                        {round.status === "running" ? "进行中" : "已完成"}
+                      </span>
+                    </div>
+                    <div className="text-[12px] leading-[1.7] text-[#526078]">
+                      指令：{round.instruction}
+                    </div>
+                  </div>
+                  <AnalysisProcessTimeline
+                    events={round.messages}
+                    isStreaming={round.status === "running"}
+                  />
+                </section>
+              ))}
+            </div>
+            <div className="shrink-0 border-t border-[#e3ebf6] bg-white p-3.5">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[13px] font-black text-[#13213a]">
+                    继续调整
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[#8793a7]">
+                    当前结果会保留至新结果生成
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-[14px] border border-[#dfe7f2] bg-[#fbfdff] p-2 focus-within:border-[#a9c2ff] focus-within:bg-white">
+                <Textarea
+                  value={preference}
+                  onChange={(event) => setPreference(event.target.value)}
+                  placeholder="补充筛选偏好，例如：优先关注已有中试验证、成本下降路径清晰的方向"
+                  className="min-h-[72px] resize-none border-0 bg-transparent px-2 py-1.5 text-[13px] leading-[1.6] shadow-none focus-visible:ring-0"
+                />
+                <div className="mt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleRefreshCandidates}
+                    disabled={isUpdatingCandidates}
+                    className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-[11px] px-3.5 text-[13px] font-black transition ${
+                      isUpdatingCandidates
+                        ? "cursor-not-allowed bg-[#e8eef9] text-[#8a96a8]"
+                        : "bg-[#2f6df6] text-white hover:bg-[#275de0]"
                     }`}
                   >
-                    {round.status === "running" ? "进行中" : "已完成"}
-                  </span>
-                </div>
-                <div className="text-[12px] leading-[1.7] text-[#526078]">
-                  指令：{round.instruction}
+                    {isUpdatingCandidates ? (
+                      <>
+                        <LoaderCircle className="size-3.5 animate-spin" />
+                        分析中
+                      </>
+                    ) : (
+                      "开始分析"
+                    )}
+                  </button>
                 </div>
               </div>
-              <div className="grid gap-2.5">
-                {round.messages.map((processMessage, messageIndex) => (
-                  <div
-                    key={`${round.id}-${processMessage.kind}-${messageIndex}`}
-                    className="grid grid-cols-[28px_1fr] items-start gap-2.5"
-                  >
-                    <div
-                      className={`flex size-7 items-center justify-center rounded-[10px] text-[12px] font-black ${
-                        processMessage.kind === "web-search"
-                          ? "bg-[#fff4dc] text-[#b66a00]"
-                          : processMessage.kind === "final-summary"
-                            ? "bg-[#eaf8f0] text-[#15924c]"
-                            : "bg-[#edf4ff] text-[#2f6df6]"
-                      }`}
-                    >
-                      {processMessage.kind === "web-search" ? (
-                        <Search className="size-3.5" />
-                      ) : processMessage.kind === "final-summary" ? (
-                        "✓"
-                      ) : (
-                        "AI"
-                      )}
-                    </div>
-                    <div
-                      className={`rounded-[16px] border bg-white px-3 py-2.5 text-[13px] leading-[1.75] text-[#43506a] ${
-                        processMessage.kind === "web-search"
-                          ? "border-[#f3dfb5]"
-                          : processMessage.kind === "final-summary"
-                            ? "border-[#cdebd9]"
-                            : "border-[#e3ebf6]"
-                      }`}
-                    >
-                      <div className="mb-1 flex items-center justify-between gap-2 text-[13px] font-black text-[#13213a]">
-                        <span>
-                          {processMessage.kind === "reasoning"
-                            ? "思考过程"
-                            : processMessage.kind === "web-search"
-                              ? `第 ${processMessage.round ?? messageIndex + 1} 轮 Web Search`
-                              : processMessage.kind === "answer"
-                                ? "回答"
-                                : "最终总结"}
-                        </span>
-                        {processMessage.kind === "web-search" && (
-                          <span className="shrink-0 rounded-full bg-[#eaf8f0] px-2 py-0.5 text-[10px] text-[#15924c]">
-                            已完成 · {processMessage.resultCount ?? 0} 条
-                          </span>
-                        )}
-                      </div>
-                      <div>{processMessage.text}</div>
-                      {processMessage.targetJson && (
-                        <pre className="mt-2 max-h-[220px] overflow-auto rounded-[10px] bg-[#f0f8f3] px-2.5 py-2 font-mono text-[11px] leading-[1.6] text-[#24543a]">
-                          {JSON.stringify(processMessage.targetJson, null, 2)}
-                        </pre>
-                      )}
-                    </div>
-                  </div>
-                ))}
-                {round.status === "running" && (
-                  <div className="grid grid-cols-[28px_1fr] items-start gap-2.5">
-                    <div className="flex size-7 items-center justify-center rounded-[10px] bg-[#edf4ff] text-[12px] font-black text-[#2f6df6]">
-                      AI
-                    </div>
-                    <div className="inline-flex w-fit items-center gap-2 rounded-[16px] border border-[#cfe0ff] bg-white px-3 py-2 text-[12px] font-black text-[#2f6df6]">
-                      <LoaderCircle className="size-3.5 animate-spin" />
-                      正在分析...
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-          ))}
-        </div>
-      </Resizable>
+            </div>
+          </Resizable>
+        )}
+      </div>
     </PageShell>
   );
 }

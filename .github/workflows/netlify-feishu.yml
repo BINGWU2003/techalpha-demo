@@ -34,16 +34,27 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ -z "${NETLIFY_AUTH_TOKEN}" || -z "${NETLIFY_SITE_ID}" ]]; then
+          # Copying values from a browser or text file can add CR/LF or spaces.
+          # Neither the Netlify token nor the UUID site ID may contain whitespace.
+          netlify_token=$(printf '%s' "${NETLIFY_AUTH_TOKEN}" | tr -d '[:space:]')
+          netlify_site_id=$(printf '%s' "${NETLIFY_SITE_ID}" | tr -d '[:space:]')
+
+          if [[ -z "${netlify_token}" || -z "${netlify_site_id}" ]]; then
             echo "Missing NETLIFY_AUTH_TOKEN or NETLIFY_SITE_ID GitHub secret." >&2
+            exit 1
+          fi
+
+          if [[ ! "${netlify_site_id}" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]]; then
+            echo "NETLIFY_SITE_ID must be the UUID shown under Netlify Site configuration > General > Site details." >&2
+            echo "Do not use the site name, site URL, or API URL." >&2
             exit 1
           fi
 
           for attempt in {1..60}; do
             deploys=$(curl --fail --silent --show-error \
               --retry 3 \
-              --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
-              "https://api.netlify.com/api/v1/sites/${NETLIFY_SITE_ID}/deploys?per_page=50")
+              --header "Authorization: Bearer ${netlify_token}" \
+              "https://api.netlify.com/api/v1/sites/${netlify_site_id}/deploys?per_page=50")
 
             deploy=$(jq -c --arg sha "${COMMIT_SHA}" \
               '[.[] | select(.commit_ref == $sha)][0] // empty' <<< "${deploys}")
@@ -111,8 +122,15 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ -z "${FEISHU_WEBHOOK_URL}" ]]; then
+          feishu_webhook_url=$(printf '%s' "${FEISHU_WEBHOOK_URL}" | tr -d '\r\n')
+
+          if [[ -z "${feishu_webhook_url}" ]]; then
             echo "Missing FEISHU_WEBHOOK_URL GitHub secret." >&2
+            exit 1
+          fi
+
+          if [[ ! "${feishu_webhook_url}" =~ ^https:// ]]; then
+            echo "FEISHU_WEBHOOK_URL must be a complete HTTPS URL." >&2
             exit 1
           fi
 
@@ -141,4 +159,4 @@ jobs:
             --request POST \
             --header "Content-Type: application/json" \
             --data "${payload}" \
-            "${FEISHU_WEBHOOK_URL}"
+            "${feishu_webhook_url}"

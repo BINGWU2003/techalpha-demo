@@ -1,0 +1,144 @@
+name: Notify Feishu after Netlify deploy
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: netlify-feishu-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    name: Wait for Netlify and notify Feishu
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for matching Netlify deployment
+        id: netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${NETLIFY_AUTH_TOKEN}" || -z "${NETLIFY_SITE_ID}" ]]; then
+            echo "Missing NETLIFY_AUTH_TOKEN or NETLIFY_SITE_ID GitHub secret." >&2
+            exit 1
+          fi
+
+          for attempt in {1..60}; do
+            deploys=$(curl --fail --silent --show-error \
+              --retry 3 \
+              --header "Authorization: Bearer ${NETLIFY_AUTH_TOKEN}" \
+              "https://api.netlify.com/api/v1/sites/${NETLIFY_SITE_ID}/deploys?per_page=50")
+
+            deploy=$(jq -c --arg sha "${COMMIT_SHA}" \
+              '[.[] | select(.commit_ref == $sha)][0] // empty' <<< "${deploys}")
+
+            if [[ -z "${deploy}" ]]; then
+              echo "Attempt ${attempt}/60: waiting for Netlify to create the deployment..."
+              sleep 10
+              continue
+            fi
+
+            state=$(jq -r '.state' <<< "${deploy}")
+            deploy_id=$(jq -r '.id' <<< "${deploy}")
+            echo "Attempt ${attempt}/60: deployment ${deploy_id} is ${state}."
+
+            case "${state}" in
+              ready)
+                site_url=$(jq -r '.ssl_url // .deploy_ssl_url // .url' <<< "${deploy}")
+                echo "site_url=${site_url}" >> "${GITHUB_OUTPUT}"
+                echo "deploy_id=${deploy_id}" >> "${GITHUB_OUTPUT}"
+                exit 0
+                ;;
+              error)
+                echo "Netlify deployment ${deploy_id} failed." >&2
+                exit 1
+                ;;
+            esac
+
+            sleep 10
+          done
+
+          echo "Timed out waiting for the Netlify deployment." >&2
+          exit 1
+
+      - name: Build commit summary
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          CURRENT_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          zero_sha="0000000000000000000000000000000000000000"
+          if [[ "${BEFORE_SHA}" != "${zero_sha}" ]] \
+            && git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null \
+            && git merge-base --is-ancestor "${BEFORE_SHA}" "${CURRENT_SHA}"; then
+            git log --max-count=20 \
+              --pretty=format:'• %h %s — %an' \
+              "${BEFORE_SHA}..${CURRENT_SHA}" > commits.txt
+          else
+            git log -1 \
+              --pretty=format:'• %h %s — %an' \
+              "${CURRENT_SHA}" > commits.txt
+          fi
+
+      - name: Send deployment message to Feishu
+        env:
+          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+          SITE_URL: ${{ steps.netlify.outputs.site_url }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          ACTION_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${FEISHU_WEBHOOK_URL}" ]]; then
+            echo "Missing FEISHU_WEBHOOK_URL GitHub secret." >&2
+            exit 1
+          fi
+
+          commits=$(cat commits.txt)
+          message=$(cat <<EOF
+          GitHub / Netlify 部署成功
+
+          仓库：${REPOSITORY}
+          分支：${BRANCH}
+          触发人：${ACTOR}
+          部署地址：${SITE_URL}
+
+          本次提交（最多 20 条）：
+          ${commits}
+
+          Commit：${COMMIT_URL}
+          Actions：${ACTION_URL}
+          EOF
+          )
+
+          payload=$(jq -n --arg text "${message}" \
+            '{msg_type: "text", content: {text: $text}}')
+
+          curl --fail-with-body --silent --show-error \
+            --retry 3 \
+            --request POST \
+            --header "Content-Type: application/json" \
+            --data "${payload}" \
+            "${FEISHU_WEBHOOK_URL}"

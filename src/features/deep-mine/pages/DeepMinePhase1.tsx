@@ -142,12 +142,17 @@ const DEFAULT_DRAWER_WIDTH = 460;
 const MIN_DRAWER_WIDTH = 360;
 
 function getInitialDrawerWidth() {
-  const storedWidth = Number(window.localStorage.getItem(DRAWER_WIDTH_STORAGE_KEY));
+  const storedWidth = Number(
+    window.localStorage.getItem(DRAWER_WIDTH_STORAGE_KEY),
+  );
   const maxWidth = window.innerWidth * 0.75;
   if (!Number.isFinite(storedWidth) || storedWidth <= 0) {
     return Math.min(DEFAULT_DRAWER_WIDTH, maxWidth);
   }
-  return Math.min(Math.max(storedWidth, Math.min(MIN_DRAWER_WIDTH, maxWidth)), maxWidth);
+  return Math.min(
+    Math.max(storedWidth, Math.min(MIN_DRAWER_WIDTH, maxWidth)),
+    maxWidth,
+  );
 }
 
 function createTargetAnalysis(taskName: string): AnalysisRound {
@@ -620,10 +625,6 @@ export default function DeepMinePhase1({
                       }
                       className="mt-3 min-h-[58px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
                     />
-                    <DirectionTags tags={direction.tags} />
-                    <div className="mt-3 text-[11px] font-extrabold text-[#8a96a8]">
-                      来自：{direction.source}
-                    </div>
                   </article>
                 ))}
                 {selectedCount < MAX_SELECTED_DIRECTIONS && (
@@ -711,7 +712,6 @@ export default function DeepMinePhase1({
                       <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
                         {direction.description}
                       </div>
-                      <DirectionTags tags={direction.tags} />
                     </article>
                   ))
                 )}
@@ -844,7 +844,7 @@ export default function DeepMinePhase1({
               <div className="grid gap-2.5">
                 {round.messages.map((processMessage, messageIndex) => (
                   <div
-                      key={`${round.id}-${processMessage.kind}-${messageIndex}`}
+                    key={`${round.id}-${processMessage.kind}-${messageIndex}`}
                     className="grid grid-cols-[28px_1fr] items-start gap-2.5"
                   >
                     <div
@@ -874,15 +874,15 @@ export default function DeepMinePhase1({
                       }`}
                     >
                       <div className="mb-1 flex items-center justify-between gap-2 text-[13px] font-black text-[#13213a]">
-                          <span>
-                            {processMessage.kind === "reasoning"
-                              ? "思考过程"
-                              : processMessage.kind === "web-search"
-                                ? `第 ${processMessage.round ?? messageIndex + 1} 轮 Web Search`
-                                : processMessage.kind === "answer"
-                                  ? "回答"
-                                  : "最终总结"}
-                          </span>
+                        <span>
+                          {processMessage.kind === "reasoning"
+                            ? "思考过程"
+                            : processMessage.kind === "web-search"
+                              ? `第 ${processMessage.round ?? messageIndex + 1} 轮 Web Search`
+                              : processMessage.kind === "answer"
+                                ? "回答"
+                                : "最终总结"}
+                        </span>
                         {processMessage.kind === "web-search" && (
                           <span className="shrink-0 rounded-full bg-[#eaf8f0] px-2 py-0.5 text-[10px] text-[#15924c]">
                             已完成 · {processMessage.resultCount ?? 0} 条

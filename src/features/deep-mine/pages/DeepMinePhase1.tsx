@@ -100,6 +100,11 @@ const CANDIDATE_DIRECTIONS_A: Direction[] = [
   },
 ];
 
+const INITIAL_CANDIDATE_DIRECTIONS: Direction[] = [
+  ...INITIAL_SELECTED_DIRECTIONS,
+  ...CANDIDATE_DIRECTIONS_A,
+];
+
 const CANDIDATE_DIRECTIONS_B: Direction[] = [
   {
     id: 8,
@@ -139,8 +144,8 @@ const MAX_SELECTED_DIRECTIONS = 3;
 const DIRECTION_LIMIT_WARNING = "最多选择 3 个技术方向，请先取消一个已选方向";
 const UPDATE_STEP_INTERVAL_MS = 1100;
 const CANDIDATE_SKELETON_COUNT = 4;
-const DRAWER_WIDTH_STORAGE_KEY = "deep-mine-analysis-drawer-width";
-const DEFAULT_DRAWER_WIDTH = 460;
+const DRAWER_WIDTH_STORAGE_KEY = "deep-mine-analysis-drawer-width-v2";
+const COMPACT_DEFAULT_DRAWER_WIDTH = 460;
 const MIN_DRAWER_WIDTH = 360;
 
 function getInitialDrawerWidth() {
@@ -149,7 +154,9 @@ function getInitialDrawerWidth() {
   );
   const maxWidth = window.innerWidth * 0.75;
   if (!Number.isFinite(storedWidth) || storedWidth <= 0) {
-    return Math.min(DEFAULT_DRAWER_WIDTH, maxWidth);
+    return window.innerWidth < 1024
+      ? Math.min(COMPACT_DEFAULT_DRAWER_WIDTH, window.innerWidth * 0.92)
+      : "50%";
   }
   return Math.min(
     Math.max(storedWidth, Math.min(MIN_DRAWER_WIDTH, maxWidth)),
@@ -284,11 +291,9 @@ export default function DeepMinePhase1({
 }) {
   const { isAnalyzing, showAnalysis } = state;
   const taskName = state.taskInput?.trim() || "钠电池正极材料方向企业挖掘";
-  const [selectedDirections, setSelectedDirections] = useState<Direction[]>(
-    INITIAL_SELECTED_DIRECTIONS,
-  );
+  const [selectedDirections, setSelectedDirections] = useState<Direction[]>([]);
   const [candidateDirections, setCandidateDirections] = useState<Direction[]>(
-    CANDIDATE_DIRECTIONS_A,
+    INITIAL_CANDIDATE_DIRECTIONS,
   );
   const [analysisRounds, setAnalysisRounds] = useState<AnalysisRound[]>(() => [
     createTargetAnalysis(taskName),

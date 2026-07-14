@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   LoaderCircle,
+  MousePointerClick,
   PanelRightOpen,
   PencilLine,
   Plus,
@@ -306,6 +307,7 @@ export default function DeepMinePhase1({
   const [usesCandidateSetB, setUsesCandidateSetB] = useState(false);
   const [updateRoundCount, setUpdateRoundCount] = useState(0);
   const [isUpdatingCandidates, setIsUpdatingCandidates] = useState(false);
+  const [showCandidateGuide, setShowCandidateGuide] = useState(true);
   const [preference, setPreference] = useState(
     "更关注产业路径清晰、成本下降空间明显、已有商业化验证的技术方向。",
   );
@@ -400,6 +402,7 @@ export default function DeepMinePhase1({
 
     setSelectedDirections((items) => [...items, candidate]);
     setCandidateDirections((items) => items.filter((item) => item.id !== id));
+    setShowCandidateGuide(false);
     setBlockedDirectionId(null);
     setStatusMessage("");
   };
@@ -670,6 +673,34 @@ export default function DeepMinePhase1({
               )}
             </div>
             <div className="px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
+              {showCandidateGuide && selectedCount === 0 && (
+                <div className="mb-4 flex items-center gap-3 rounded-[16px] border border-[#b8ceff] bg-linear-to-r from-[#edf4ff] via-[#f5f8ff] to-white px-4 py-3 max-sm:items-start">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-[11px] bg-[#2f6df6] text-white">
+                    <MousePointerClick className="size-[18px]" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-[#2f6df6] px-2 py-0.5 text-[10px] font-black text-white">
+                        操作提示
+                      </span>
+                      <strong className="text-[13px] font-black text-[#1b3154]">
+                        从候选方向中选择 1–3 个
+                      </strong>
+                    </div>
+                    <p className="mt-1 text-[12px] leading-[1.55] text-[#60718d]">
+                      点击卡片右上角的“加入”，选中的技术方向会显示在上方。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCandidateGuide(false)}
+                    className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg text-[#75839a] transition hover:bg-white hover:text-[#334155]"
+                    aria-label="关闭候选方向操作提示"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
+              )}
               <div
                 className={`direction-card-grid grid content-start gap-3.5 ${
                   isUpdatingCandidates

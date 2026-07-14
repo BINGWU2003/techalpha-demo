@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ArrowUp,
   LoaderCircle,
   MousePointerClick,
   PanelRightOpen,
@@ -565,7 +566,7 @@ export default function DeepMinePhase1({
           <section className="shrink-0 rounded-[24px] border border-[#e5eaf3] bg-white">
             <div className="flex items-center justify-between gap-3 p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
               <h1 className="text-[24px] font-black m-0 text-[#102039]">
-                目标拆解
+                技术分析
               </h1>
               <p className="m-0 text-right text-[13px] font-bold text-[#8a96a8] leading-[1.65] max-md:text-left">
                 任务指令：
@@ -869,12 +870,9 @@ export default function DeepMinePhase1({
               ))}
             </div>
             <div className="shrink-0 border-t border-[#e3ebf6] bg-white p-3.5">
-              <div className="mb-2 flex items-center justify-between gap-3">
+              <div className="mb-2 flex items-center gap-3">
                 <div className="text-[13px] font-black text-[#13213a]">
-                  继续调整
-                </div>
-                <div className="text-right text-[11px] text-[#8793a7]">
-                  当前结果会保留至新结果生成
+                  调整要求
                 </div>
               </div>
               <div className="rounded-[14px] border border-[#dfe7f2] bg-[#fbfdff] p-2 focus-within:border-[#a9c2ff] focus-within:bg-white">
@@ -889,19 +887,22 @@ export default function DeepMinePhase1({
                     type="button"
                     onClick={handleRefreshCandidates}
                     disabled={isUpdatingCandidates}
-                    className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-[11px] px-3.5 text-[13px] font-black transition ${
+                    className={`inline-flex size-9 items-center justify-center rounded-[11px] transition ${
                       isUpdatingCandidates
                         ? "cursor-not-allowed bg-[#e8eef9] text-[#8a96a8]"
                         : "bg-[#2f6df6] text-white hover:bg-[#275de0]"
                     }`}
+                    aria-label={
+                      isUpdatingCandidates ? "正在分析调整要求" : "发送调整要求"
+                    }
+                    title={
+                      isUpdatingCandidates ? "正在分析" : "发送调整要求"
+                    }
                   >
                     {isUpdatingCandidates ? (
-                      <>
-                        <LoaderCircle className="size-3.5 animate-spin" />
-                        分析中
-                      </>
+                      <LoaderCircle className="size-4 animate-spin" />
                     ) : (
-                      "调整分析"
+                      <ArrowUp className="size-4" />
                     )}
                   </button>
                 </div>

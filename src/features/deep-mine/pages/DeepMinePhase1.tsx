@@ -656,7 +656,7 @@ export default function DeepMinePhase1({
                   className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
                 >
                   <PanelRightOpen className="size-4" />
-                  查看分析过程
+                  任务助手
                 </button>
               )}
             </div>

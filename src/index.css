@@ -138,3 +138,10 @@
   pointer-events: none;
   transform-origin: top left;
 }
+
+.direction-card-grid {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 280px), 1fr)
+  );
+}

@@ -554,8 +554,8 @@ export default function DeepMinePhase1({
     <PageShell className="h-screen max-w-none overflow-hidden p-4 max-md:p-3">
       <div className="flex h-full items-stretch gap-4">
         <main className="deep-mine-result-pane flex h-full min-w-0 flex-1 flex-col gap-[18px] overflow-hidden pr-1">
-          <section className="max-h-[48%] shrink-0 overflow-y-auto bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
+          <section className="shrink-0 rounded-[24px] border border-[#e5eaf3] bg-white">
+            <div className="flex items-center justify-between gap-3 p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
               <h1 className="text-[24px] font-black m-0 text-[#102039]">
                 目标拆解
               </h1>
@@ -566,8 +566,12 @@ export default function DeepMinePhase1({
                 </strong>
               </p>
             </div>
+          </section>
 
-            <div className="p-[18px_24px_24px] max-md:p-[18px]">
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <div className="flex flex-col gap-[18px]">
+              <section className="rounded-[24px] border border-[#e5eaf3] bg-white">
+                <div className="p-[18px_24px_24px] max-md:p-[18px]">
               <div className="mb-[18px] flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
                   <h2 className="text-[20px] font-black m-0 text-[#102039]">
@@ -584,7 +588,7 @@ export default function DeepMinePhase1({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3.5">
+              <div className="direction-card-grid grid gap-3.5">
                 {selectedDirections.map((direction) => (
                   <article
                     key={direction.id}
@@ -641,10 +645,10 @@ export default function DeepMinePhase1({
                   </div>
                 )}
               </div>
-            </div>
-          </section>
+                </div>
+              </section>
 
-          <section className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+              <section className="rounded-[24px] border border-[#e5eaf3] bg-white">
             <div className="flex items-center justify-between gap-3 px-6 pt-[18px] max-md:px-[18px]">
               <h2 className="text-[20px] font-black m-0 text-[#102039]">
                 候选技术方向
@@ -660,9 +664,9 @@ export default function DeepMinePhase1({
                 </button>
               )}
             </div>
-            <div className="min-h-0 flex-1 overflow-hidden px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
+            <div className="px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
               <div
-                className={`grid h-full content-start grid-cols-1 gap-3.5 overflow-y-auto pr-1 md:grid-cols-2 2xl:grid-cols-3 ${
+                className={`direction-card-grid grid content-start gap-3.5 ${
                   isUpdatingCandidates
                     ? "pointer-events-none opacity-80"
                     : "opacity-100"
@@ -703,9 +707,11 @@ export default function DeepMinePhase1({
                 )}
               </div>
             </div>
-          </section>
+              </section>
+            </div>
+          </div>
 
-          <div className="z-20 flex shrink-0 items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:flex-col max-md:items-stretch">
+          <div className="z-20 flex shrink-0 items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] backdrop-blur-[10px] max-md:flex-col max-md:items-stretch">
             <div>
               <div className="text-[14px] font-bold text-[#102039]">
                 {isUpdatingCandidates

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
-import { animate } from "motion";
 import {
   ArrowRight,
   PencilLine,
@@ -154,6 +153,7 @@ export default function Home({ onStartTask }: HomeProps) {
         height: `${sourceRect.height}px`,
       });
       document.body.appendChild(cardClone);
+      document.body.classList.add("task-workspace-transitioning");
 
       flushSync(() => {
         onStartTask("DeepMine", trimmedInputValue);
@@ -163,67 +163,38 @@ export default function Home({ onStartTask }: HomeProps) {
 
       if (!workspace) {
         cardClone.remove();
+        document.body.classList.remove("task-workspace-transitioning");
         return;
       }
 
-      const { targetPanel, resultPane } = workspace;
+      const { targetPanel } = workspace;
       const targetRect = targetPanel.getBoundingClientRect();
-      const motionDuration = prefersReducedMotion ? 0.24 : 0.82;
-      const cardMovement = animate(
-        cardClone,
+      const transition = cardClone.animate(
+        [
+          {
+            transform: "translate(0, 0) scale(1)",
+            opacity: 1,
+            borderRadius: "22px",
+          },
+          {
+            transform: `translate(${targetRect.left - sourceRect.left}px, ${targetRect.top - sourceRect.top}px) scale(${targetRect.width / sourceRect.width}, ${Math.min(targetRect.height / sourceRect.height, 1.12)})`,
+            opacity: 0.18,
+            borderRadius: "18px",
+          },
+        ],
         {
-          x: targetRect.left - sourceRect.left,
-          y: targetRect.top - sourceRect.top,
-          scaleX: targetRect.width / sourceRect.width,
-          scaleY: Math.min(targetRect.height / sourceRect.height, 1.08),
-          borderRadius: "18px",
-        },
-        {
-          type: "spring",
-          visualDuration: motionDuration,
-          bounce: prefersReducedMotion ? 0 : 0.1,
-        },
-      );
-      const cardFade = animate(
-        cardClone,
-        {
-          opacity: [1, 0.72, 0.06],
-        },
-        {
-          duration: motionDuration,
-          times: [0, 0.72, 1],
-          ease: [0.2, 0.72, 0.25, 1],
+          duration: prefersReducedMotion ? 0 : 420,
+          easing: "cubic-bezier(.2,.75,.25,1)",
+          fill: "forwards",
         },
       );
 
-      animate(
-        targetPanel,
-        { opacity: [0, 1], x: [14, 0] },
-        {
-          delay: prefersReducedMotion ? 0 : 0.12,
-          type: "spring",
-          visualDuration: prefersReducedMotion ? 0.2 : 0.66,
-          bounce: 0.06,
-        },
-      );
-
-      if (resultPane) {
-        animate(
-          resultPane,
-          {
-            opacity: [0, 1],
-            y: [12, 0],
-          },
-          {
-            delay: prefersReducedMotion ? 0 : 0.14,
-            type: "spring",
-            visualDuration: prefersReducedMotion ? 0.2 : 0.7,
-            bounce: 0.05,
-          },
-        );
+      try {
+        await transition.finished;
+      } finally {
+        cardClone.remove();
+        document.body.classList.remove("task-workspace-transitioning");
       }
-
-      Promise.all([cardMovement, cardFade]).then(() => cardClone.remove());
     };
 
     nextEvents.forEach((nextEvent, index) => {

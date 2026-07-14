@@ -139,6 +139,25 @@
   transform-origin: top left;
 }
 
+.deep-mine-result-pane,
+.deep-mine-assistant-panel {
+  transition: opacity 280ms ease;
+}
+
+.task-workspace-transitioning .deep-mine-result-pane,
+.task-workspace-transitioning .deep-mine-assistant-panel {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deep-mine-result-pane,
+  .deep-mine-assistant-panel {
+    transition-duration: 0ms;
+  }
+}
+
 .direction-card-grid {
   grid-template-columns: repeat(
     auto-fit,

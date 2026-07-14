@@ -560,18 +560,11 @@ export default function DeepMinePhase1({
                 目标拆解
               </h1>
               <p className="m-0 text-right text-[13px] font-bold text-[#8a96a8] leading-[1.65] max-md:text-left">
-                当前任务：
+                任务指令：
                 <strong className="font-black text-[#526078]">
-                  {taskName}
+                  {TASK_INSTRUCTION}
                 </strong>
               </p>
-            </div>
-
-            <div className="mx-6 mt-[14px] flex items-center gap-2.5 rounded-[14px] border border-[#e5eaf3] bg-[#fbfdff] px-[14px] py-3 text-[13px] leading-[1.6] text-[#536177] max-md:mx-[18px] max-md:flex-col max-md:items-start">
-              <span className="shrink-0 rounded-full bg-[#edf4ff] px-[9px] py-[5px] text-[12px] font-black text-[#2f6df6]">
-                任务指令
-              </span>
-              <span>{TASK_INSTRUCTION}</span>
             </div>
 
             <div className="p-[18px_24px_24px] max-md:p-[18px]">
@@ -652,10 +645,20 @@ export default function DeepMinePhase1({
           </section>
 
           <section className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="flex flex-col gap-2 p-[18px_24px_0] md:flex-row md:items-center md:justify-between max-md:px-[18px]">
+            <div className="flex items-center justify-between gap-3 px-6 pt-[18px] max-md:px-[18px]">
               <h2 className="text-[20px] font-black m-0 text-[#102039]">
                 候选技术方向
               </h2>
+              {!drawerOpen && (
+                <button
+                  type="button"
+                  onClick={handleOpenProcessDrawer}
+                  className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
+                >
+                  <PanelRightOpen className="size-4" />
+                  查看分析过程
+                </button>
+              )}
             </div>
             <div className="min-h-0 flex-1 overflow-hidden px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
               <div
@@ -700,21 +703,6 @@ export default function DeepMinePhase1({
                 )}
               </div>
             </div>
-            {!drawerOpen && (
-              <div className="flex shrink-0 items-center justify-between gap-3 border-t border-[#e5eaf3] bg-[#fbfdff] px-6 py-3 max-md:px-[18px]">
-                <span className="text-[12px] font-bold text-[#8793a7]">
-                  查看候选方向的生成与检索过程
-                </span>
-                <button
-                  type="button"
-                  onClick={handleOpenProcessDrawer}
-                  className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
-                >
-                  <PanelRightOpen className="size-4" />
-                  查看分析过程
-                </button>
-              </div>
-            )}
           </section>
 
           <div className="z-20 flex shrink-0 items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:flex-col max-md:items-stretch">
@@ -787,12 +775,12 @@ export default function DeepMinePhase1({
             <div className="flex items-start justify-between gap-3 border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[18px] py-[16px]">
               <div className="min-w-0">
                 <h2 className="m-0 text-[20px] font-black leading-[1.35] text-[#102039]">
-                  AI 分析过程
+                  任务助手
                 </h2>
                 <p className="m-0 mt-1.5 text-[13px] leading-[1.5] text-[#7b879b]">
                   {isUpdatingCandidates
                     ? "正在通过多轮 Web Search 更新整体候选方向。"
-                    : "展示整体技术方向的推理、检索与汇总过程。"}
+                    : "任务要求、分析过程与历次调整。"}
                 </p>
               </div>
               <button
@@ -840,13 +828,11 @@ export default function DeepMinePhase1({
             </div>
             <div className="shrink-0 border-t border-[#e3ebf6] bg-white p-3.5">
               <div className="mb-2 flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-[13px] font-black text-[#13213a]">
-                    继续调整
-                  </div>
-                  <div className="mt-0.5 text-[11px] text-[#8793a7]">
-                    当前结果会保留至新结果生成
-                  </div>
+                <div className="text-[13px] font-black text-[#13213a]">
+                  继续调整
+                </div>
+                <div className="text-right text-[11px] text-[#8793a7]">
+                  当前结果会保留至新结果生成
                 </div>
               </div>
               <div className="rounded-[14px] border border-[#dfe7f2] bg-[#fbfdff] p-2 focus-within:border-[#a9c2ff] focus-within:bg-white">
@@ -873,7 +859,7 @@ export default function DeepMinePhase1({
                         分析中
                       </>
                     ) : (
-                      "开始分析"
+                      "调整分析"
                     )}
                   </button>
                 </div>

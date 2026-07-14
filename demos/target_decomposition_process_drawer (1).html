@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechAlpha - 技术方向分析</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --nav:#08152b;--nav2:#0b1930;--bg:#f4f7fb;--card:#fff;--text:#13213a;
+      --muted:#68758b;--light:#96a2b5;--line:#e3eaf4;--blue:#2f6df6;
+      --blue2:#edf4ff;--green:#16a864;--green2:#ecf9f2;--amber:#f59e0b;
+      --shadow:0 14px 38px rgba(20,43,85,.07);--radius:18px;
+    }
+    html,body{margin:0;min-height:100%;font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;background:var(--bg);color:var(--text)}
+    button,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:204px minmax(0,1fr)}
+
+    /* global navigation */
+    .sidebar{height:100vh;position:sticky;top:0;background:linear-gradient(180deg,var(--nav),var(--nav2));color:#fff;padding:0 10px;display:flex;flex-direction:column;z-index:20}
+    .brand{height:60px;padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .brand-name{font-weight:900;font-size:18px;line-height:22px;color:#b9d2ff}.brand-sub{font-size:10px;letter-spacing:.7px;color:#75a2f8}
+    .nav{padding-top:16px;display:flex;flex-direction:column;gap:6px}.nav-item{height:38px;padding:0 10px;border-radius:9px;color:#c5d2e6;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:650}
+    .nav-item.active{background:var(--blue);color:#fff}.nav-item svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .recent-title{margin:24px 8px 8px;color:#61718f;font-size:11px;font-weight:800}.recent-item{padding:8px;color:#8ca0be;font-size:11px;line-height:1.4;border-radius:7px}
+    .spacer{flex:1}.account{border-top:1px solid rgba(255,255,255,.08);padding:14px 6px 12px;display:flex;align-items:center;gap:9px}.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#366ff7,#7659ef);display:grid;place-items:center;font-size:12px;font-weight:900}.account b{font-size:12px}.account small{display:block;color:#8fa3c0;margin-top:3px;font-size:10px}
+
+    /* first-run creation state */
+    .stage{min-width:0;min-height:100vh;position:relative;overflow:hidden}
+    .creation{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:48px;background:radial-gradient(circle at 50% 42%,#fff 0,#f5f8fd 42%,#f1f5fb 100%);transition:opacity .58s ease,transform .58s cubic-bezier(.2,.72,.25,1);z-index:5}
+    .creation.leaving{opacity:0;transform:scale(.992);pointer-events:none}.creation.hidden{opacity:0;transform:scale(.992);pointer-events:none;visibility:hidden}
+    .creation-inner{width:min(780px,100%)}
+    .creation-heading{text-align:center;margin-bottom:28px;transition:.25s ease}.creation-heading h1{margin:0;font-size:31px;letter-spacing:-.5px}.creation-heading p{margin:10px 0 0;color:var(--muted);font-size:14px}
+    .session-card{background:#fff;border:1px solid #dfe7f3;border-radius:22px;box-shadow:0 22px 56px rgba(28,53,98,.10);padding:18px;transform-origin:top left}
+    .prompt-label{display:flex;align-items:center;gap:8px;color:#65748b;font-size:12px;font-weight:800;margin-bottom:9px}.prompt-label span{width:22px;height:22px;border-radius:7px;background:var(--blue2);color:var(--blue);display:grid;place-items:center}.prompt-label svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+    .prompt-box{display:flex;gap:12px;align-items:flex-end;border:1px solid #dbe5f2;border-radius:15px;padding:12px;background:#fbfdff;transition:.2s}
+    .prompt-box:focus-within{border-color:#9ab7ff;box-shadow:0 0 0 3px rgba(47,109,246,.08)}
+    .prompt-box textarea{border:0;outline:0;resize:none;background:transparent;width:100%;height:64px;line-height:1.65;color:#22314a;font-size:14px}
+    .start-btn{height:38px;border:0;border-radius:10px;background:var(--blue);color:#fff;padding:0 15px;font-weight:800;white-space:nowrap;box-shadow:0 8px 20px rgba(47,109,246,.22)}
+    .start-btn:disabled{opacity:.55;cursor:default}
+    .analysis-stream{display:none;margin-top:16px;border-top:1px solid var(--line);padding-top:5px}.analysis-stream.show{display:block}
+    .stream-head{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 8px}.stream-head b{font-size:14px}.stream-head span{font-size:12px;color:var(--muted)}
+    .stream-list{position:relative;padding-left:30px}.stream-list:before{content:"";position:absolute;left:10px;top:8px;bottom:12px;width:1px;background:#dfe7f2}
+    .stream-event{position:relative;padding:7px 0 11px;opacity:0;transform:translateY(7px);animation:eventIn .3s forwards}.stream-icon{position:absolute;left:-30px;top:5px;width:21px;height:21px;border-radius:7px;background:#f0f5fd;border:1px solid #dae5f4;color:#6681a7;display:grid;place-items:center;z-index:1}.stream-icon svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.stream-event.done .stream-icon{background:var(--green2);border-color:#c9edda;color:var(--green)}
+    .stream-event b{font-size:13px}.stream-event p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.55}.stream-event.running .stream-icon:after{content:"";position:absolute;inset:-3px;border:1px solid #8fb0ff;border-radius:9px;animation:pulse 1.2s infinite}
+    .transition-note{display:none;margin:10px 0 0;text-align:center;color:var(--green);font-weight:800;font-size:12px}.transition-note.show{display:block}
+    @keyframes eventIn{to{opacity:1;transform:none}}@keyframes pulse{0%,100%{opacity:.25;transform:scale(.88)}50%{opacity:1;transform:scale(1.08)}}
+
+    /* stable workspace */
+    .workspace{height:100vh;display:grid;grid-template-columns:minmax(680px,1fr) clamp(380px,29vw,448px);gap:16px;padding:16px;pointer-events:none;visibility:hidden}
+    .workspace.preparing,.workspace.ready{visibility:visible}.workspace.ready{pointer-events:auto}
+    .result-pane{min-width:0;height:calc(100vh - 32px);overflow:auto;padding:1px 3px 86px;scrollbar-width:thin;opacity:0;transform:translateY(12px);transition:opacity .56s ease,transform .62s cubic-bezier(.2,.72,.25,1)}.workspace.ready .result-pane{opacity:1;transform:none}
+    .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin:3px 2px 15px}.page-head h1{font-size:25px;margin:0 0 7px}.page-head p{font-size:13px;color:var(--muted);margin:0}.task-chip{max-width:430px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;color:#58677d;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .result-guide{max-height:88px;overflow:hidden;margin:0 0 14px;border:1px solid #8eafff;border-radius:13px;background:linear-gradient(100deg,#e8f1ff 0%,#f4f8ff 72%,#fff 100%);display:flex;align-items:center;gap:12px;padding:12px 14px;box-shadow:0 9px 22px rgba(47,109,246,.11);transition:max-height .28s ease,opacity .22s ease,margin .28s ease,padding .28s ease,border-width .28s ease}.result-guide.resolved{max-height:0;opacity:0;margin-bottom:0;padding-top:0;padding-bottom:0;border-width:0;box-shadow:none}.guide-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#2f6df6,#5d83fa);color:#fff;display:grid;place-items:center;flex:none;box-shadow:0 7px 17px rgba(47,109,246,.28)}.guide-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.guide-copy{min-width:0;flex:1}.guide-title-row{display:flex;align-items:center;gap:8px}.guide-step{border-radius:999px;background:var(--blue);color:#fff;padding:3px 7px;font-size:9px;font-weight:900;letter-spacing:.2px}.guide-copy b{display:block;font-size:13px;color:#1b3154}.guide-copy p{margin:4px 0 0;color:#586b87;font-size:10px;line-height:1.45}.guide-action{display:flex;align-items:center;gap:6px;color:#fff;background:var(--blue);border-radius:9px;padding:7px 10px;font-size:10px;font-weight:900;white-space:nowrap;box-shadow:0 6px 15px rgba(47,109,246,.2)}.guide-action svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;animation:guideDown 1.1s ease-in-out infinite}
+    .panel-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin-bottom:14px}
+    .selected-section{padding:14px 16px;transition:opacity .32s ease,filter .32s ease,transform .32s ease}.section-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}.section-title{display:flex;align-items:center;gap:8px}.section-title h2{font-size:16px;margin:0}.count{color:var(--blue);background:var(--blue2);border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900}
+    .selected-content{margin-top:11px}.selected-empty{height:42px;border:1px dashed #d5dfec;background:#fafcff;border-radius:11px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;color:#8a97aa;font-size:12px}.selected-empty strong{color:#637189;font-weight:750}.selected-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.selected-card{min-width:0;border:1px solid #b9cdfd;background:#f8fbff;border-radius:11px;padding:10px 11px;display:flex;gap:8px;justify-content:space-between}.selected-card b{display:block;font-size:12px;line-height:1.4}.selected-card span{display:block;margin-top:4px;color:#7d8ba0;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.remove{border:0;background:transparent;color:#8b98ab;width:24px;height:24px;border-radius:7px;flex:none}.remove:hover{background:#fff0f0;color:#e34c4c}
+    .candidate-section{padding:16px;position:relative}.candidate-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px}.candidate-head h2{font-size:17px;margin:0 0 5px}.candidate-head p{font-size:11px;color:var(--muted);margin:0}.result-state{font-size:11px;color:var(--green);font-weight:800}.candidate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.candidate-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff;min-height:142px;display:flex;flex-direction:column;transition:.18s}.candidate-card:hover{border-color:#a7bfff;box-shadow:0 10px 24px rgba(47,109,246,.08);transform:translateY(-1px)}.candidate-top{display:flex;justify-content:space-between;gap:10px}.candidate-name{font-size:14px;font-weight:850;line-height:1.45}.add-btn{height:29px;flex:none;padding:0 10px;border:1px solid #a9c0fb;border-radius:8px;background:#f4f8ff;color:var(--blue);font-size:10px;font-weight:850}.add-btn:hover{background:var(--blue);color:#fff}.candidate-desc{font-size:11px;color:#6f7d91;line-height:1.6;margin:8px 0 10px;flex:1}.tags{display:flex;gap:5px;flex-wrap:wrap}.tag{background:#f3f6fa;color:#607088;border-radius:999px;padding:4px 7px;font-size:10px}.detail-link{border:0;background:transparent;color:#75849a;padding:0;font-size:10px;margin-left:auto}.detail-link:hover{color:var(--blue)}
+    .workspace.guide-active .candidate-card:first-child{border-color:#91aff7;background:linear-gradient(180deg,#fbfdff,#fff)}.workspace.guide-active .candidate-card:first-child .add-btn{background:var(--blue);color:#fff;border-color:var(--blue);animation:buttonPulse 1.1s ease-in-out 3}
+    .workspace.ready .page-head{animation:revealDown .42s .05s both}.workspace.ready .selected-section{animation:revealDown .46s .14s both}.workspace.ready .candidate-section{animation-delay:.23s}
+    @keyframes revealDown{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}@keyframes buttonPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(47,109,246,.3)}50%{transform:scale(1.04);box-shadow:0 0 0 7px rgba(47,109,246,.13)}}@keyframes guideDown{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+    .bottom-bar{position:sticky;bottom:10px;height:66px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);box-shadow:0 -10px 30px rgba(28,47,82,.08);display:flex;align-items:center;justify-content:space-between;padding:0 15px;z-index:4}.bottom-bar b{font-size:12px}.bottom-bar span{font-size:11px;color:var(--muted);margin-left:8px}.next-btn{height:38px;border:0;border-radius:10px;padding:0 15px;background:var(--blue);color:#fff;font-weight:850}.next-btn:disabled{background:#d7deea;color:#8d99aa;cursor:not-allowed;box-shadow:none}
+
+    /* task panel */
+    .task-panel{height:calc(100vh - 32px);background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:0;overflow:hidden;transform-origin:top left;opacity:0;transform:translateX(14px);transition:opacity .42s .2s ease,transform .52s .2s cubic-bezier(.2,.72,.25,1)}.workspace.ready .task-panel{opacity:1;transform:none}
+    .task-panel-content{display:flex;flex-direction:column;height:100%;opacity:0;transition:opacity .3s .32s}.workspace.ready .task-panel-content{opacity:1}.workspace.panel-collapsed{grid-template-columns:minmax(680px,1fr) 0;gap:0}.workspace.panel-collapsed .task-panel{opacity:0;pointer-events:none;transform:translateX(18px)}
+    .task-head{height:67px;border-bottom:1px solid var(--line);padding:0 15px;display:flex;align-items:center;justify-content:space-between}.task-head h2{font-size:15px;margin:0}.task-head p{font-size:10px;color:var(--muted);margin:4px 0 0}.icon-btn{border:0;background:#f3f6fa;width:31px;height:31px;border-radius:9px;color:#69788d;display:grid;place-items:center}.icon-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8}
+    .process{flex:1;overflow:auto;padding:14px 15px 8px;scrollbar-width:thin}.round{padding-bottom:15px}.round+.round{border-top:1px solid var(--line);padding-top:15px}.round-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.round-head b{font-size:12px}.round-status{font-size:10px;color:var(--green);background:var(--green2);border-radius:999px;padding:4px 7px;font-weight:800}.round-status.running{color:var(--blue);background:var(--blue2)}
+    .user-request{background:#edf4ff;border:1px solid #d1e0ff;border-radius:12px 12px 4px 12px;padding:10px 11px;color:#344862;font-size:11px;line-height:1.55;margin-left:30px}.request-meta{color:#6980a5;font-size:9px;margin-bottom:4px;font-weight:800}
+    .timeline{position:relative;margin-top:11px;padding-left:27px}.timeline:before{content:"";position:absolute;left:9px;top:9px;bottom:12px;width:1px;background:#e0e7f1}.event{position:relative;padding:3px 0 12px}.event-mark{position:absolute;left:-27px;top:0;width:19px;height:19px;border-radius:6px;background:#f3f6fa;border:1px solid #e0e7f1;color:#6f829e;display:grid;place-items:center;z-index:1}.event-mark svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.event.done .event-mark{color:var(--green);background:var(--green2);border-color:#ccebdc}.event.running .event-mark{color:var(--blue);background:var(--blue2);border-color:#c9d9ff}.event b{font-size:11px;line-height:1.3}.event p{margin:3px 0 0;color:#738197;font-size:10px;line-height:1.55}.event-detail{margin-top:6px;padding:7px 8px;background:#f7f9fc;border-radius:8px;color:#6f7d90;font-size:9px;line-height:1.5}
+    .composer{border-top:1px solid var(--line);padding:12px;background:#fbfcfe}.composer-label{display:flex;align-items:center;margin:0 2px 7px}.composer-label b{font-size:11px}.composer-box{border:1px solid #d8e2ef;border-radius:14px;background:#fff;padding:9px 9px 8px;box-shadow:0 7px 18px rgba(27,50,89,.04);transition:.18s}.composer-box:focus-within{border-color:#9bb7fb;box-shadow:0 0 0 3px rgba(47,109,246,.07)}.composer textarea{width:100%;height:54px;resize:none;border:0;outline:0;color:#263750;font-size:11px;line-height:1.55}.composer-actions{display:flex;align-items:center;justify-content:space-between;margin-top:5px}.composer-tip{font-size:9px;color:#99a4b5}.apply-btn{width:31px;height:31px;border:0;border-radius:50%;background:var(--blue);color:#fff;padding:0;display:grid;place-items:center;box-shadow:0 5px 13px rgba(47,109,246,.22)}.apply-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.apply-btn:hover{background:#245edb}.apply-btn:disabled{opacity:.45;cursor:default;box-shadow:none}
+    .panel-toggle{display:none;position:fixed;right:17px;bottom:17px;height:38px;border:0;border-radius:12px;background:#10284d;color:#fff;padding:0 13px;box-shadow:0 10px 25px rgba(10,31,65,.25);z-index:45}.panel-toggle.force{display:block}
+
+    .morph-clone{position:fixed;z-index:100;overflow:hidden;pointer-events:none;margin:0!important}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:#13213a;color:#fff;border-radius:10px;padding:10px 14px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:120}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .modal-mask{position:fixed;inset:0;background:rgba(7,18,38,.32);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}.modal-mask.show{display:flex}.modal{width:min(540px,100%);background:#fff;border-radius:18px;box-shadow:0 24px 80px rgba(8,23,48,.25);padding:20px}.modal-top{display:flex;justify-content:space-between;gap:16px}.modal h3{margin:0;font-size:17px}.modal-close{border:0;background:#f2f5f9;width:29px;height:29px;border-radius:8px}.modal p{font-size:12px;color:var(--muted);line-height:1.7}.query{background:#f6f8fb;border-radius:10px;padding:11px;font-family:ui-monospace,Consolas,monospace;font-size:10px;color:#4e5f77;line-height:1.6;word-break:break-all}
+
+    @media(max-width:1180px){
+      .workspace{grid-template-columns:1fr}.task-panel{position:fixed;top:12px;right:12px;bottom:12px;height:auto;width:min(430px,calc(100vw - 28px));z-index:40;transform:translateX(calc(100% + 20px));transition:.22s}.task-panel.open{transform:none}.panel-toggle{display:block}.result-pane{height:calc(100vh - 32px)}
+    }
+    @media(max-width:820px){.app{grid-template-columns:64px 1fr}.brand-name,.brand-sub,.nav-item span,.recent-title,.recent-item,.account div{display:none}.nav-item{justify-content:center}.candidate-grid{grid-template-columns:1fr}.selected-grid{grid-template-columns:1fr}.workspace{padding:10px}.page-head{display:block}.task-chip{margin-top:10px}.creation{padding:22px}.creation-heading h1{font-size:25px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-name">TechAlpha</div><div class="brand-sub">AI INVESTMENT OS</div></div>
+      <nav class="nav">
+        <div class="nav-item active" id="newTaskNav"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2 2 0 013 3L7 19l-4 1 1-4z"/></svg><span>新建任务</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>企业库</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M6 2h9l4 4v16H6zM14 2v5h5M9 13h6M9 17h6"/></svg><span>报告库</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M5 21V4m0 1h11l-2 4 2 4H5"/></svg><span>事件跟踪</span></div>
+      </nav>
+      <div class="recent-title">最近任务记录</div>
+      <div class="recent-item">固态电解质材料</div><div class="recent-item">分析钠电池正极材料赛道机会</div><div class="recent-item">挖掘钙钛矿材料核心企业</div>
+      <div class="spacer"></div>
+      <div class="account"><div class="avatar">A</div><div><b>AI引擎 · 试用版</b><small>初筛额度 7/10</small></div></div>
+    </aside>
+
+    <main class="stage">
+      <section class="creation" id="creation">
+        <div class="creation-inner">
+          <div class="creation-heading" id="creationHeading"><h1>开始发现值得关注的硬科技企业</h1><p>输入赛道、技术方向或投资关注点，系统将拆解方向并生成企业线索。</p></div>
+          <div class="session-card" id="sessionCard">
+            <div class="prompt-label"><span><svg viewBox="0 0 24 24"><path d="M4 20h16M15 4l5 5L9 20H4v-5z"/></svg></span>投资方向与关注重点</div>
+            <div class="prompt-box" id="promptBox">
+              <textarea id="initialPrompt">固态电解质材料，关注产业化、低成本、安全性和规模化应用。</textarea>
+              <button class="start-btn" id="startBtn">开始分析 →</button>
+            </div>
+            <div class="analysis-stream" id="analysisStream">
+              <div class="stream-head"><b>正在建立技术方向</b><span id="streamStatus">准备分析</span></div>
+              <div class="stream-list" id="streamList"></div>
+              <div class="transition-note" id="transitionNote">首轮结果已生成，正在进入任务工作台</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace" id="workspace">
+        <div class="result-pane">
+          <header class="page-head"><div><h1>技术方向分析</h1><p>从候选方向中选择最多3个，进入下一步企业线索分析。</p></div><div class="task-chip" id="taskChip"></div></header>
+          <section class="panel-card selected-section">
+            <div class="section-title-row"><div class="section-title"><h2>已选技术方向</h2><span class="count" id="selectedCount">0/3</span></div><span style="font-size:10px;color:#8d99ab">选择结果将用于后续企业发现</span></div>
+            <div class="selected-content" id="selectedContent"></div>
+          </section>
+          <section class="panel-card candidate-section">
+            <div class="candidate-head"><div><h2>候选技术方向</h2><p>当前仅展示本轮分析结果，可在右侧继续补充要求。</p></div><span class="result-state" id="resultState">已找到6个方向</span></div>
+            <div class="result-guide" id="resultGuide">
+              <span class="guide-icon"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg></span>
+              <div class="guide-copy"><div class="guide-title-row"><span class="guide-step">下一步</span><b id="guideTitle">从6个候选方向中选择1–3个</b></div><p>点击卡片右上角的“选择”，选中的技术方向会显示在上方。</p></div>
+              <span class="guide-action">点击蓝色“选择” <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </div>
+            <div class="candidate-grid" id="candidateGrid"></div>
+          </section>
+          <div class="bottom-bar"><div><b id="bottomText">请从候选方向中选择</b><span id="bottomSub">最多选择3个方向</span></div><button class="next-btn" id="nextBtn" disabled>进入线索分析 →</button></div>
+        </div>
+
+        <aside class="task-panel" id="taskPanel">
+          <div class="task-panel-content">
+            <header class="task-head"><div><h2>任务助手</h2><p>任务要求、分析过程与历次调整</p></div><button class="icon-btn" id="closePanel" title="收起"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button></header>
+            <div class="process" id="process"></div>
+            <footer class="composer">
+              <div class="composer-label"><b>调整要求</b></div>
+              <div class="composer-box"><textarea id="adjustInput" placeholder="输入调整要求，例如：优先关注已有中试验证、成本下降路径清晰的方向"></textarea><div class="composer-actions"><span class="composer-tip">Enter发送 · Shift+Enter换行</span><button class="apply-btn" id="applyBtn" title="发送调整要求" aria-label="发送调整要求"><svg viewBox="0 0 24 24"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"/></svg></button></div></div>
+            </footer>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+  <button class="panel-toggle" id="panelToggle">任务助手</button>
+  <div class="toast" id="toast"></div>
+  <div class="modal-mask" id="modalMask"><div class="modal"><div class="modal-top"><h3 id="modalTitle"></h3><button class="modal-close" id="modalClose">×</button></div><p id="modalDesc"></p><div class="query" id="modalQuery"></div></div></div>
+
+  <script>
+    const icons={
+      understand:'<svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14a7 7 0 118 0c-1.2 1-1.7 2-1.8 3h-4.4C9.7 16 9.2 15 8 14z"/></svg>',
+      search:'<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>',
+      branch:'<svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 5h2a5 5 0 015 5v6M8 5a6 6 0 016 6h2"/></svg>',
+      query:'<svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h4"/></svg>',
+      done:'<svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>'
+    };
+    const initialCandidates=[
+      {id:1,name:'硫化物固态电解质及硫化锂核心材料',desc:'适合寻找产业化进度较快、已有客户验证的材料企业。',tags:['产业化较快','材料壁垒'],query:'("硫化物固态电解质" OR "硫化锂" OR "Li2S") AND (固态电池 OR 全固态)'},
+      {id:2,name:'氧化物固态电解质及锂基材料体系',desc:'关注化学稳定性、空气稳定性和陶瓷化制备工艺。',tags:['安全性','工艺成熟'],query:'("氧化物固态电解质" OR LLZO OR LATP OR LAGP) AND (锂电池 OR 固态电池)'},
+      {id:3,name:'复合固态电解质及界面优化技术',desc:'适合寻找兼顾导电率、柔性和界面工程能力的企业。',tags:['界面工程','应用适配'],query:'("复合固态电解质" OR "界面改性" OR "界面涂层") AND 固态电池'},
+      {id:4,name:'聚合物固态电解质材料',desc:'关注柔性加工、薄膜制备和规模化生产能力。',tags:['低成本','柔性加工'],query:'("聚合物固态电解质" OR PEO OR PVDF) AND 锂电池'},
+      {id:5,name:'固态电池中试验证平台',desc:'关注样品交付、客户导入和工程化验证能力。',tags:['中试验证'],query:'("固态电池" AND 中试) OR ("全固态电池" AND 样品交付)'},
+      {id:6,name:'固态电池关键设备企业',desc:'关注干法制膜、叠片、压实和界面处理装备。',tags:['设备工艺'],query:'("干法电极" OR "固态电池设备" OR "界面处理设备")'}
+    ];
+    const updatedCandidates=[
+      {id:11,name:'低成本硫化物电解质规模化制备',desc:'聚焦硫化锂替代、连续合成和规模化成本下降路径。',tags:['低成本','规模化'],query:'("硫化物电解质" AND (低成本 OR 连续合成 OR 规模化))'},
+      {id:12,name:'低水敏硫化物材料与安全生产',desc:'关注空气稳定性、低水敏处理与安全生产工艺。',tags:['空气稳定','安全生产'],query:'("硫化物电解质" AND (空气稳定 OR 低水敏 OR 防潮))'},
+      {id:13,name:'复合电解质薄膜量产技术',desc:'关注薄膜制备、连续涂布、规模化良率和客户送样。',tags:['薄膜量产','客户验证'],query:'("复合电解质" AND (薄膜 OR 涂布 OR 连续化))'},
+      {id:14,name:'固态电池界面工程材料',desc:'突出界面稳定、锂枝晶抑制和循环寿命提升。',tags:['界面稳定','循环寿命'],query:'("锂枝晶" OR "界面稳定" OR "界面工程") AND 固态电池'},
+      {id:15,name:'固态电池材料中试放大平台',desc:'关注从小试到中试放大的工艺路线和客户送样能力。',tags:['中试放大'],query:'("固态电池材料" AND (中试 OR 放大 OR 送样))'},
+      {id:16,name:'固态电池检测与评价服务',desc:'关注材料表征、界面阻抗、循环寿命和安全评价。',tags:['检测评价'],query:'("固态电池" AND (检测 OR 表征 OR 评价 OR 阻抗))'}
+    ];
+    const initialEvents=[
+      {type:'understand',title:'理解任务要求',text:'识别投资方向、应用约束和产业化关注点。'},
+      {type:'branch',title:'拆解技术路线',text:'梳理硫化物、氧化物、聚合物与复合电解质路线。'},
+      {type:'search',title:'检索产业与专利信号',text:'核查技术成熟度、规模化进展与可检索企业信号。'},
+      {type:'query',title:'构建企业发现检索式',text:'将材料、工艺与应用场景转化为后续企业检索条件。'},
+      {type:'done',title:'形成首轮候选方向',text:'已生成6个候选技术方向，可开始选择或继续调整。'}
+    ];
+    let candidates=[...initialCandidates],selected=[],rounds=[],updateCount=0,working=false;
+    const $=id=>document.getElementById(id);
+    function toast(text){$('toast').textContent=text;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1700)}
+    function eventHtml(e,state='done'){return `<div class="event ${state}"><span class="event-mark">${icons[e.type]||icons.done}</span><b>${e.title}</b><p>${e.text}</p>${e.detail?`<div class="event-detail">${e.detail}</div>`:''}</div>`}
+    function renderProcess(){
+      $('process').innerHTML=rounds.map((r,i)=>`<section class="round"><div class="round-head"><b>${r.name}</b><span class="round-status ${r.status==='running'?'running':''}">${r.status==='running'?'进行中':'已完成'}</span></div><div class="user-request"><div class="request-meta">${i===0?'初始任务':'调整要求'}</div>${r.instruction}</div><div class="timeline">${r.events.map((e,j)=>eventHtml(e,r.status==='running'&&j===r.events.length-1?'running':'done')).join('')}</div></section>`).join('');
+      setTimeout(()=>$('process').scrollTop=$('process').scrollHeight,30);
+    }
+    function renderResults(){
+      $('selectedCount').textContent=`${selected.length}/3`;
+      if(!selected.length){$('selectedContent').innerHTML='<div class="selected-empty"><strong>尚未选择技术方向</strong><span>从下方候选方向中选择1–3个</span></div>'}
+      else{$('selectedContent').innerHTML=`<div class="selected-grid">${selected.map(x=>`<div class="selected-card"><div style="min-width:0"><b>${x.name}</b><span>${x.tags.join(' · ')}</span></div><button class="remove" onclick="removeSelected(${x.id})" title="移除">×</button></div>`).join('')}</div>`}
+      $('candidateGrid').innerHTML=candidates.map(x=>`<article class="candidate-card"><div class="candidate-top"><div class="candidate-name">${x.name}</div><button class="add-btn" onclick="addCandidate(${x.id})">＋ 选择</button></div><div class="candidate-desc">${x.desc}</div><div class="tags">${x.tags.map(t=>`<span class="tag">${t}</span>`).join('')}<button class="detail-link" onclick="openDetail(${x.id})">查看依据 →</button></div></article>`).join('');
+      $('bottomText').textContent=selected.length?`已选择${selected.length}个技术方向`:'请从候选方向中选择';$('bottomSub').textContent=selected.length?'可继续选择或进入线索分析':'最多选择3个方向';$('nextBtn').disabled=!selected.length||working;
+    }
+    function addCandidate(id){if(working)return toast('分析更新中，请稍候');if(selected.length>=3)return toast('最多选择3个技术方向');const i=candidates.findIndex(x=>x.id===id);if(i<0)return;selected.push(candidates.splice(i,1)[0]);$('workspace').classList.remove('guide-active');$('resultGuide').classList.add('resolved');renderResults();toast('已选择该方向')}
+    function removeSelected(id){const i=selected.findIndex(x=>x.id===id);if(i<0)return;candidates.unshift(selected.splice(i,1)[0]);renderResults()}
+    function openDetail(id){const x=[...candidates,...selected].find(v=>v.id===id);if(!x)return;$('modalTitle').textContent=x.name;$('modalDesc').textContent=x.desc;$('modalQuery').textContent='专利及企业检索式：'+x.query;$('modalMask').classList.add('show')}
+    function enterWorkspace(prompt){
+      $('taskChip').textContent='任务：'+prompt;rounds=[{name:'初始分析',instruction:prompt,status:'done',events:initialEvents}];renderProcess();renderResults();
+      const card=$('sessionCard'),from=card.getBoundingClientRect();$('workspace').classList.add('preparing');const target=$('taskPanel').getBoundingClientRect();const clone=card.cloneNode(true);clone.className='session-card morph-clone';Object.assign(clone.style,{left:from.left+'px',top:from.top+'px',width:from.width+'px',height:from.height+'px'});document.body.appendChild(clone);
+      $('creation').classList.add('leaving');setTimeout(()=>{$('workspace').classList.add('ready','guide-active');$('taskPanel').classList.add('open');$('resultGuide').classList.remove('resolved')},110);clone.animate([{transform:'translate(0,0) scale(1)',opacity:1,borderRadius:'22px'},{offset:.72,opacity:.72},{transform:`translate(${target.left-from.left}px,${target.top-from.top}px) scale(${target.width/from.width},${Math.min(target.height/from.height,1.08)})`,opacity:.08,borderRadius:'18px'}],{duration:680,easing:'cubic-bezier(.2,.72,.25,1)',fill:'forwards'}).finished.then(()=>{clone.remove();$('creation').classList.remove('leaving');$('creation').classList.add('hidden');$('workspace').classList.remove('preparing')});
+    }
+    function startInitial(){
+      if(working)return;const prompt=$('initialPrompt').value.trim();if(!prompt)return toast('请输入投资方向或关注重点');working=true;$('startBtn').disabled=true;$('promptBox').style.display='none';$('creationHeading').querySelector('h1').textContent='正在理解你的投资方向';$('creationHeading').querySelector('p').textContent='过程会从这里展开，首轮结果形成后进入任务工作台。';$('analysisStream').classList.add('show');$('streamList').innerHTML='';
+      let i=0;const next=()=>{if(i>0){const prev=$('streamList').lastElementChild;if(prev){prev.classList.remove('running');prev.classList.add('done')}}if(i===initialEvents.length){$('streamStatus').textContent='分析完成';$('transitionNote').classList.add('show');working=false;setTimeout(()=>enterWorkspace(prompt),650);return}const e=initialEvents[i];$('streamStatus').textContent=`${i+1}/${initialEvents.length}`;$('streamList').insertAdjacentHTML('beforeend',`<div class="stream-event running"><span class="stream-icon">${icons[e.type]}</span><b>${e.title}</b><p>${e.text}</p></div>`);i++;setTimeout(next,i===initialEvents.length?560:720)};next();
+    }
+    function applyAdjustment(){
+      if(working)return;const input=$('adjustInput'),instruction=input.value.trim();if(!instruction)return toast('请输入调整要求');working=true;updateCount++;const round={name:`调整分析 ${updateCount}`,instruction,status:'running',events:[{type:'understand',title:'理解新的筛选偏好',text:'保留当前结果作为参照，识别需要提升或降低的方向权重。'}]};rounds.push(round);input.value='';$('applyBtn').disabled=true;$('resultState').textContent='正在根据新要求调整';$('resultState').style.color='var(--blue)';renderProcess();renderResults();
+      const steps=[{type:'search',title:'补充检索产业信号',text:'核查中试验证、规模化能力和成本下降路径。'},{type:'branch',title:'重组候选技术方向',text:'合并相近方向，降低与新偏好不匹配的候选权重。'},{type:'query',title:'更新企业发现检索条件',text:'重新构建材料、工艺与应用场景的组合检索式。'},{type:'done',title:'本轮结果已更新',text:'已形成6个新的候选方向，主页面已切换为当前轮结果。',detail:'历史轮次保留在任务助手中；已选方向不受本次更新影响。'}];let i=0;const timer=setInterval(()=>{round.events.push(steps[i]);i++;if(i===steps.length){clearInterval(timer);round.status='done';candidates=updatedCandidates.filter(x=>!selected.some(s=>s.name===x.name));working=false;$('applyBtn').disabled=false;$('resultState').textContent=`已更新${candidates.length}个方向`;$('resultState').style.color='var(--green)';renderResults();toast('候选方向已更新')}renderProcess()},850);
+    }
+    function resetDemo(){$('workspace').classList.remove('ready','preparing','guide-active','panel-collapsed');$('resultGuide').classList.remove('resolved');$('creation').classList.remove('hidden','leaving');$('creation').removeAttribute('style');$('promptBox').style.display='flex';$('analysisStream').classList.remove('show');$('transitionNote').classList.remove('show');$('creationHeading').querySelector('h1').textContent='开始发现值得关注的硬科技企业';$('creationHeading').querySelector('p').textContent='输入赛道、技术方向或投资关注点，系统将拆解方向并生成企业线索。';$('startBtn').disabled=false;candidates=[...initialCandidates];selected=[];rounds=[];updateCount=0;working=false}
+    $('startBtn').addEventListener('click',startInitial);$('applyBtn').addEventListener('click',applyAdjustment);$('newTaskNav').addEventListener('click',resetDemo);$('modalClose').addEventListener('click',()=>$('modalMask').classList.remove('show'));$('modalMask').addEventListener('click',e=>{if(e.target===$('modalMask'))$('modalMask').classList.remove('show')});$('closePanel').addEventListener('click',()=>{if(innerWidth<=1180){$('taskPanel').classList.remove('open')}else{$('workspace').classList.add('panel-collapsed');$('panelToggle').classList.add('force')}});$('panelToggle').addEventListener('click',()=>{$('workspace').classList.remove('panel-collapsed');$('taskPanel').classList.add('open');$('panelToggle').classList.remove('force')});$('nextBtn').addEventListener('click',()=>toast('进入线索分析'));
+    $('initialPrompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))startInitial()});$('adjustInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();applyAdjustment()}});
+  </script>
+</body>
+</html>

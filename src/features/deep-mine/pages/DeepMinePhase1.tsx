@@ -553,7 +553,7 @@ export default function DeepMinePhase1({
   return (
     <PageShell className="h-screen max-w-none overflow-hidden p-4 max-md:p-3">
       <div className="flex h-full items-stretch gap-4">
-        <main className="flex h-full min-w-0 flex-1 flex-col gap-[18px] overflow-hidden pr-1">
+        <main className="deep-mine-result-pane flex h-full min-w-0 flex-1 flex-col gap-[18px] overflow-hidden pr-1">
           <section className="max-h-[48%] shrink-0 overflow-y-auto bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
             <div className="flex items-center justify-between gap-3 border-b border-[#e5eaf3] p-[20px_24px] max-md:flex-col max-md:items-start max-md:p-[18px_20px]">
               <h1 className="text-[24px] font-black m-0 text-[#102039]">
@@ -768,7 +768,7 @@ export default function DeepMinePhase1({
                 </div>
               ),
             }}
-            className={`z-30 flex max-w-[92vw] flex-col overflow-hidden rounded-[18px] border border-[#e3ebf6] bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] ${
+            className={`deep-mine-assistant-panel z-30 flex max-w-[92vw] flex-col overflow-hidden rounded-[18px] border border-[#e3ebf6] bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] ${
               isCompactLayout ? "right-3 top-3 z-40" : "shrink-0"
             }`}
           >

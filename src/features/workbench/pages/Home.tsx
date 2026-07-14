@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { flushSync } from "react-dom";
+import { animate } from "motion";
 import {
   ArrowRight,
   PencilLine,
@@ -22,6 +24,41 @@ const QUICK_PROMPTS = [
   "Chiplet先进封装",
   "低空经济传感器",
 ];
+
+function waitForWorkspaceTransitionTarget() {
+  return new Promise<{
+    targetPanel: HTMLElement;
+    resultPane: HTMLElement | null;
+  } | null>((resolve) => {
+    let frameCount = 0;
+
+    const findTarget = () => {
+      const targetPanel = document.querySelector<HTMLElement>(
+        ".deep-mine-assistant-panel",
+      );
+
+      if (targetPanel) {
+        resolve({
+          targetPanel,
+          resultPane: document.querySelector<HTMLElement>(
+            ".deep-mine-result-pane",
+          ),
+        });
+        return;
+      }
+
+      frameCount += 1;
+      if (frameCount >= 30) {
+        resolve(null);
+        return;
+      }
+
+      window.requestAnimationFrame(findTarget);
+    };
+
+    window.requestAnimationFrame(findTarget);
+  });
+}
 
 function createMockEvents(task: string): ProcessEvent[] {
   return [
@@ -70,6 +107,7 @@ export default function Home({ onStartTask }: HomeProps) {
   const [analysisStatus, setAnalysisStatus] = useState<AnalysisStatus>("idle");
   const [events, setEvents] = useState<ProcessEvent[]>([]);
   const timersRef = useRef<number[]>([]);
+  const analysisCardRef = useRef<HTMLFormElement>(null);
   const trimmedInputValue = inputValue.trim();
   const isIdle = analysisStatus === "idle";
 
@@ -95,18 +133,108 @@ export default function Home({ onStartTask }: HomeProps) {
     setEvents([]);
     setAnalysisStatus("streaming");
 
+    const enterWorkspace = async () => {
+      const sourceCard = analysisCardRef.current;
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (!sourceCard) {
+        onStartTask("DeepMine", trimmedInputValue);
+        return;
+      }
+
+      const sourceRect = sourceCard.getBoundingClientRect();
+      const cardClone = sourceCard.cloneNode(true) as HTMLFormElement;
+      cardClone.classList.add("task-transition-clone");
+      Object.assign(cardClone.style, {
+        left: `${sourceRect.left}px`,
+        top: `${sourceRect.top}px`,
+        width: `${sourceRect.width}px`,
+        height: `${sourceRect.height}px`,
+      });
+      document.body.appendChild(cardClone);
+
+      flushSync(() => {
+        onStartTask("DeepMine", trimmedInputValue);
+      });
+
+      const workspace = await waitForWorkspaceTransitionTarget();
+
+      if (!workspace) {
+        cardClone.remove();
+        return;
+      }
+
+      const { targetPanel, resultPane } = workspace;
+      const targetRect = targetPanel.getBoundingClientRect();
+      const motionDuration = prefersReducedMotion ? 0.24 : 0.82;
+      const cardMovement = animate(
+        cardClone,
+        {
+          x: targetRect.left - sourceRect.left,
+          y: targetRect.top - sourceRect.top,
+          scaleX: targetRect.width / sourceRect.width,
+          scaleY: Math.min(targetRect.height / sourceRect.height, 1.08),
+          borderRadius: "18px",
+        },
+        {
+          type: "spring",
+          visualDuration: motionDuration,
+          bounce: prefersReducedMotion ? 0 : 0.1,
+        },
+      );
+      const cardFade = animate(
+        cardClone,
+        {
+          opacity: [1, 0.72, 0.06],
+        },
+        {
+          duration: motionDuration,
+          times: [0, 0.72, 1],
+          ease: [0.2, 0.72, 0.25, 1],
+        },
+      );
+
+      animate(
+        targetPanel,
+        { opacity: [0, 1], x: [14, 0] },
+        {
+          delay: prefersReducedMotion ? 0 : 0.12,
+          type: "spring",
+          visualDuration: prefersReducedMotion ? 0.2 : 0.66,
+          bounce: 0.06,
+        },
+      );
+
+      if (resultPane) {
+        animate(
+          resultPane,
+          {
+            opacity: [0, 1],
+            y: [12, 0],
+          },
+          {
+            delay: prefersReducedMotion ? 0 : 0.14,
+            type: "spring",
+            visualDuration: prefersReducedMotion ? 0.2 : 0.7,
+            bounce: 0.05,
+          },
+        );
+      }
+
+      Promise.all([cardMovement, cardFade]).then(() => cardClone.remove());
+    };
+
     nextEvents.forEach((nextEvent, index) => {
       const timer = window.setTimeout(
         () => {
           setEvents((currentEvents) => [...currentEvents, nextEvent]);
-        if (index === nextEvents.length - 1) {
-          setAnalysisStatus("completed");
-          const transitionTimer = window.setTimeout(
-            () => onStartTask("DeepMine", trimmedInputValue),
-            650,
-          );
-          timersRef.current = [transitionTimer];
-        }
+          if (index === nextEvents.length - 1) {
+            setAnalysisStatus("completed");
+            const transitionTimer = window.setTimeout(enterWorkspace, 650);
+            timersRef.current = [transitionTimer];
+          }
         },
         500 + index * 850,
       );
@@ -131,8 +259,9 @@ export default function Home({ onStartTask }: HomeProps) {
         </div>
 
         <form
+          ref={analysisCardRef}
           onSubmit={handleStartTask}
-          className="rounded-[22px] border border-[#dfe7f3] bg-white p-[18px] text-left shadow-[0_22px_56px_rgba(28,53,98,0.10)]"
+          className="home-analysis-card rounded-[22px] border border-[#dfe7f3] bg-white p-[18px] text-left shadow-[0_22px_56px_rgba(28,53,98,0.10)]"
         >
           <div className="mb-2 flex items-center gap-2 text-[12px] font-extrabold text-[#65748b]">
             <span className="flex size-[22px] items-center justify-center rounded-[7px] bg-[#edf4ff] text-[#2f6df6]">

@@ -129,3 +129,12 @@
     scrollbar-gutter: stable;
     }
 }
+
+.task-transition-clone {
+  position: fixed !important;
+  z-index: 100;
+  margin: 0 !important;
+  overflow: hidden;
+  pointer-events: none;
+  transform-origin: top left;
+}

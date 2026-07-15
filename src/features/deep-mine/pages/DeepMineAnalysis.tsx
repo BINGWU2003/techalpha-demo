@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/PageShell";
 import {
@@ -15,7 +16,16 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  LoaderCircle,
+  PanelRightOpen,
+  X,
+} from "lucide-react";
+import { Resizable } from "re-resizable";
 
 const ALL_PATENT_DATA = [
   { year: "2010", count: 45 },
@@ -91,6 +101,28 @@ const WORDS = [
 ];
 
 const INDUSTRY_ENTERPRISE_COUNT = 350;
+
+const SCAN_DRAWER_WIDTH_STORAGE_KEY = "deep-mine-scan-drawer-width-v1";
+const COMPACT_SCAN_DRAWER_WIDTH = 460;
+const MIN_SCAN_DRAWER_WIDTH = 360;
+
+function getInitialScanDrawerWidth() {
+  const storedWidth = Number(
+    window.localStorage.getItem(SCAN_DRAWER_WIDTH_STORAGE_KEY),
+  );
+  const maxWidth = window.innerWidth * 0.75;
+
+  if (!Number.isFinite(storedWidth) || storedWidth <= 0) {
+    return window.innerWidth < 1024
+      ? Math.min(COMPACT_SCAN_DRAWER_WIDTH, window.innerWidth * 0.92)
+      : "36%";
+  }
+
+  return Math.min(
+    Math.max(storedWidth, Math.min(MIN_SCAN_DRAWER_WIDTH, maxWidth)),
+    maxWidth,
+  );
+}
 
 const TECH_ROUTE_DATA = [
   {
@@ -245,22 +277,52 @@ export default function DeepMineAnalysis({
   onExplore,
   onBack,
 }: DeepMineAnalysisProps) {
+  const [scanDrawerOpen, setScanDrawerOpen] = useState(true);
+  const [scanDrawerWidth, setScanDrawerWidth] = useState(
+    getInitialScanDrawerWidth,
+  );
+  const [isCompactLayout, setIsCompactLayout] = useState(
+    () => window.innerWidth < 1024,
+  );
+  const [previousRoundExpanded, setPreviousRoundExpanded] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const handleChange = (event: MediaQueryListEvent) =>
+      setIsCompactLayout(event.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
   return (
-    <PageShell>
-      <div className="grid grid-cols-1 gap-[18px] items-start">
-        <main>
+    <PageShell className="h-screen max-w-none overflow-hidden p-4 max-md:p-3">
+      <div className="flex h-full items-stretch gap-4">
+        <main className="min-w-0 flex-1 overflow-y-auto pr-1">
           <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
             <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h2 className="text-[24px] font-black m-0 text-[#102039]">
                   线索分析
                 </h2>
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#d7e4ff] bg-white/80 px-3 py-1.5 text-[13px] font-extrabold text-[#2563eb] shadow-sm">
-                  <span className="relative flex h-2.5 w-2.5 shrink-0">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-30"></span>
-                    <span className="relative inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-[#2563eb]"></span>
-                  </span>
-                  <span>正在分析中...</span>
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#d7e4ff] bg-white/80 px-3 py-1.5 text-[13px] font-extrabold text-[#2563eb] shadow-sm">
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-30"></span>
+                      <span className="relative inline-flex h-2.5 w-2.5 animate-pulse rounded-full bg-[#2563eb]"></span>
+                    </span>
+                    <span>正在分析中...</span>
+                  </div>
+                  {!scanDrawerOpen && (
+                    <button
+                      type="button"
+                      onClick={() => setScanDrawerOpen(true)}
+                      className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
+                    >
+                      <PanelRightOpen className="size-4" />
+                      线索扫描记录
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -269,7 +331,7 @@ export default function DeepMineAnalysis({
               {/* Enterprise Statistics Section */}
               <div className="space-y-5 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="bg-white border border-[#e5eaf3] rounded-[20px] p-5 shadow-sm flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[20px] p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                       <h3 className="text-[18px] font-black text-[#0f1f3d] mb-1">
                         候选企业线索已形成
@@ -289,7 +351,7 @@ export default function DeepMineAnalysis({
                   </div>
                 </div>
 
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <h3 className="text-[22px] font-black text-[#0f1f3d] mb-1">
                     技术路线线索统计
                   </h3>
@@ -337,7 +399,7 @@ export default function DeepMineAnalysis({
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-4">
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                     <div className="flex items-center gap-2 mb-5">
                       <div className="w-1.5 h-5 bg-[#2563eb] rounded-full"></div>
                       <h3 className="text-[18px] font-black text-[#0f1f3d]">
@@ -370,7 +432,7 @@ export default function DeepMineAnalysis({
                             contentStyle={{
                               borderRadius: "12px",
                               border: "none",
-                              boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                              boxShadow: "none",
                             }}
                           />
                           <Line
@@ -402,7 +464,7 @@ export default function DeepMineAnalysis({
                     </div>
                   </div>
 
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                     <div className="flex items-center gap-2 mb-7">
                       <div className="w-1.5 h-5 bg-[#10b981] rounded-full"></div>
                       <h3 className="text-[18px] font-black text-[#0f1f3d]">
@@ -436,7 +498,7 @@ export default function DeepMineAnalysis({
                 </div>
 
                 {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                     <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
                       专利类型分布
                     </h3>
@@ -484,7 +546,7 @@ export default function DeepMineAnalysis({
                     </div>
                   </div>
 
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                     <h3 className="text-[20px] font-black text-[#0f1f3d] mb-1">
                       专利有效性分布
                     </h3>
@@ -535,7 +597,7 @@ export default function DeepMineAnalysis({
               </div>
               {/* Stat Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     检索专利总数
                   </span>
@@ -546,7 +608,7 @@ export default function DeepMineAnalysis({
                     <span className="text-[#64748b] text-[13px]">件</span>
                   </div>
                 </div>
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     高价值专利 (发明)
                   </span>
@@ -557,7 +619,7 @@ export default function DeepMineAnalysis({
                     <span className="text-[#64748b] text-[13px]">件</span>
                   </div>
                 </div>
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     高相关性专利
                   </span>
@@ -568,7 +630,7 @@ export default function DeepMineAnalysis({
                     <span className="text-[#64748b] text-[13px]">件</span>
                   </div>
                 </div>
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     近三年新增专利
                   </span>
@@ -584,7 +646,7 @@ export default function DeepMineAnalysis({
               {/* Line Charts Row */}
               <div className="grid grid-cols-1 gap-4 mt-4 text-[#172033]">
                 {/* All Patents Line Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-1.5 h-4 bg-[#2563eb] rounded-full"></div>
                     <h3 className="text-[15px] font-bold">
@@ -617,7 +679,7 @@ export default function DeepMineAnalysis({
                           contentStyle={{
                             borderRadius: "12px",
                             border: "none",
-                            boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                            boxShadow: "none",
                           }}
                         />
                         <Line
@@ -642,7 +704,7 @@ export default function DeepMineAnalysis({
               {/* Pie Charts Row */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
                 {/* Patent Type Pie Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-1.5 h-4 bg-[#f59e0b] rounded-full"></div>
                     <h3 className="text-[15px] font-bold">专利类型分布</h3>
@@ -704,7 +766,7 @@ export default function DeepMineAnalysis({
                 </div>
 
                 {/* Patent Validity Pie Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm">
+                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-1.5 h-4 bg-[#8b5cf6] rounded-full"></div>
                     <h3 className="text-[15px] font-bold">专利有效性分布</h3>
@@ -767,7 +829,7 @@ export default function DeepMineAnalysis({
               </div>
 
               {/* Word Cloud Row */}
-              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 shadow-sm mt-4">
+              <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6 mt-4">
                 <div className="flex items-center gap-2 mb-6">
                   <div className="w-1.5 h-4 bg-[#f43f5e] rounded-full"></div>
                   <h3 className="text-[15px] font-bold">技术创新词云</h3>
@@ -795,7 +857,7 @@ export default function DeepMineAnalysis({
 
             </div>
           </section>
-          <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] shadow-[0_14px_34px_rgba(18,39,80,0.12)] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
+          <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
             <div className="text-[14px] font-bold text-[#102039]">
               可返回调整技术方向,或进入企业探索查看候选企业。
             </div>
@@ -822,6 +884,338 @@ export default function DeepMineAnalysis({
             </div>
           </div>
         </main>
+
+        {scanDrawerOpen && (
+          <Resizable
+            size={{
+              width: scanDrawerWidth,
+              height: isCompactLayout ? "calc(100vh - 24px)" : "100%",
+            }}
+            style={{ position: isCompactLayout ? "fixed" : "relative" }}
+            minWidth={Math.min(
+              MIN_SCAN_DRAWER_WIDTH,
+              window.innerWidth * 0.75,
+            )}
+            maxWidth={isCompactLayout ? "92vw" : "60vw"}
+            enable={{ left: true }}
+            onResizeStop={(_event, _direction, element) => {
+              const nextWidth = element.offsetWidth;
+              setScanDrawerWidth(nextWidth);
+              window.localStorage.setItem(
+                SCAN_DRAWER_WIDTH_STORAGE_KEY,
+                String(nextWidth),
+              );
+            }}
+            handleComponent={{
+              left: (
+                <div
+                  className="group flex h-full w-3 -translate-x-1/2 cursor-col-resize items-center justify-center"
+                  title="拖动调整线索扫描记录面板宽度"
+                >
+                  <span className="h-12 w-1 rounded-full bg-[#cbd8eb] opacity-0 shadow-sm transition-opacity group-hover:opacity-100" />
+                </div>
+              ),
+            }}
+            className={`z-30 flex max-w-[92vw] flex-col overflow-hidden rounded-[18px] border border-[#e3ebf6] bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] ${
+              isCompactLayout ? "right-3 top-3 z-40" : "shrink-0"
+            }`}
+          >
+            <header className="flex shrink-0 items-start justify-between gap-3 border-b border-[#e3ebf6] bg-linear-to-b from-white to-[#fbfdff] px-[18px] py-4">
+              <div className="min-w-0">
+                <h2 className="m-0 text-[20px] font-black leading-[1.35] text-[#102039]">
+                  线索扫描记录
+                </h2>
+                <p className="m-0 mt-1.5 text-[12px] leading-[1.5] text-[#7b879b]">
+                  保留历次技术方向、运行过程与扫描结果
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setScanDrawerOpen(false)}
+                className="inline-flex size-[34px] shrink-0 items-center justify-center rounded-[12px] border border-[#e3ebf6] bg-[#f7f9fd] text-[#6d7890] transition hover:border-[#cbd8eb] hover:text-[#102039]"
+                aria-label="收起线索扫描记录"
+              >
+                <X className="size-4" />
+              </button>
+            </header>
+
+            <div className="min-h-0 flex-1 overflow-y-auto bg-[#fbfdff] p-[14px]">
+              <section className="overflow-hidden rounded-[14px] border border-[#e3ebf6] bg-white">
+                <button
+                  type="button"
+                  onClick={() => setPreviousRoundExpanded((value) => !value)}
+                  className="flex w-full items-center justify-between gap-3 bg-white px-3.5 py-3 text-left"
+                  aria-expanded={previousRoundExpanded}
+                >
+                  <span className="flex min-w-0 items-center gap-2">
+                    <strong className="text-[13px] font-black text-[#13213a]">
+                      扫描1
+                    </strong>
+                    <span className="text-[10px] text-[#99a4b4]">上一轮</span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-2">
+                    <span className="rounded-full bg-[#eaf8f0] px-2 py-1 text-[10px] font-black text-[#18a957]">
+                      已完成
+                    </span>
+                    <ChevronDown
+                      className={`size-4 text-[#8996a8] transition-transform ${
+                        previousRoundExpanded ? "rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </button>
+                <div className="grid grid-cols-2 gap-2 px-3.5 pb-3">
+                  <div className="rounded-[10px] bg-[#f6f8fb] px-3 py-2.5">
+                    <span className="block text-[10px] text-[#7e8b9e]">
+                      专利线索
+                    </span>
+                    <b className="mt-1 block text-[14px] text-[#13213a]">
+                      413件
+                    </b>
+                  </div>
+                  <div className="rounded-[10px] bg-[#f6f8fb] px-3 py-2.5">
+                    <span className="block text-[10px] text-[#7e8b9e]">
+                      候选企业
+                    </span>
+                    <b className="mt-1 block text-[14px] text-[#13213a]">
+                      91家
+                    </b>
+                  </div>
+                  <div className="rounded-[10px] bg-[#f6f8fb] px-3 py-2.5">
+                    <span className="block text-[10px] text-[#7e8b9e]">
+                      高价值专利
+                    </span>
+                    <b className="mt-1 block text-[14px] text-[#13213a]">
+                      128件
+                    </b>
+                  </div>
+                  <div className="rounded-[10px] bg-[#f6f8fb] px-3 py-2.5">
+                    <span className="block text-[10px] text-[#7e8b9e]">
+                      数据来源
+                    </span>
+                    <b className="mt-1 block text-[14px] text-[#13213a]">
+                      6个
+                    </b>
+                  </div>
+                </div>
+                {previousRoundExpanded && (
+                  <div className="border-t border-[#e3ebf6] bg-[#fbfcfe] px-3.5 py-3">
+                    <div className="mb-2 text-[10px] font-bold text-[#7a879a]">
+                      技术方向
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        "层状氧化物正极材料",
+                        "聚阴离子正极材料",
+                      ].map((direction) => (
+                        <span
+                          key={direction}
+                          className="rounded-full border border-[#d8e4f7] bg-[#f3f7ff] px-2 py-1 text-[10px] text-[#4f6c98]"
+                        >
+                          {direction}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-2.5 divide-y divide-dashed divide-[#e5ebf3]">
+                      {[
+                        "生成6组检索式，覆盖标题、摘要与权利要求",
+                        "从6个专利与工商数据源获取原始线索1,286条",
+                        "完成两个技术方向的专利检索与主体识别",
+                        "排除低相关、失效及重复专利873件",
+                        "合并17组企业简称、曾用名及关联主体",
+                        "去重后形成91家候选企业",
+                      ].map((item) => (
+                        <div
+                          key={item}
+                          className="flex gap-2 py-2 text-[10px] leading-[1.5] text-[#6e7d91]"
+                        >
+                          <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#18a957]" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              <div className="my-3 flex items-center gap-2 text-[10px] font-extrabold text-[#8a96a7] before:h-px before:flex-1 before:bg-[#e6ebf2] after:h-px after:flex-1 after:bg-[#e6ebf2]">
+                技术方向更新后重新扫描
+              </div>
+
+              <section className="overflow-hidden rounded-[14px] border border-[#b9ceff] bg-white shadow-[0_8px_22px_rgba(47,109,246,0.06)]">
+                <div className="flex items-center justify-between gap-3 px-3.5 py-3">
+                  <span className="flex min-w-0 items-center gap-2">
+                    <strong className="text-[13px] font-black text-[#13213a]">
+                      扫描2
+                    </strong>
+                    <span className="text-[10px] text-[#99a4b4]">
+                      当前轮次
+                    </span>
+                  </span>
+                  <span className="rounded-full bg-[#edf4ff] px-2 py-1 text-[10px] font-black text-[#2f6df6]">
+                    进行中
+                  </span>
+                </div>
+                <div className="mx-3.5 mb-3 rounded-[9px] bg-[#f3f7ff] px-2.5 py-2 text-[10px] leading-[1.5] text-[#58709a]">
+                  技术方向已更新：保留原有方向，并新增“普鲁士蓝类材料”。
+                </div>
+                <div className="border-y border-[#e3ebf6] bg-[#fbfcfe] px-3.5 py-3">
+                  <div className="mb-2 text-[10px] font-bold text-[#7a879a]">
+                    本轮技术方向
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {["层状氧化物正极材料", "聚阴离子正极材料"].map(
+                      (direction) => (
+                        <span
+                          key={direction}
+                          className="rounded-full border border-[#d8e4f7] bg-[#f3f7ff] px-2 py-1 text-[10px] text-[#4f6c98]"
+                        >
+                          {direction}
+                        </span>
+                      ),
+                    )}
+                    <span className="rounded-full border border-[#b9ceff] bg-[#edf4ff] px-2 py-1 text-[10px] font-bold text-[#2f6df6]">
+                      普鲁士蓝类材料 · 新增
+                    </span>
+                  </div>
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-[10px] text-[#69788d]">
+                      <span>本轮扫描进度</span>
+                      <b className="text-[#2f6df6]">84%</b>
+                    </div>
+                    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#e9eef6]">
+                      <div className="h-full w-[84%] rounded-full bg-linear-to-r from-[#2f6df6] to-[#6d90ff]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="m-3.5 flex items-start gap-2 rounded-[11px] border border-[#cfe0ff] bg-[#f2f7ff] p-3">
+                  <LoaderCircle className="mt-0.5 size-4 shrink-0 animate-spin text-[#2f6df6]" />
+                  <div>
+                    <b className="block text-[11px] text-[#13213a]">
+                      正在归并企业主体与专利线索
+                    </b>
+                    <p className="m-0 mt-1 text-[10px] leading-[1.5] text-[#6d7d94]">
+                      识别企业简称、曾用名和关联主体，并持续去重。
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 px-3.5 pb-3">
+                  <div className="rounded-[9px] bg-[#f7f9fc] px-2.5 py-2">
+                    <span className="block text-[9px] text-[#8490a2]">
+                      本轮专利线索
+                    </span>
+                    <b className="mt-1 block text-[13px] text-[#13213a]">
+                      617件
+                    </b>
+                  </div>
+                  <div className="rounded-[9px] bg-[#f7f9fc] px-2.5 py-2">
+                    <span className="block text-[9px] text-[#8490a2]">
+                      本轮候选企业
+                    </span>
+                    <b className="mt-1 block text-[13px] text-[#13213a]">
+                      132家
+                    </b>
+                  </div>
+                  <div className="rounded-[9px] bg-[#f7f9fc] px-2.5 py-2">
+                    <span className="block text-[9px] text-[#8490a2]">
+                      高相关性专利
+                    </span>
+                    <b className="mt-1 block text-[13px] text-[#13213a]">
+                      297件
+                    </b>
+                  </div>
+                  <div className="rounded-[9px] bg-[#f7f9fc] px-2.5 py-2">
+                    <span className="block text-[9px] text-[#8490a2]">
+                      近三年活跃企业
+                    </span>
+                    <b className="mt-1 block text-[13px] text-[#13213a]">
+                      43家
+                    </b>
+                  </div>
+                </div>
+                <div className="border-t border-[#e3ebf6] px-3.5 pb-1 pt-3">
+                  <div className="mb-3 text-[10px] font-extrabold text-[#8c98aa]">
+                    本轮运行记录
+                  </div>
+                  <div className="relative ml-2 border-l border-[#e1e8f1] pl-5">
+                    {[
+                      [
+                        "完成",
+                        "16:21",
+                        "加载检索范围",
+                        "读取三条技术路线及12个核心技术关键词",
+                        "方向配置",
+                      ],
+                      [
+                        "完成",
+                        "16:22",
+                        "生成检索策略",
+                        "生成9组中英文检索式和4组主体识别规则",
+                        "AI 检索式",
+                      ],
+                      [
+                        "完成",
+                        "16:24",
+                        "检索专利线索",
+                        "从标题、摘要与权利要求中召回1,764条原始线索",
+                        "专利数据库",
+                      ],
+                      [
+                        "完成",
+                        "16:25",
+                        "筛选高相关专利",
+                        "排除低相关与重复记录，保留617件有效专利",
+                        "相关性模型",
+                      ],
+                      [
+                        "完成",
+                        "16:27",
+                        "补充工商主体信息",
+                        "已匹配企业全称、曾用名、统一社会信用代码与存续状态",
+                        "工商数据",
+                      ],
+                      [
+                        "进行中",
+                        "16:29",
+                        "识别候选企业",
+                        "正在合并关联主体、排除重复企业并计算技术路线覆盖度",
+                        "主体归并",
+                      ],
+                    ].map(([status, time, title, detail, source]) => (
+                      <div key={title} className="relative pb-4">
+                        <span
+                          className={`absolute -left-[29px] top-0 flex size-[17px] items-center justify-center rounded-md border ${
+                            status === "完成"
+                              ? "border-[#ccebdc] bg-[#eaf8f0] text-[#18a957]"
+                              : "border-[#cfe0ff] bg-[#edf4ff] text-[#2f6df6]"
+                          }`}
+                        >
+                          {status === "完成" ? (
+                            <Check className="size-2.5" />
+                          ) : (
+                            <LoaderCircle className="size-2.5 animate-spin" />
+                          )}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <b className="text-[11px] text-[#13213a]">{title}</b>
+                          <span className="text-[9px] text-[#9aa5b4]">
+                            {time} · {status}
+                          </span>
+                        </div>
+                        <p className="m-0 mt-1 text-[10px] leading-[1.5] text-[#758398]">
+                          {detail}
+                        </p>
+                        <span className="mt-1.5 inline-flex rounded-md bg-[#f4f6f9] px-1.5 py-1 text-[9px] font-bold text-[#7b8899]">
+                          {source}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </div>
+          </Resizable>
+        )}
       </div>
     </PageShell>
   );

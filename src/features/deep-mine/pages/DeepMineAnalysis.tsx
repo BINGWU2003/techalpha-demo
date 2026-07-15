@@ -299,8 +299,8 @@ export default function DeepMineAnalysis({
     <PageShell className="h-screen max-w-none overflow-hidden p-4 max-md:p-3">
       <div className="flex h-full items-stretch gap-4">
         <main className="min-w-0 flex-1 overflow-y-auto pr-1">
-          <section className="overflow-hidden bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
+          <section className="bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+            <div className="sticky top-0 z-30 rounded-t-[24px] border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h2 className="text-[24px] font-black m-0 text-[#102039]">
                   线索分析

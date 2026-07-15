@@ -298,9 +298,9 @@ export default function DeepMineAnalysis({
   return (
     <PageShell className="h-screen max-w-none overflow-hidden p-4 max-md:p-3">
       <div className="flex h-full items-stretch gap-4">
-        <main className="min-w-0 flex-1 overflow-y-auto pr-1">
-          <section className="bg-white border border-[#e5eaf3] rounded-[24px] shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
-            <div className="sticky top-0 z-30 rounded-t-[24px] border-b border-[#e5eaf3] bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
+        <main className="flex h-full min-w-0 flex-1 flex-col gap-[18px] overflow-hidden pr-1">
+          <section className="shrink-0 overflow-hidden rounded-[24px] border border-[#e5eaf3] bg-white shadow-[0_14px_32px_rgba(15,23,42,0.06)]">
+            <div className="bg-linear-to-br from-[#f8fbff] to-white p-[22px]">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h2 className="text-[24px] font-black m-0 text-[#102039]">
                   线索分析
@@ -326,8 +326,11 @@ export default function DeepMineAnalysis({
                 </div>
               </div>
             </div>
+          </section>
 
-            <div className="p-[22px]">
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <section className="rounded-[24px] border border-[#e5eaf3] bg-white">
+              <div className="p-[22px]">
               {/* Enterprise Statistics Section */}
               <div className="space-y-5 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className="grid grid-cols-1 gap-4">
@@ -879,32 +882,33 @@ export default function DeepMineAnalysis({
                 </div>
               </div>
 
-            </div>
-          </section>
-          <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
-            <div className="text-[14px] font-bold text-[#102039]">
-              可返回调整技术方向,或进入企业探索查看候选企业。
-            </div>
-            <div className="flex flex-col gap-[10px] md:flex-row md:justify-end">
-              {onBack && (
-                <Button
-                  variant="outline"
-                  onClick={onBack}
-                  className="h-10 rounded-[12px] px-[14px] font-extrabold shadow-sm max-md:w-full"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  返回目标拆解
-                </Button>
-              )}
-              {onExplore && (
-                <Button
-                  onClick={onExplore}
-                  className="h-10 rounded-[12px] bg-[#2f6df6] px-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(47,109,246,0.16)] hover:bg-[#2f6df6] max-md:w-full"
-                >
-                  进入企业探索
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              )}
+              </div>
+            </section>
+            <div className="sticky bottom-4 z-20 mt-[18px] flex items-center justify-between gap-4 rounded-[18px] border border-[#e5eaf3] bg-white/90 px-4 py-3 text-[13px] text-[#647087] backdrop-blur-[10px] max-md:bottom-3 max-md:flex-col max-md:items-stretch">
+              <div className="text-[14px] font-bold text-[#102039]">
+                可返回调整技术方向,或进入企业探索查看候选企业。
+              </div>
+              <div className="flex flex-col gap-[10px] md:flex-row md:justify-end">
+                {onBack && (
+                  <Button
+                    variant="outline"
+                    onClick={onBack}
+                    className="h-10 rounded-[12px] px-[14px] font-extrabold shadow-sm max-md:w-full"
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    返回目标拆解
+                  </Button>
+                )}
+                {onExplore && (
+                  <Button
+                    onClick={onExplore}
+                    className="h-10 rounded-[12px] bg-[#2f6df6] px-[14px] font-extrabold text-white shadow-[0_10px_20px_rgba(47,109,246,0.16)] hover:bg-[#2f6df6] max-md:w-full"
+                  >
+                    进入企业探索
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </main>

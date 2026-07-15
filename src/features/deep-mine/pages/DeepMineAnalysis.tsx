@@ -331,7 +331,7 @@ export default function DeepMineAnalysis({
               {/* Enterprise Statistics Section */}
               <div className="space-y-5 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="bg-white border border-[#e5eaf3] rounded-[20px] p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className="bg-white border border-[#e5eaf3] rounded-[20px] p-5 flex flex-wrap items-center justify-between gap-4">
                     <div>
                       <h3 className="text-[18px] font-black text-[#0f1f3d] mb-1">
                         候选企业线索已形成
@@ -358,11 +358,17 @@ export default function DeepMineAnalysis({
                   <p className="text-[13px] leading-[1.7] text-[#64748b] mb-5">
                     注：同一企业可能覆盖多个技术路线，因此各路线企业数为非去重统计。
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                  <div
+                    className="grid gap-4"
+                    style={{
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
+                    }}
+                  >
                     {TECH_ROUTE_DATA.map((route) => (
                       <div
                         key={route.name}
-                        className="border border-[#e5eaf3] rounded-[18px] p-5 bg-white hover:border-[#bfdbfe] transition-colors"
+                        className="min-w-0 border border-[#e5eaf3] rounded-[18px] p-5 bg-white hover:border-[#bfdbfe] transition-colors"
                       >
                         <h4 className="text-[17px] font-black text-[#0f1f3d] mb-5">
                           {route.name}
@@ -398,8 +404,14 @@ export default function DeepMineAnalysis({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-4">
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
+                <div
+                  className="grid gap-4"
+                  style={{
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(min(100%, 360px), 1fr))",
+                  }}
+                >
+                  <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                     <div className="flex items-center gap-2 mb-5">
                       <div className="w-1.5 h-5 bg-[#2563eb] rounded-full"></div>
                       <h3 className="text-[18px] font-black text-[#0f1f3d]">
@@ -464,7 +476,7 @@ export default function DeepMineAnalysis({
                     </div>
                   </div>
 
-                  <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
+                  <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                     <div className="flex items-center gap-2 mb-7">
                       <div className="w-1.5 h-5 bg-[#10b981] rounded-full"></div>
                       <h3 className="text-[18px] font-black text-[#0f1f3d]">
@@ -596,8 +608,14 @@ export default function DeepMineAnalysis({
                 </div> */}
               </div>
               {/* Stat Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
+              <div
+                className="grid gap-4"
+                style={{
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(min(100%, 170px), 1fr))",
+                }}
+              >
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     检索专利总数
                   </span>
@@ -608,7 +626,7 @@ export default function DeepMineAnalysis({
                     <span className="text-[#64748b] text-[13px]">件</span>
                   </div>
                 </div>
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     高价值专利 (发明)
                   </span>
@@ -619,7 +637,7 @@ export default function DeepMineAnalysis({
                     <span className="text-[#64748b] text-[13px]">件</span>
                   </div>
                 </div>
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     高相关性专利
                   </span>
@@ -630,7 +648,7 @@ export default function DeepMineAnalysis({
                     <span className="text-[#64748b] text-[13px]">件</span>
                   </div>
                 </div>
-                <div className="bg-white border border-[#e5eaf3] rounded-[16px] p-5">
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[16px] p-5">
                   <span className="block text-[#64748b] text-[13px] mb-2">
                     近三年新增专利
                   </span>
@@ -646,7 +664,7 @@ export default function DeepMineAnalysis({
               {/* Line Charts Row */}
               <div className="grid grid-cols-1 gap-4 mt-4 text-[#172033]">
                 {/* All Patents Line Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-1.5 h-4 bg-[#2563eb] rounded-full"></div>
                     <h3 className="text-[15px] font-bold">
@@ -702,9 +720,15 @@ export default function DeepMineAnalysis({
               </div>
 
               {/* Pie Charts Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-[#172033]">
+              <div
+                className="grid gap-4 mt-4 text-[#172033]"
+                style={{
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+                }}
+              >
                 {/* Patent Type Pie Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-1.5 h-4 bg-[#f59e0b] rounded-full"></div>
                     <h3 className="text-[15px] font-bold">专利类型分布</h3>
@@ -766,7 +790,7 @@ export default function DeepMineAnalysis({
                 </div>
 
                 {/* Patent Validity Pie Chart */}
-                <div className="bg-white border border-[#e5eaf3] rounded-[24px] p-6">
+                <div className="min-w-0 bg-white border border-[#e5eaf3] rounded-[24px] p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <div className="w-1.5 h-4 bg-[#8b5cf6] rounded-full"></div>
                     <h3 className="text-[15px] font-bold">专利有效性分布</h3>

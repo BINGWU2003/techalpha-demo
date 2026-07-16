@@ -581,169 +581,162 @@ export default function DeepMinePhase1({
             <div className="flex flex-col gap-[18px]">
               <section className="rounded-[24px] border border-[#e5eaf3] bg-white">
                 <div className="p-[18px_24px_24px] max-md:p-[18px]">
-              <div className="mb-[18px] flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <h2 className="text-[20px] font-black m-0 text-[#102039]">
-                    已选技术方向
-                  </h2>
-                  {statusMessage && (
-                    <p className="mt-1.5 m-0 text-[13px] font-bold text-[#2563eb]">
-                      {statusMessage}
-                    </p>
-                  )}
-                </div>
-                <div className="inline-flex h-8 items-center rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-3 text-[13px] font-extrabold text-[#2563eb]">
-                  已选 {selectedCount}/3
-                </div>
-              </div>
+                  <div className="mb-[18px] flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <h2 className="text-[20px] font-black m-0 text-[#102039]">
+                        已选技术方向
+                      </h2>
+                    </div>
+                    <div className="inline-flex h-8 items-center rounded-full border border-[#d7e4ff] bg-[#f8fbff] px-3 text-[13px] font-extrabold text-[#2563eb]">
+                      已选 {selectedCount}/3
+                    </div>
+                  </div>
 
-              <div className="direction-card-grid grid gap-3.5">
-                {selectedDirections.map((direction) => (
-                  <article
-                    key={direction.id}
-                    className="rounded-[18px] border border-[#7aa2ff] bg-linear-to-b from-white to-[#fbfdff] p-[14px] shadow-[0_8px_18px_rgba(47,109,246,0.08)] transition"
-                  >
-                    <div className="mb-2 flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
+                  <div className="direction-card-grid grid gap-3.5">
+                    {selectedDirections.map((direction) => (
+                      <article
+                        key={direction.id}
+                        className="rounded-[18px] border border-[#7aa2ff] bg-linear-to-b from-white to-[#fbfdff] p-[14px] shadow-[0_8px_18px_rgba(47,109,246,0.08)] transition"
+                      >
+                        <div className="mb-2 flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <Textarea
+                              aria-label="技术方向标题"
+                              value={direction.title}
+                              placeholder="输入方向名称"
+                              onChange={(event) =>
+                                handleUpdateDirection(
+                                  direction.id,
+                                  "title",
+                                  event.target.value,
+                                )
+                              }
+                              className="min-h-[42px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
+                            />
+                          </div>
+                          <span className="inline-flex size-[30px] shrink-0 items-center justify-center rounded-[10px] border border-[#dce6f6] bg-white text-[#6d7890]">
+                            <PencilLine className="size-4" />
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSelected(direction.id)}
+                            aria-label={`移除${direction.title}`}
+                            className="inline-flex size-[30px] shrink-0 items-center justify-center rounded-[10px] border border-[#dce6f6] bg-white text-[#6d7890] transition hover:-translate-y-0.5 hover:border-[#ffd5d5] hover:bg-[#fff1f1] hover:text-[#ef4444]"
+                          >
+                            <X className="size-4" />
+                          </button>
+                        </div>
                         <Textarea
-                          aria-label="技术方向标题"
-                          value={direction.title}
-                          placeholder="输入方向名称"
+                          aria-label="技术方向说明"
+                          value={direction.description}
+                          placeholder="输入分析说明"
                           onChange={(event) =>
                             handleUpdateDirection(
                               direction.id,
-                              "title",
+                              "description",
                               event.target.value,
                             )
                           }
-                          className="min-h-[42px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
+                          className="mt-3 min-h-[58px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
                         />
+                      </article>
+                    ))}
+                    {selectedCount === 0 && (
+                      <div className="min-h-[146px] rounded-[18px] border border-dashed border-[#cfdbea] bg-[#fafcff] p-5 text-[13px] font-bold text-[#9aa6ba] flex items-center justify-center text-center">
+                        尚未选择技术方向
                       </div>
-                      <span className="inline-flex size-[30px] shrink-0 items-center justify-center rounded-[10px] border border-[#dce6f6] bg-white text-[#6d7890]">
-                        <PencilLine className="size-4" />
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveSelected(direction.id)}
-                        aria-label={`移除${direction.title}`}
-                        className="inline-flex size-[30px] shrink-0 items-center justify-center rounded-[10px] border border-[#dce6f6] bg-white text-[#6d7890] transition hover:-translate-y-0.5 hover:border-[#ffd5d5] hover:bg-[#fff1f1] hover:text-[#ef4444]"
-                      >
-                        <X className="size-4" />
-                      </button>
-                    </div>
-                    <Textarea
-                      aria-label="技术方向说明"
-                      value={direction.description}
-                      placeholder="输入分析说明"
-                      onChange={(event) =>
-                        handleUpdateDirection(
-                          direction.id,
-                          "description",
-                          event.target.value,
-                        )
-                      }
-                      className="mt-3 min-h-[58px] resize-none rounded-[12px] border border-transparent bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5d6f8a] shadow-none transition-colors placeholder:text-[#b7c3d5] hover:border-[#d7e4ff] focus-visible:border-[#2563eb] focus-visible:bg-white focus-visible:ring-0"
-                    />
-                  </article>
-                ))}
-                {selectedCount < MAX_SELECTED_DIRECTIONS && (
-                  <div className="min-h-[146px] rounded-[18px] border border-dashed border-[#cfdbea] bg-[#fafcff] p-5 text-[13px] font-bold text-[#9aa6ba] flex items-center justify-center text-center">
-                    可继续选择
-                    {MAX_SELECTED_DIRECTIONS - selectedCount}
-                    个候选方向
+                    )}
                   </div>
-                )}
-              </div>
                 </div>
               </section>
 
               <section className="rounded-[24px] border border-[#e5eaf3] bg-white">
-            <div className="flex items-center justify-between gap-3 px-6 pt-[18px] max-md:px-[18px]">
-              <h2 className="text-[20px] font-black m-0 text-[#102039]">
-                候选技术方向
-              </h2>
-              {!drawerOpen && (
-                <button
-                  type="button"
-                  onClick={handleOpenProcessDrawer}
-                  className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
-                >
-                  <PanelRightOpen className="size-4" />
-                  任务助手
-                </button>
-              )}
-            </div>
-            <div className="px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
-              {showCandidateGuide && selectedCount === 0 && (
-                <div className="mb-4 flex items-center gap-3 rounded-[16px] border border-[#b8ceff] bg-linear-to-r from-[#edf4ff] via-[#f5f8ff] to-white px-4 py-3 max-sm:items-start">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-[11px] bg-[#2f6df6] text-white">
-                    <MousePointerClick className="size-[18px]" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-[#2f6df6] px-2 py-0.5 text-[10px] font-black text-white">
-                        操作提示
-                      </span>
-                      <strong className="text-[13px] font-black text-[#1b3154]">
-                        从候选方向中选择 1–3 个
-                      </strong>
-                    </div>
-                    <p className="mt-1 text-[12px] leading-[1.55] text-[#60718d]">
-                      点击卡片右上角的“加入”，选中的技术方向会显示在上方。
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setShowCandidateGuide(false)}
-                    className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg text-[#75839a] transition hover:bg-white hover:text-[#334155]"
-                    aria-label="关闭候选方向操作提示"
-                  >
-                    <X className="size-3.5" />
-                  </button>
-                </div>
-              )}
-              <div
-                className={`direction-card-grid grid content-start gap-3.5 ${
-                  isUpdatingCandidates
-                    ? "pointer-events-none opacity-80"
-                    : "opacity-100"
-                }`}
-              >
-                {isUpdatingCandidates ? (
-                  <CandidateDirectionSkeletonCards />
-                ) : (
-                  candidateDirections.map((direction) => (
-                    <article
-                      key={direction.id}
-                      className={`min-h-[150px] rounded-[18px] border bg-white p-[14px] transition-all hover:border-[#bdd1ff] hover:shadow-[0_8px_18px_rgba(47,109,246,0.06)] ${
-                        blockedDirectionId === direction.id
-                          ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
-                          : "border-[#dfe7f2]"
-                      }`}
+                <div className="flex items-center justify-between gap-3 px-6 pt-[18px] max-md:px-[18px]">
+                  <h2 className="text-[20px] font-black m-0 text-[#102039]">
+                    候选技术方向
+                  </h2>
+                  {!drawerOpen && (
+                    <button
+                      type="button"
+                      onClick={handleOpenProcessDrawer}
+                      className="inline-flex h-9 shrink-0 items-center gap-2 rounded-[11px] border border-[#cbdcff] bg-[#f3f7ff] px-3.5 text-[13px] font-black text-[#2f6df6] transition-colors hover:border-[#a9c2ff] hover:bg-[#eaf1ff]"
                     >
-                      <div className="mb-2 flex items-start justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039]">
-                            {direction.title}
-                          </div>
+                      <PanelRightOpen className="size-4" />
+                      任务助手
+                    </button>
+                  )}
+                </div>
+                <div className="px-6 pb-6 pt-4 max-md:px-[18px] max-md:pb-6">
+                  {showCandidateGuide && selectedCount === 0 && (
+                    <div className="mb-4 flex items-center gap-3 rounded-[16px] border border-[#b8ceff] bg-linear-to-r from-[#edf4ff] via-[#f5f8ff] to-white px-4 py-3 max-sm:items-start">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-[11px] bg-[#2f6df6] text-white">
+                        <MousePointerClick className="size-[18px]" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-[#2f6df6] px-2 py-0.5 text-[10px] font-black text-white">
+                            操作提示
+                          </span>
+                          <strong className="text-[13px] font-black text-[#1b3154]">
+                            从候选方向中选择 1–3 个
+                          </strong>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleAddCandidate(direction.id)}
-                          className="inline-flex h-[30px] shrink-0 items-center justify-center gap-1 rounded-full border border-[#dce6f6] bg-white px-3 text-[12px] font-black text-[#3f6cf6] transition hover:-translate-y-0.5 hover:border-[#b8cdf8] hover:bg-[#f7faff]"
+                        <p className="mt-1 text-[12px] leading-[1.55] text-[#60718d]">
+                          点击卡片右上角的“加入”，选中的技术方向会显示在上方。
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowCandidateGuide(false)}
+                        className="inline-flex size-7 shrink-0 items-center justify-center rounded-lg text-[#75839a] transition hover:bg-white hover:text-[#334155]"
+                        aria-label="关闭候选方向操作提示"
+                      >
+                        <X className="size-3.5" />
+                      </button>
+                    </div>
+                  )}
+                  <div
+                    className={`direction-card-grid grid content-start gap-3.5 ${
+                      isUpdatingCandidates
+                        ? "pointer-events-none opacity-80"
+                        : "opacity-100"
+                    }`}
+                  >
+                    {isUpdatingCandidates ? (
+                      <CandidateDirectionSkeletonCards />
+                    ) : (
+                      candidateDirections.map((direction) => (
+                        <article
+                          key={direction.id}
+                          className={`min-h-[150px] rounded-[18px] border bg-white p-[14px] transition-all hover:border-[#bdd1ff] hover:shadow-[0_8px_18px_rgba(47,109,246,0.06)] ${
+                            blockedDirectionId === direction.id
+                              ? "border-[#f59e0b] bg-[#fffaf0] shadow-[inset_0_0_0_3px_#fff1cf]"
+                              : "border-[#dfe7f2]"
+                          }`}
                         >
-                          <Plus className="size-3.5" />
-                          加入
-                        </button>
-                      </div>
-                      <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
-                        {direction.description}
-                      </div>
-                    </article>
-                  ))
-                )}
-              </div>
-            </div>
+                          <div className="mb-2 flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <div className="rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[15px] font-black leading-[1.35] text-[#102039]">
+                                {direction.title}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleAddCandidate(direction.id)}
+                              className="inline-flex h-[30px] shrink-0 items-center justify-center gap-1 rounded-full border border-[#dce6f6] bg-white px-3 text-[12px] font-black text-[#3f6cf6] transition hover:-translate-y-0.5 hover:border-[#b8cdf8] hover:bg-[#f7faff]"
+                            >
+                              <Plus className="size-3.5" />
+                              加入
+                            </button>
+                          </div>
+                          <div className="mt-3 min-h-[58px] rounded-[12px] bg-[#f8fbff] px-3 py-2 text-[13px] leading-[1.6] text-[#5a667c]">
+                            {direction.description}
+                          </div>
+                        </article>
+                      ))
+                    )}
+                  </div>
+                </div>
               </section>
             </div>
           </div>
@@ -895,9 +888,7 @@ export default function DeepMinePhase1({
                     aria-label={
                       isUpdatingCandidates ? "正在分析调整要求" : "发送调整要求"
                     }
-                    title={
-                      isUpdatingCandidates ? "正在分析" : "发送调整要求"
-                    }
+                    title={isUpdatingCandidates ? "正在分析" : "发送调整要求"}
                   >
                     {isUpdatingCandidates ? (
                       <LoaderCircle className="size-4 animate-spin" />

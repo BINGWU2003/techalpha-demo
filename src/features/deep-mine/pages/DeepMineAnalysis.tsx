@@ -896,7 +896,7 @@ export default function DeepMineAnalysis({
                     className="h-10 rounded-[12px] px-[14px] font-extrabold shadow-sm max-md:w-full"
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    返回目标拆解
+                    返回技术分析
                   </Button>
                 )}
                 {onExplore && (
